@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Probability," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="edx 课程《Introduction to Probability - The Science of Uncertainty》Unit4 笔记">
+<meta name="keywords" content="Probability">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Introduction-to-Probability》—— Unit4 Discrete random variables">
+<meta property="og:url" content="http://yoursite.com/2018/05/14/《Introduction-to-Probability》—— Unit4 Discrete random variables/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="edx 课程《Introduction to Probability - The Science of Uncertainty》Unit4 笔记">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/probability/unit4/example_PMF.png">
+<meta property="og:image" content="http://yoursite.com/images/probability/unit4/binomial_more_time.png">
+<meta property="og:updated_time" content="2018-06-01T07:59:04.885Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Introduction-to-Probability》—— Unit4 Discrete random variables">
+<meta name="twitter:description" content="edx 课程《Introduction to Probability - The Science of Uncertainty》Unit4 笔记">
+<meta name="twitter:image" content="http://yoursite.com/images/probability/unit4/example_PMF.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/14/《Introduction-to-Probability》—— Unit4 Discrete random variables/"/>
+
+
+
+
+
+  <title>《Introduction-to-Probability》—— Unit4 Discrete random variables | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/14/《Introduction-to-Probability》—— Unit4 Discrete random variables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《Introduction-to-Probability》—— Unit4 Discrete random variables</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-14T16:50:39+08:00">
+                2018-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/概率论/" itemprop="url" rel="index">
+                    <span itemprop="name">概率论</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>edx 课程《Introduction to Probability - The Science of Uncertainty》Unit4 笔记</p>
+<a id="more"></a>
+<h1 id="Unit-4-Discrete-random-variables"><a href="#Unit-4-Discrete-random-variables" class="headerlink" title="Unit 4: Discrete random variables"></a>Unit 4: Discrete random variables</h1><h2 id="1-Probability-mass-functions-and-expectations-概率质量函数和期望"><a href="#1-Probability-mass-functions-and-expectations-概率质量函数和期望" class="headerlink" title="1. Probability mass functions and expectations (概率质量函数和期望)"></a>1. Probability mass functions and expectations (概率质量函数和期望)</h2><h3 id="1-1-随机变量的思想和定义"><a href="#1-1-随机变量的思想和定义" class="headerlink" title="1.1 随机变量的思想和定义"></a>1.1 随机变量的思想和定义</h3><p><strong>一切从一个例子出发</strong></p>
+<p>假设，现在有一个班，该班级有45个学生，我们想要知道每个学生的身高、体重以及体质指数。</p>
+<p>每个学生都用编号 $1, 2, 3…, 45$ 表示。</p>
+<p>所以，此时的样本空间 $\Omega = { 1, 2, 3 …, 45}$</p>
+<p>接下来，对于一个编号为 $x$ 的学生来说，他有一个<em>映射 $W$</em>，可以让该学生从编号 $x$ 映射到另一个<em>实数 $w$ (表示体重)</em> ；同时还有另一个<em>映射 $H$</em>，可以让该学生从编号 $x$ 映射到另一个值<em>实数 $h$ (表示身高)</em>。</p>
+<p>所以，现在我们可以知道 $W(x) = w$ 以及 $H(x) = h$</p>
+<p>那么，这个 $W$ 和 $H$ 就是随机变量。</p>
+<p>那么对于 体质指数 怎么表示呢？</p>
+<p>因为体质指数 = 体重（kg）÷ 身高^2（m）</p>
+<p>所以，我们有一个新的映射 $BMI$ 使得 $BMI(w, h) = bmi$</p>
+<p><strong>总结一下</strong></p>
+<blockquote>
+<p>从数学的角度理解，随机变量就是一个函数(映射)，将样本空间 $\Omega$ 中的映射到另一个实数空间 $E$ 上。</p>
+</blockquote>
+<blockquote>
+<p>根据上面这句话的理解，我们可以很形象地用数学公式表示随机变量</p>
+</blockquote>
+<blockquote>
+<p>A random variable $X\colon \Omega \to E$ is a measurable function from a set of possible outcomes $\Omega$  to a measurable space $E$</p>
+</blockquote>
+<p>另外，我们可以定义很多个随机变量，同时他们拥有相同的样本空间，就像例子中的身高和体重共享了同一个样本空间。</p>
+<p>同时，随机变量的函数也是一个随机变量。比如，上面中的 体质指数 就是通过 身高、体重得到的。</p>
+<h3 id="1-2-PMF-Probability-mass-functions-概率质量函数"><a href="#1-2-PMF-Probability-mass-functions-概率质量函数" class="headerlink" title="1.2 PMF:Probability mass functions (概率质量函数)"></a>1.2 PMF:Probability mass functions (概率质量函数)</h3><blockquote>
+<p>数学公式上的定义：Suppose that $X: S → A (A {\displaystyle \subseteq R})$ is a discrete random variable defined on a sample space $S$. Then the probability mass function $f_X: A → [0, 1]$ for $X$ is defined as</p>
+</blockquote>
+<p>$${\displaystyle f_{X}(x)=\Pr(X=x)=\Pr({s\in S:X(s)=x}).}$$</p>
+<p><strong>一个例子</strong></p>
+<p>下图表示了一个概率质量函数。</p>
+<p>有一个映射 $X$ 可以让 ${a ,b, c, d}$ 变成 ${ 3, 4, 5}$， 那么这个 $X$ 就是一个随机变量。现在我们想要求 $x = 5$ 的概率，就需要使用到概率质量函数。</p>
+<p>通过计数可以知道 $P_X(5)=P(X=5)=1/2$， $P_X(4)=P(X=4)=1/4$， $P_X(3)=P(X=3)=1/4$， 所以这就是概率质量函数。</p>
+<p><img src="/images/probability/unit4/example_PMF.png" alt="概率质量函数示例"></p>
+<p><strong>几个性质</strong></p>
+<ol>
+<li>$p_X(x) \ge 0$</li>
+<li>$\sum_xp_X(x) = 1$</li>
+</ol>
+<h3 id="1-3-随机变量的例子"><a href="#1-3-随机变量的例子" class="headerlink" title="1.3 随机变量的例子"></a>1.3 随机变量的例子</h3><h4 id="1-3-1-伯努利随机变量"><a href="#1-3-1-伯努利随机变量" class="headerlink" title="1.3.1 伯努利随机变量"></a>1.3.1 伯努利随机变量</h4><blockquote>
+<p>定义：伯努利随机变量表示地是事件只有两种结果 1 和 0</p>
+</blockquote>
+<p>伯努利随机变量的概率质量函数的数学形式为： $X={\begin{cases}1&amp;{\text{if }}p,\[6pt]0&amp;{\text{if }}1-p.\end{cases}}$</p>
+<p><strong>一般情况下，伯努利随机变量模拟地是一次实验的结果 （成功/失败） 或者（人头/数字）</strong></p>
+<p>还有一种指示器随机变量，它是伯努利随机变量的变种， $x=1$ 当且仅当 A 发生。</p>
+<h4 id="1-3-2-均匀随机变量"><a href="#1-3-2-均匀随机变量" class="headerlink" title="1.3.2 均匀随机变量"></a>1.3.2 均匀随机变量</h4><blockquote>
+<p>定义：符合数学公式 $P_X(x) = \frac{1}{b-a+1}$ 的都可以看作是均匀随机变量。</p>
+</blockquote>
+<ol>
+<li><p>均匀随机变量有两个参数 $a, b$ 且 $a \leq b$</p>
+</li>
+<li><p>随机地选取 $a, a+1, …, b$ 概率都是相等的</p>
+</li>
+<li><p>样本空间为 ${ a, a+1, …, b}$</p>
+</li>
+</ol>
+<p><strong>均匀随机变量模拟地是对于现有情况完全无知，为此，我们会认为任何事件发生的概率都是相等的。</strong></p>
+<h4 id="1-3-3-二项随机变量"><a href="#1-3-3-二项随机变量" class="headerlink" title="1.3.3 二项随机变量"></a>1.3.3 二项随机变量</h4><p>二项随机变量有两个参数，实验次数 <em>$n$</em> 和硬币为 Heads 的概率 $p \in [0, 1]$</p>
+<blockquote>
+<p>实验：对于 $n$ 次独立地投掷，一个硬币得到 Heads 的概率为 $P(Heads) = p$</p>
+</blockquote>
+<p>样本空间：由 $H$ 和 $T$ 组成的序列合集，长度为 $n$</p>
+<p>随机变量 $X$ 的含义是：Heads 被观察到的次数。</p>
+<p>假设，现在$n=3$，那么 $P(H=0) = (_0^3)(1-p)^3$、$P(H=1) = (_1^3) p (1-p)^2$、$P(H=2) = (_2^3) p^2 (1-p)$、$P(H=3) = (_3^3) p^3$</p>
+<p><strong>二项随机变量模拟地是在$n$次独立实验中成功的次数</strong></p>
+<p><strong>PMF 表示形式</strong></p>
+<p>$$P_X(k) = (_k^n) p^k (1-p)^{n-k}, for \ k = 0, 1, …, n$$</p>
+<p>当实验次数足够多的时候，我们可以看出，根据二项分布的结果画出来的图非常接近正态分布</p>
+<p><img src="/images/probability/unit4/binomial_more_time.png" alt="概率质量函数示例"></p>
+<h4 id="1-3-4-几何随机变量-Geometric-random-variables"><a href="#1-3-4-几何随机变量-Geometric-random-variables" class="headerlink" title="1.3.4 几何随机变量 (Geometric random variables)"></a>1.3.4 几何随机变量 (Geometric random variables)</h4><p>一个参数，硬币为 Heads 的概率 $p \in [0, 1]$</p>
+<blockquote>
+<p>实验：无穷多次的独立重复投掷一个硬币，且硬币为 Heads 的概率为 $P(Heads) = p$</p>
+</blockquote>
+<p>样本空间：由 $H$ 和 $T$ 组成的序列合集，长度是无穷大小。</p>
+<p>随机变量 $X$ 的含义是：直到第一出现 Heads 为止的投掷次数。</p>
+<p><strong>几何随机变量模拟地实验次数，直到成功为止，实验的次数</strong></p>
+<p>$$P_X(k) = P(X = k) = P(T, T, T, …, H) = (1-p)^{k-1} p$$</p>
+<h3 id="1-4-期望"><a href="#1-4-期望" class="headerlink" title="1.4 期望"></a>1.4 期望</h3><blockquote>
+<p>期望：概率论中的核心地位。也被称为随机变量的均值。</p>
+</blockquote>
+<p>假设 ${\displaystyle X}$ 是一个随机变量，它有 $k$ 种结果，${\displaystyle x_{1}} , {\displaystyle x_{2}} , …, {\displaystyle x_{k}}$，每种结果对应的发生概率是 ${\displaystyle p_{1}}, {\displaystyle p_{2}}, …, {\displaystyle p_{k}}$. ${\displaystyle X}$ 的期望定义如下：</p>
+<p>$${\displaystyle \operatorname {E} [X]=x_{1}p_{1}+x_{2}p_{2}+\cdots +x_{k}p_{k}}.$$</p>
+<p>因为所有的概率 $p_i$ 相加的和等于1 ( ${\displaystyle p_{1}+p_{2}+\ldots +p_{k}=1}$), 因此，期望可以看作是加权平均，这时候的权重表示的就是概率。</p>
+<h4 id="1-4-1-几个常见随机变量的期望"><a href="#1-4-1-几个常见随机变量的期望" class="headerlink" title="1.4.1 几个常见随机变量的期望"></a>1.4.1 几个常见随机变量的期望</h4><p>伯努利随机变量的期望是： $E[X]_{Bernoulli} = p$</p>
+<p>均匀随机变量的期望是： $E[X]_{Uniform} = \frac{1}{n+1} ( 0 + 1 + 2 + … + n) = \frac{n}{2}$</p>
+<p>二项随机变量的期望是：由二项式分布的定义知，随机变量 $X$ 是 $n$ 次伯努利实验中事件 $A$ 发生的次数，且在每次试验中 $A$ 发生的概率为 $p$。因此，可以将二项式分布分解成 $n$ 个相互独立且以 $p$ 为参数的 $(0-1)$ 分布随机变量之和.</p>
+<p>所以，$E[X]_{Binomial} = E[X(1) + X(2) + … + X(n)] = np$</p>
+<h4 id="1-4-2-期望的特性"><a href="#1-4-2-期望的特性" class="headerlink" title="1.4.2 期望的特性"></a>1.4.2 期望的特性</h4><ol>
+<li><p>如果 $X &gt; 0$, 那么 $E[X] \ge 0$</p>
+</li>
+<li><p>如果 $a \le X \le b$, 那么$a \le E[X] \le b$</p>
+</li>
+<li><p>如果 $c$ 是一个常数， 那么 $E[c] = c$</p>
+</li>
+</ol>
+<h2 id="2-Variance-Conditioning-on-an-event-Multiple-r-v-’s"><a href="#2-Variance-Conditioning-on-an-event-Multiple-r-v-’s" class="headerlink" title="2. Variance; Conditioning on an event; Multiple r.v.’s"></a>2. Variance; Conditioning on an event; Multiple r.v.’s</h2><h2 id="3-Conditioning-on-a-random-variable-Independence-of-r-v-’s"><a href="#3-Conditioning-on-a-random-variable-Independence-of-r-v-’s" class="headerlink" title="3. Conditioning on a random variable; Independence of r.v.’s"></a>3. Conditioning on a random variable; Independence of r.v.’s</h2><h2 id="4-习题"><a href="#4-习题" class="headerlink" title="4. 习题"></a>4. 习题</h2>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Probability/" rel="tag"># Probability</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/10/强化学习（2）/" rel="next" title="强化学习（2）">
+                <i class="fa fa-chevron-left"></i> 强化学习（2）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/21/Pointer-Network-的一些理解/" rel="prev" title="Pointer Network 的一些理解">
+                Pointer Network 的一些理解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Unit-4-Discrete-random-variables"><span class="nav-number">1.</span> <span class="nav-text">Unit 4: Discrete random variables</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Probability-mass-functions-and-expectations-概率质量函数和期望"><span class="nav-number">1.1.</span> <span class="nav-text">1. Probability mass functions and expectations (概率质量函数和期望)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-随机变量的思想和定义"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 随机变量的思想和定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-PMF-Probability-mass-functions-概率质量函数"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 PMF:Probability mass functions (概率质量函数)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-随机变量的例子"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 随机变量的例子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-伯努利随机变量"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">1.3.1 伯努利随机变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-2-均匀随机变量"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">1.3.2 均匀随机变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-3-二项随机变量"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">1.3.3 二项随机变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-4-几何随机变量-Geometric-random-variables"><span class="nav-number">1.1.3.4.</span> <span class="nav-text">1.3.4 几何随机变量 (Geometric random variables)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-期望"><span class="nav-number">1.1.4.</span> <span class="nav-text">1.4 期望</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-1-几个常见随机变量的期望"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">1.4.1 几个常见随机变量的期望</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-2-期望的特性"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">1.4.2 期望的特性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Variance-Conditioning-on-an-event-Multiple-r-v-’s"><span class="nav-number">1.2.</span> <span class="nav-text">2. Variance; Conditioning on an event; Multiple r.v.’s</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Conditioning-on-a-random-variable-Independence-of-r-v-’s"><span class="nav-number">1.3.</span> <span class="nav-text">3. Conditioning on a random variable; Independence of r.v.’s</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-习题"><span class="nav-number">1.4.</span> <span class="nav-text">4. 习题</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

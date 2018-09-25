@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="FM,python,推荐系统," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="因子分解机的基础和进阶 什么是因子分解机？ 因子分解机的定义 因子分解机的复杂度分析   因子分解机有什么用？ 如何实现因子分解机？ 参考文献">
+<meta name="keywords" content="FM,python,推荐系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Trip Of Factorization Machine And Advance">
+<meta property="og:url" content="http://yoursite.com/2017/10/29/Trip-Of-Factorization-Machine-And-Advance/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="因子分解机的基础和进阶 什么是因子分解机？ 因子分解机的定义 因子分解机的复杂度分析   因子分解机有什么用？ 如何实现因子分解机？ 参考文献">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/fm/sparse_matirx.png">
+<meta property="og:image" content="http://yoursite.com/images/fm/ffm_mf.png">
+<meta property="og:image" content="http://yoursite.com/images/fm/matrix.png">
+<meta property="og:image" content="http://yoursite.com/images/fm/proof.png">
+<meta property="og:image" content="http://yoursite.com/images/fm/mfcf.png">
+<meta property="og:image" content="http://yoursite.com/images/fm/nn-fm.png">
+<meta property="og:image" content="http://yoursite.com/images/fm/deepfm.png">
+<meta property="og:updated_time" content="2018-04-10T12:20:59.665Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Trip Of Factorization Machine And Advance">
+<meta name="twitter:description" content="因子分解机的基础和进阶 什么是因子分解机？ 因子分解机的定义 因子分解机的复杂度分析   因子分解机有什么用？ 如何实现因子分解机？ 参考文献">
+<meta name="twitter:image" content="http://yoursite.com/images/fm/sparse_matirx.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/29/Trip-Of-Factorization-Machine-And-Advance/"/>
+
+
+
+
+
+  <title>Trip Of Factorization Machine And Advance | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/29/Trip-Of-Factorization-Machine-And-Advance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Trip Of Factorization Machine And Advance</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-29T10:26:22+08:00">
+                2017-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/推荐系统/" itemprop="url" rel="index">
+                    <span itemprop="name">推荐系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="因子分解机的基础和进阶"><a href="#因子分解机的基础和进阶" class="headerlink" title="因子分解机的基础和进阶"></a>因子分解机的基础和进阶</h1><ul>
+<li>什么是因子分解机？<ul>
+<li>因子分解机的定义</li>
+<li>因子分解机的复杂度分析</li>
+</ul>
+</li>
+<li>因子分解机有什么用？</li>
+<li>如何实现因子分解机？</li>
+<li>参考文献</li>
+</ul>
+<a id="more"></a>
+<h2 id="什么是因子分解机？"><a href="#什么是因子分解机？" class="headerlink" title="什么是因子分解机？"></a>什么是因子分解机？</h2><h3 id="因子分解机的定义-Define"><a href="#因子分解机的定义-Define" class="headerlink" title="因子分解机的定义 (Define)"></a>因子分解机的定义 (Define)</h3><p>FM(Factorization Machine) 是由Konstanz大学Steffen Rendle 在 2010年提出的$^{[1]}$，目的是为了解决稀疏数据(sparsity data)下的特征组合问题。下面我们通过几个栗子来看看什么是因子分解机。</p>
+<p>例一$^{[3]}$：</p>
+<p>我们观测到的数据的图表形式如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">rating</th>
+<th style="text-align:center">User</th>
+<th style="text-align:center">Movie</th>
+<th style="text-align:center">rate-date</th>
+<th style="text-align:center">…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">5</td>
+<td style="text-align:center">Alice</td>
+<td style="text-align:center">Titanic</td>
+<td style="text-align:center">2010-1</td>
+<td style="text-align:center">…</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">Bob</td>
+<td style="text-align:center">Notting Hill</td>
+<td style="text-align:center">2010-2</td>
+<td style="text-align:center">…</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">Charlie</td>
+<td style="text-align:center">Star War</td>
+<td style="text-align:center">2009-12</td>
+<td style="text-align:center">…</td>
+</tr>
+</tbody>
+</table>
+<p>这个例子是一个电影评分系统数据集。考虑电影评分系统种的数据，它的每一条记录都包含了哪个用户 $u \in U$在什么时候$t \in R$，对哪部电影$i \in I$打了多少分$r \in {1,2,3,4,5}$ 这样的信息。</p>
+<p>数据集S的列表形式就是：</p>
+<p>$S = { (Alice, Titanic, 2010-1, 5), (Bob, Notting Hill, 2010-2, 4)}$</p>
+<p>那么我可以使用数据集S来进行预测任务、推荐等任务，比如找到一个函数$\hat{y}$来预测某个用户在某个时刻对某个电影的打分行为。</p>
+<p>有了数据集S，通过下图的方式，我们可以构建一个特征向量和标签的示例：</p>
+<p><img src="/images/fm/sparse_matirx.png" alt="sparse matrix"></p>
+<p>上图中的标签部分比较简单，就是直接的让当前用户对电影的评分作为标签，比如第一条测试记录中Alice 对 Titanic的评分是 5，那么$y^{(1)} = 5$，而特征向量$X$由以下五部分组成：</p>
+<p>1、第一部分（蓝色方框）表征的是<strong>当前评分用户的信息</strong>，其维度为$|U|$，这里使用的是One-hot Encoding的方法。也就是除了当前位置是1，其余位置都是0。</p>
+<p>2、第二部分（红色方框）表征的是<strong>当前被评分电影信息</strong>，其维度为$|I|$，这里使用的也是One-hot Encoding的方法。</p>
+<p>3、第三部分（黄色方框）表征的是<strong>当前评分用户评分过的所有电影信息</strong>，其维度是$|I|$，假设当前用户评论过的电影个数为$n_I$，那么这$n_I$个电影位置上的数值为$\frac{1}{n_I}$，其他位置上都是0。</p>
+<p>4、第四部分（绿色方框）表征的是<strong>评分日期信息</strong>，维度为1，我们将最早的记录日期——2009年1月开始基数为1，以后没增加一个月，就加一，比如2009年5月就是5。</p>
+<p>5、第五部分（棕色方框）表征的是<strong>当前评分用户最近评分过的一部电影的信息</strong>，其维度为$|I|$，同样的也是使用One-hot Encoding的方法。比如Alice现在评价的是Titanic，之前还评价过一次Notting Hill，那么Notting Hill位置的为1，其余为0，如果之前没有评价过任何电影，就全部取0。</p>
+<p>所以，X的总维度是 $|U| + |I| + |I| + 1 + |I|  = |U| + 3|I| + 1$</p>
+<p>显然，在一个真实的电影评分系统中，用户的数目$|U|$和电影的数目$|I|$通常是很大的，而每个用户参与评论的电影数目则相对而言比较小。于是，对于每一条记录对应的特征向量将会非常的稀疏。</p>
+<p><strong>所以，我们需要有一个办法来降低这种稀疏性。</strong></p>
+<p>例二$^{[2]}$：</p>
+<p>假设一个广告分类的问题，根据用户和广告位相关的特征，预测用户是否点击了广告。源数据如下:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Clicked?</th>
+<th style="text-align:center">Country</th>
+<th style="text-align:center">Day</th>
+<th style="text-align:center">Ad_type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">USA</td>
+<td style="text-align:center">3/3/15</td>
+<td style="text-align:center">Movie</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">China</td>
+<td style="text-align:center">1/7/14</td>
+<td style="text-align:center">Game</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">China</td>
+<td style="text-align:center">3/3/15</td>
+<td style="text-align:center">Game</td>
+</tr>
+</tbody>
+</table>
+<p>“Clicked?”是label，Country、Day、Ad_type是特征。由于三种特征都是categorical类型的，需要经过（One-Hot Encoding）转换成数值型特征。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Clicked?</th>
+<th style="text-align:center">USA</th>
+<th style="text-align:center">China</th>
+<th style="text-align:center">26/11/15</th>
+<th style="text-align:center">1/7/14</th>
+<th style="text-align:center">19/2/15</th>
+<th style="text-align:center">Movie</th>
+<th style="text-align:center">Game</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+</tr>
+</tbody>
+</table>
+<p>从上面那张表。可以看出，我们在使用了One-hot Encoding之后，显然也会出现跟例一中一样的问题，那就是稀疏性非常明显。</p>
+<p>同时，我们观察数据样本，也可以发现，有一些特征，相互关联之后，跟label的相关性也会提升。</p>
+<p>比如“USA”与“Thanksgiving”、“China”与“Chinese New Year”这样的有很强关联性的特征，<em>它们对用户是否点击，会产生正面的影响</em>。</p>
+<p>用一个小例子来解释就是：来自“China”的用户在“Chinese New Year”这一天会有大量的浏览、购买行为，但是再“Thanksgiving”这天，却不会有特别的消费行为。相反地是，来自“USA”的用户很可能在“Thanksgiving”这天有大量的浏览、购买行为，但是在“Chinese New Year”却可能没有特别的消费行为。</p>
+<p>这种关联特征与label的正向相关性在实际问题中是普遍存在的，如“化妆品”类商品与“女”性，“球类运动配件”的商品与“男”性，“电影票”的商品与“电影”品类偏好等。因此，<strong>引入两个特征的组合是非常有意义的</strong>。</p>
+<p>我们可以使用多项式来直观地表现多项式模型，让特征$x_i$和$x_j$组合，得到如下表达式，这里我们只讨论二阶多项式模型：</p>
+<p>$$y(x) = w_0 + \sum_{i=1}^n w_i x_i + \sum_{i=1}^n \sum_{j=i+1}^n w_{ij} x_i x_j$$</p>
+<p>$$= w_0 + W_1^TX + X^TW_2X \ \ \ \ \ \ (1)$$</p>
+<p>可以看到，当$x_i$和$x_j$有一个为零，这时的组合特征$x_ix_j$是没有意义的。</p>
+<p>其中$n$表示样本的特征数量，$x_i$表示第i个特征的值，$w_0、w_i、w_{ij}$是参数模型。</p>
+<p>显然，我们写出这个模型的过程，并不复杂，然后我们只要能求出 $w_0、w_i、w_{ij}$就能够建立起一个很好用的，引入了组合特征的模型。</p>
+<p>但是事实真的是这样么？这里我们依旧会遇到跟例一中，一样的问题，就是样本太少了，稀疏性太强，哪怕强行求出了$w_{ij}$，得到的模型也会是欠拟合的那种。</p>
+<p>那么，我们如何解决这个问题呢？</p>
+<p>一个可以想到的办法就是通过<strong>矩阵分解</strong>。</p>
+<p>在推荐系统中，我们把一个评分矩阵，分解成一个user和一个item，每个user和item都可以采用一个隐向量表示。比如在下图中的例子中，我们把每个user表示成一个二维向量，同时把每个item表示成一个二维向量，两个向量的点积就是矩阵中user对item的打分。</p>
+<p><img src="/images/fm/ffm_mf.png" alt="矩阵分解"></p>
+<p>按照，这个思想，我们可以对中间的权重$W_2$做一次矩阵分解。</p>
+<p>$$W_2 = V^TV, V \in R^{k \times n}$$</p>
+<p>那么有</p>
+<p>$$w_{ij} = V_i^TV_j, V_i \in R^k$$</p>
+<p>最后公式$(1)$可以化成</p>
+<p>$$y(\mathbf{x}) = w_0+ \sum_{i=1}^n w_i x_i + \sum_{i=1}^n \sum_{j=i+1}^n \langle \mathbf{v}_i, \mathbf{v}_j \rangle x_i x_j (2)$$</p>
+<p>这里的$\langle \mathbf{v}_i, \mathbf{v}_j \rangle$表示的是两个长度为k的向量的点乘</p>
+<p>$$\langle \mathbf{v}_i, \mathbf{v}<em>j \rangle = \sum</em>{f=1}^k v_{i,f} \cdot v_{j,f}$$</p>
+<p>这样一来得到的隐向量的长度为$k$，包含$k$个描述特征的因子。且二次项的参数的个数就成了$kn$远远少于$n^2$。另外参数因子化使得 $x_h x_i$ 的参数和 $x_ix_j$ 的参数不再相互独立。<br>因此我们可以在样本稀疏的情况下相对合理地估计FM的二次项参数。具体来说，$x_hx_i$ 和 $x_ix_j$ 的系数分别为 $\langle v_h, v_i \rangle$ 和 $\langle v_i, v_j \rangle$，它们之间有共同项 $v_i$。也就是说，所有包含“ $x_i$ 的非零组合特征”（存在某个 $j \ne i$，使得 $x_i x_j \ne 0$ ）的样本都可以用来学习隐向量 $v_i$，这很大程度上避免了数据稀疏性造成的影响。而在多项式模型中，$w_{hi}$ 和 $w_{ij}$ 是相互独立的。</p>
+<p><strong>数学角度看差异</strong></p>
+<p>接下来，我们从数学的角度看看(1)和(2)的主要区别在哪里，对于交叉项 $x_i x_j$ 的系数，前者用的是 $w_{ij}$，后者用的是 $\hat w_{ij}$ ，为了能够更好的说明，我们引入几个矩阵。</p>
+<p><img src="/images/fm/matrix.png" alt="交互矩阵和差异"></p>
+<p>由此可见，(1) 和 (2)分别采用了交互矩阵 $W$ 和$\hat W$的非对角线元素作为$w_ix_j$的系数.由于$\hat W = VV^T$对应于一种<strong>矩阵分解</strong>,因此,我们将这种以(2)作为模型的方法称为 <strong>Factorization Machine</strong>.</p>
+<p>这里，我们需要补充一个条件 “当k足够大的时候，对于任意对称正定的实矩阵 $\hat W \in R^{n \times k}$，会使得 $\hat W=VV^T$ 成立.</p>
+<h3 id="因子分解机的复杂度分析"><a href="#因子分解机的复杂度分析" class="headerlink" title="因子分解机的复杂度分析"></a>因子分解机的复杂度分析</h3><p>自然，$(2)$是一个通用的拟合方程，我们可以采用不同的损失函数【我们用来对结果进行判断的函数】用于解决回归、二元分类等问题，比如：</p>
+<p>1、 采用MSE（Mean Square Error）损失函数来求解回归问题，</p>
+<p>2、 采用Hinge/Cross-Entropy损失来求解分类问题。</p>
+<p>看得出来(2)的时间复杂度是$O(kn^2)$。但是，有意思的是我们通过使用一个trick，可以把时间减到$O(kn)$，具体细节证明如下，详情可以看论文$^{[3]}$</p>
+<p><img src="/images/fm/proof.png" alt="proof"></p>
+<p>由此可见，FM可以在线性时间对新样本作出预测。</p>
+<p>$\sum_{i=1}^n \sum_{j=i+1}^n \langle \mathbf{v}_i, \mathbf{v}_j \rangle x_i x_j = \frac{1}{2} \sum_{f=1}^k \left(\left( \sum_{i=1}^n v_{i, f} x_i \right)^2 - \sum_{i=1}^n v_{i, f}^2 x_i^2 \right)$</p>
+<p>我们再来看一下FM的训练复杂度，利用SGD（Stochastic Gradient Descent）训练模型。模型各个参数的梯度如下</p>
+<p>$$\frac{\partial}{\partial\theta} y (\mathbf{x}) = \left{\begin{array}{ll} 1, &amp; \text{if}\; \theta\; \text{is}\; w_0 \ x_i,         &amp; \text{if}\; \theta\; \text{is}\; w_i \ x_i \sum_{j=1}^n v_{j, f} x_j - v_{i, f} x_i^2,  &amp; \text{if}\; \theta\; \text{is}\; v_{i, f} \end{array}\right.$$</p>
+<p>其中$v_{j,f}$是隐向量$V_j$的第$f$个元素。由于$\sum_{j=1}^nv_{j,f}x_j$只与$f$有关，而与$i$无关，在每次迭代的过程中，只需要计算一次所有$f$的$\sum_{j=1}^nv_{j,f}x_j$就能够得到所有$v_{j,f}$的梯度。显然，计算所有$f$的$\sum_{j=1}^nv_{j,f}x_j$的复杂度是$O(kn)$；已知$\sum_{j=1}^nv_{j,f}x_j$时，计算每个参数梯度的复杂度时$O(1)$；得到梯度后，更新每个参数的复杂度为$O(1)$；模型参数一共有$nk + n + 1$个。因此，FM参数训练的复杂度也是$O(kn)$。综上可知，FM可以在线性时间训练和预测，是一种非常高效的模型。</p>
+<h2 id="因子分解机有什么用？"><a href="#因子分解机有什么用？" class="headerlink" title="因子分解机有什么用？"></a>因子分解机有什么用？</h2><p>1、 FM和矩阵分解</p>
+<p><img src="/images/fm/mfcf.png" alt="mfcf"></p>
+<p>在推荐系统中，我们经常使用的就是基于矩阵分解的协同过滤$^{[4]}$，我们会使用到 user 对 Item 的评分，但是由于 user 和 item 的数量非常多，但是 user 对 item 打分的个数却十分稀少。基于矩阵分解的协同过滤就是用来预测 user 对那些没有过消费记录的 item 的打分行为，以及打多少分。实际上可以看成一个评分预测的问题。矩阵分解的方法假设 user 对 item 的打分 $\hat r_{ui}$ 由下式决定：</p>
+<p>$$\hat r_{ui} = q_i^Tp_u + \mu + b_i + b_u$$</p>
+<p>其中，$q_i$ 是第 $i$ 个 item 所对应的隐向量，$p_u$ 是第 $u$ 个 user 所对应的隐向量，$b_i$ 代表 item 的偏差，解释了商品本身的冷门、热门程度。 $b_u$ 代表了 user 的偏差，解释了用户本身的打分偏好，$\mu$ 是常数。也就是将评分矩阵分解为 user 矩阵、 Item 矩阵的乘积再加上线性项和常数项，且这两个矩阵都是低秩的。并且这些参数可以通过最小化经验误差得到:</p>
+<p>$$\min_{p,q,b} \sum_{u,i \in K}(r_{ui} - \hat r_{ui})^2 + \lambda(||p_u||^2 + ||q_i||^2 + b_u^2 + b_i^2)$$</p>
+<p>从上面的叙述来看，FM的二阶矩阵也使用了矩阵分解的技巧，那么基于矩阵分解的协同过滤和FM有什么关系呢？</p>
+<p>以 user 对 item 的评分预测问题为例，<strong>基于矩阵分解的协同过滤可以看成是FM的一个特殊例子</strong>。</p>
+<p>在协同过滤中，对于每一个样本，FM可以将其看作特征只有 userid 和 itemid。 </p>
+<p>但是在实际FM中，我们的每个样本，可以有除了 userid, itemid 之外的很多特征组合而成。能够学到更多的组合模式。</p>
+<p>2、 FM和神经网络</p>
+<p>神经网络天然地难以直接处理高维稀疏的离散特征，因为这将导致神经元的连接参数太多。但是低维嵌入（embedding）技巧可以解决这个问题，词的分布式表达就是一个很好的例子。<strong>事实上 FM就可以看做对高维稀疏的离散特征做 embedding</strong>。</p>
+<p>上面举的例子其实也可以看做将每一个 user 和每一个 item 嵌入到一个低维连续的 embedding 空间中，然后在这个 embedding 空间中比较 user 和 item 的相似性来学习 user 对 item 的偏好。</p>
+<p>这跟 word2vec$^{[8]}$词向量学习类似，word2vec 将词 embedding 到一个低维连续空间，词的相似性通过两个词向量的相似性来度量。神经网络对稀疏离散特征做 embedding 后，可以做更复杂的非线性变换，具有比FM更大的潜力学习到更深层的非线性关系！基于这个思想，2016年，Google提出 wide and deep 模型用作 Google Play的app推荐$^{[9]}$它利用神经网络做离散特征和连续特征之间的交叉，神经网络的输出和人工组合较低维度的离散特征一起预测，并且采用端到端的学习，联合优化DNN和LR。如图所示，Catergorial 特征 embedding 到低维连续空间，并和连续特征拼接，构成了1200维的向量，作为神经网络的输入，神经网络采用三隐层结构，激活函数都是采用 ReLU，最后一层神经元的输出$a^{(lf)}$和离散特征$X$及人工叉积变换后的特征$\phi(\mathbf{x})$,一起预测</p>
+<p>$$P(Y=1|\mathbf{x}) = \sigma\left(\mathbf{w}<em>{wide}^T[\mathbf{x}; \phi(\mathbf{x})] + \mathbf{w}</em>{deep}^T a^{(lf)} + b \right)$$</p>
+<p><img src="/images/fm/nn-fm.png" alt="wide and deep"></p>
+<p>注意到，在 wide and deep 模型中，wide 部分是通过对用户安装过的 APP id 和用户 Impression App id 做叉积变换，解决 embedding 的过泛化问题。 所谓的过泛化，实际上是因为用户的偏好本身就很集中，即使相似的一些 item，用户也只偏好其中一部分，使得 query-item 矩阵稀疏但是高秩。 <strong>而这些信息实际上已经反映在用户已有的行为当中了，因此可以利用这部分信息，单独建立wide部分，解决deep部分的过泛化。</strong></p>
+<p>从另一个角度来看，wide 和 deep 部分分别在学习不同阶的特征交叉，deep 部分学到高阶交叉，而 wide 部分学到的是二阶交叉。 后来，有人用FM替换了这里wide部分的二阶交叉，使得模型对高度稀疏的特征的建模更加有效，因为高度稀疏特征简单的叉积变换也难以有效地学到二阶交叉， 这在前面已经叙述过了。因此，很自然的想法就是，用FM替换这里的二阶交叉，得到DeepFM模型$^{[10]}$</p>
+<p><img src="/images/fm/deepfm.png" alt="deepfm"></p>
+<p>事实上，对于连续特征和非高度稀疏特征的高阶交叉，决策树似乎更加擅长。因此，很自然的想法是将GBDT也加到模型中。 但是问题是，决策树的优化方法和神经网络之类的不兼容，因此无法直接端到端学习。一种解决方案是，利用Boost融合的方案， 将神经网络、FM、LR当做一个模型，先训练一个初步模型，然后在残差方向上建立GBDT模型，实现融合。 微软的一篇文献$^{[10]}$也证实，Boost方式融合DNN和GBDT方案相比其他融合方案更优，因此这也不失为一种可行的探索方向！</p>
+<h2 id="如何实现因子分解机？"><a href="#如何实现因子分解机？" class="headerlink" title="如何实现因子分解机？"></a>如何实现因子分解机？</h2><p>在我们动手写代码之前，我们先考虑API，我们需要哪里API，才能构成一个完整的Factorization Machine呢？</p>
+<p>FM主要处理以下三种问题:</p>
+<ul>
+<li><p>回归问题(Regression)</p>
+</li>
+<li><p>二分类问题(Binary Classification)</p>
+</li>
+<li><p>排序(Ranking)</p>
+</li>
+</ul>
+<p>这里，我们主要介绍二分类问题。</p>
+<p>二分类问题的loss function为：</p>
+<p>$$loss(\hat y , y) = \sum_{i=1}^m-ln \sigma{(\hat y , y)}$$</p>
+<p>其中</p>
+<p>$$\sigma(x) = \frac{1}{1 + e^{-x}}$$</p>
+<p>使用基于随机梯度的方式求解：</p>
+<p>我们可以设计API如下：</p>
+<pre><code>loadDataSet(data):
+
+    &apos;&apos;&apos;导入训练数据
+    input:  data(string)训练数据
+    output: dataMat(list)特征
+            labelMat(list)标签
+    &apos;&apos;&apos;
+
+
+sigmoid(inx):
+
+    &apos;&apos;&apos; sigmoid 函数
+    &apos;&apos;&apos;
+
+initialize_v(n, k):
+
+    &apos;&apos;&apos;初始化交叉项
+    input:  n(int)特征的个数
+            k(int)FM模型的超参数
+    output: v(mat):交叉项的系数权重
+    &apos;&apos;&apos;
+
+
+stocGradAscent(dataMatrix, classLabels, k, max_iter, alpha):
+
+    &apos;&apos;&apos;利用随机梯度下降法训练FM模型
+    input:  dataMatrix(mat)特征
+            classLabels(mat)标签
+            k(int)v的维数
+            max_iter(int)最大迭代次数
+            alpha(float)学习率
+    output: w0(float),w(mat),v(mat):权重
+    &apos;&apos;&apos;
+
+getCost(predict, classLabels):
+
+    &apos;&apos;&apos;计算预测准确性
+    input:  predict(list)预测值
+            classLabels(list)标签
+    output: error(float)计算损失函数的值
+    &apos;&apos;&apos;
+
+
+
+getPrediction(dataMatrix, w0, w, v):
+
+    &apos;&apos;&apos;得到预测值
+    input:  dataMatrix(mat)特征
+            w(int)常数项权重
+            w0(int)一次项权重
+            v(float)交叉项权重
+    output: result(list)预测的结果
+    &apos;&apos;&apos;
+
+
+getAccuracy(predict, classLabels):
+
+    &apos;&apos;&apos;计算预测准确性
+    input:  predict(list)预测值
+            classLabels(list)标签
+    output: float(error) / allItem(float)错误率
+    &apos;&apos;&apos;
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> random <span class="keyword">import</span> normalvariate <span class="comment"># 使用正态分布进行初始化</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loadDataSet</span><span class="params">(path)</span>:</span></span><br><span class="line">    <span class="string">'''导入训练数据</span></span><br><span class="line"><span class="string">    input:  path(string)训练数据</span></span><br><span class="line"><span class="string">    output: dataMat(list)特征</span></span><br><span class="line"><span class="string">            labelMat(list)标签</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    dataMat = []</span><br><span class="line">    labelMat = []</span><br><span class="line">    <span class="keyword">with</span> open(path, <span class="string">'r'</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> f.readlines():</span><br><span class="line">            line_list = line.strip().split(<span class="string">"\t"</span>)</span><br><span class="line">            temp_list = []</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(len(line_list) - <span class="number">1</span>):</span><br><span class="line">                temp_list.append(float(line_list[i]))</span><br><span class="line">            dataMat.append(temp_list)</span><br><span class="line">            labelMat.append(float(line_list[<span class="number">-1</span>]) * <span class="number">2</span> - <span class="number">1</span>) <span class="comment"># 把结果变成 -1. +1 两种。</span></span><br><span class="line">    <span class="keyword">return</span> dataMat, labelMat</span><br><span class="line">  </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span><span class="params">(inx)</span>:</span></span><br><span class="line">    <span class="string">''' sigmoid 函数</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1.0</span> / (<span class="number">1</span> + np.exp(-inx))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">initialize_v</span><span class="params">(n, k)</span>:</span></span><br><span class="line">    <span class="string">'''初始化交叉项</span></span><br><span class="line"><span class="string">    input:  n(int)特征的个数</span></span><br><span class="line"><span class="string">            k(int)FM模型的超参数</span></span><br><span class="line"><span class="string">    output: v(mat):交叉项的系数权重</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    v = np.mat(np.zeros((n, k))) <span class="comment"># np.mat变成matrix形式</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(k):</span><br><span class="line">            v[i, j] = normalvariate(<span class="number">0</span> , <span class="number">0.2</span>)</span><br><span class="line">    <span class="keyword">return</span> v</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getCost</span><span class="params">(predict, classLabels)</span>:</span></span><br><span class="line">    <span class="string">'''计算预测准确性</span></span><br><span class="line"><span class="string">    input:  predict(list)预测值</span></span><br><span class="line"><span class="string">            classLabels(list)标签</span></span><br><span class="line"><span class="string">    output: error(float)计算损失函数的值</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    m = len(predict)</span><br><span class="line">    error = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">        error -= np.log(sigmoid(predict[i] * classLabels[i]))</span><br><span class="line">    <span class="keyword">return</span> error</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getPrediction</span><span class="params">(dataMatrix, w0, w, v)</span>:</span></span><br><span class="line">    <span class="string">'''得到预测值</span></span><br><span class="line"><span class="string">    input:  dataMatrix(mat)特征</span></span><br><span class="line"><span class="string">            w(int)常数项权重</span></span><br><span class="line"><span class="string">            w0(mat)一次项权重</span></span><br><span class="line"><span class="string">            v(mat)交叉项权重</span></span><br><span class="line"><span class="string">    output: result(list)预测的结果</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    m = dataMatrix.shape[<span class="number">0</span>]</span><br><span class="line">    reslut = []</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> range(m):</span><br><span class="line">        inter_1 = inter_1 = dataMatrix[x] * v</span><br><span class="line">        inter_2 = np.multiply(dataMatrix[x], dataMatrix[x]) * np.multiply(v, v)</span><br><span class="line">        interaction = np.sum(np.multiply(inter_1, inter_1) - inter_2) / <span class="number">2.</span></span><br><span class="line">        y_hat = w0 + dataMatrix[x] * w + interaction</span><br><span class="line">        pre = sigmoid(y_hat[<span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">        reslut.append(pre)</span><br><span class="line">    <span class="keyword">return</span> reslut</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stocGradAscent</span><span class="params">(dataMatrix, classLabels, k, max_iter, alpha)</span>:</span></span><br><span class="line">    <span class="string">'''利用随机梯度下降法训练FM模型</span></span><br><span class="line"><span class="string">    input:  dataMatrix(mat)特征</span></span><br><span class="line"><span class="string">            classLabels(mat)标签</span></span><br><span class="line"><span class="string">            k(int)v的维数</span></span><br><span class="line"><span class="string">            max_iter(int)最大迭代次数</span></span><br><span class="line"><span class="string">            alpha(float)学习率</span></span><br><span class="line"><span class="string">    output: w0(float),w(mat),v(mat):权重</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    m, n = np.shape(dataMatrix)</span><br><span class="line">    <span class="comment"># 1、参数初始化</span></span><br><span class="line">    w = np.zeros((n, <span class="number">1</span>)) <span class="comment"># 这就是一次项w</span></span><br><span class="line">    w0 = <span class="number">0</span> <span class="comment"># 常数项</span></span><br><span class="line">    v = initialize_v(n, k) <span class="comment"># 交叉项</span></span><br><span class="line">    <span class="comment"># 开始进行迭代训练</span></span><br><span class="line">    <span class="keyword">for</span> it <span class="keyword">in</span> range(max_iter): </span><br><span class="line">        <span class="keyword">for</span> x <span class="keyword">in</span> range(m): <span class="comment"># 开始优化，每个样本都要过一次</span></span><br><span class="line">            inter_1 = dataMatrix[x] * v</span><br><span class="line">            inter_2 = np.multiply(dataMatrix[x], dataMatrix[x]) * np.multiply(v, v)</span><br><span class="line">            <span class="comment"># 完成交叉项的计算</span></span><br><span class="line">            interaction = np.sum(np.multiply(inter_1, inter_1) - inter_2) / <span class="number">2.</span></span><br><span class="line">            <span class="comment"># 计算出预测的输出,是一个常数</span></span><br><span class="line">            y_hat = w0 + dataMatrix[x] * w + interaction</span><br><span class="line">            <span class="comment"># 计算损失</span></span><br><span class="line">            loss = sigmoid(y_hat[<span class="number">0</span>, <span class="number">0</span>] * classLabels[x]) - <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 更新 常数项 w0</span></span><br><span class="line">            w0 = w0 - alpha * loss * classLabels[x]</span><br><span class="line">            <span class="comment"># 更新 w 和 v</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">                w[i, <span class="number">0</span>] = w[i, <span class="number">0</span>] - alpha * loss * classLabels[x] * dataMatrix[x, i]</span><br><span class="line">                </span><br><span class="line">                <span class="comment"># 更新v</span></span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> range(k):</span><br><span class="line">                    v[i, j] = v[i, j] - alpha * loss * classLabels[x] * \</span><br><span class="line">                    (dataMatrix[x, i] * inter_1[<span class="number">0</span>, j] -  v[i, j] * dataMatrix[x, i] * dataMatrix[x, i])</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 计算损失函数的值</span></span><br><span class="line">        <span class="keyword">if</span> it % <span class="number">1000</span> == <span class="number">0</span>:</span><br><span class="line">            print(<span class="string">"\t------- iter: "</span>, it, <span class="string">" , cost: "</span>, getCost(getPrediction(np.mat(dataTrain), w0, w, v), classLabels))</span><br><span class="line">    <span class="comment"># 把模型的参数返回</span></span><br><span class="line">    <span class="keyword">return</span> w0, w, v</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getAccuracy</span><span class="params">(predict, classLabels)</span>:</span></span><br><span class="line">    <span class="string">'''计算预测准确性</span></span><br><span class="line"><span class="string">    input:  predict(list)预测值</span></span><br><span class="line"><span class="string">            classLabels(list)标签</span></span><br><span class="line"><span class="string">    output: float(error) / allItem(float)错误率</span></span><br><span class="line"><span class="string">    '''</span></span><br><span class="line">    m = len(predict)</span><br><span class="line">    allItem = <span class="number">0</span></span><br><span class="line">    error = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">        allItem += <span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> float(predict[i]) &lt; <span class="number">0.5</span> <span class="keyword">and</span> classLabels[i] == <span class="number">1.0</span>:</span><br><span class="line">            error += <span class="number">1</span></span><br><span class="line">        <span class="keyword">elif</span> float(predict[i]) &gt;= <span class="number">0.5</span> <span class="keyword">and</span> classLabels[i] == <span class="number">-1.0</span>:</span><br><span class="line">            error += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">return</span> float(error) / allItem</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:  </span><br><span class="line">    print(<span class="string">"---------- 1.load data ---------"</span>)</span><br><span class="line">    dataTrain, labelTrain = loadDataSet(<span class="string">"data.txt"</span>)</span><br><span class="line">    print(<span class="string">"---------- 2.learning ---------"</span>)</span><br><span class="line">    <span class="comment"># 2、利用随机梯度训练FM模型</span></span><br><span class="line">    w0, w, v = stocGradAscent(np.mat(dataTrain), labelTrain, <span class="number">3</span>, <span class="number">10000</span>, <span class="number">0.01</span>)</span><br><span class="line">    predict_result = getPrediction(np.mat(dataTrain), w0, w, v)  <span class="comment"># 得到训练的准确性</span></span><br><span class="line">    print(<span class="string">"----------training accuracy: %f"</span> % (<span class="number">1</span> - getAccuracy(predict_result, labelTrain)))</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>———- 1.load data ———</p>
+</blockquote>
+<blockquote>
+<p>———- 2.learning ———</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  0  , cost:  158.937545578</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  1000  , cost:  111.918235669</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  2000  , cost:  108.236920062</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  3000  , cost:  106.763275985</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  4000  , cost:  105.815190198</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  5000  , cost:  105.116731734</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  6000  , cost:  104.581618271</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  7000  , cost:  104.161136945</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  8000  , cost:  103.822237844</p>
+</blockquote>
+<blockquote>
+<p>   ——- iter:  9000  , cost:  103.542542809</p>
+</blockquote>
+<blockquote>
+<p>———-training accuracy: 0.990000</p>
+</blockquote>
+<p><a href="/download/data.txt">训练数据下载</a></p>
+<p><a href="/download/test_data.txt">测试数据下载</a></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="http://www.algo.uni-konstanz.de/members/rendle/pdf/Rendle2010FM.pdf" target="_blank" rel="noopener">http://www.algo.uni-konstanz.de/members/rendle/pdf/Rendle2010FM.pdf</a></p>
+<p>[2] <a href="http://www.cs.cmu.edu/~wcohen/10-605/2015-guest-lecture/FM.pdf" target="_blank" rel="noopener">http://www.cs.cmu.edu/~wcohen/10-605/2015-guest-lecture/FM.pdf</a></p>
+<p>[3] <a href="http://www.algo.uni-konstanz.de/members/rendle/pdf/Rendle2010FM.pdf" target="_blank" rel="noopener">http://www.algo.uni-konstanz.de/members/rendle/pdf/Rendle2010FM.pdf</a></p>
+<p>[4] Koren Y, Bell R M, Volinsky C, et al. Matrix Factorization Techniques for Recommender Systems[J]. IEEE Computer, 2009, 42(8): 30-37.</p>
+<p>[5] <a href="https://tracholar.github.io/machine-learning/2017/03/10/factorization-machine.html#fm与矩阵分解" target="_blank" rel="noopener">https://tracholar.github.io/machine-learning/2017/03/10/factorization-machine.html#fm与矩阵分解</a></p>
+<p>[6] <a href="http://www.cnblogs.com/pinard/p/6370127.html" target="_blank" rel="noopener">http://www.cnblogs.com/pinard/p/6370127.html</a></p>
+<p>[7] <a href="https://tech.meituan.com/deep-understanding-of-ffm-principles-and-practices.html" target="_blank" rel="noopener">https://tech.meituan.com/deep-understanding-of-ffm-principles-and-practices.html</a></p>
+<p>[8] Mikolov T, Sutskever I, Chen K, et al. Distributed representations of words and phrases and their compositionality[C]. neural information processing systems, 2013: 3111-3119.</p>
+<p>[9] Guo H, Tang R, Ye Y, et al. DeepFM: A Factorization-Machine based Neural Network for CTR Prediction[J]. arXiv preprint arXiv:1703.04247, 2017.</p>
+<p>[10] Ling X, Deng W, Gu C, et al. Model Ensemble for Click Prediction in Bing Search Ads[C]//Proceedings of the 26th International Conference on World Wide Web Companion. International World Wide Web Conferences Steering Committee, 2017: 689-698.</p>
+<p>[11] <a href="http://blog.csdn.net/google19890102/article/details/45532745" target="_blank" rel="noopener">http://blog.csdn.net/google19890102/article/details/45532745</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/FM/" rel="tag"># FM</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/推荐系统/" rel="tag"># 推荐系统</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/03/python-socket-编程/" rel="next" title="python socket 编程">
+                <i class="fa fa-chevron-left"></i> python socket 编程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/28/《IRGAN》阅读笔记/" rel="prev" title="《IRGAN》阅读笔记">
+                《IRGAN》阅读笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#因子分解机的基础和进阶"><span class="nav-number">1.</span> <span class="nav-text">因子分解机的基础和进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是因子分解机？"><span class="nav-number">1.1.</span> <span class="nav-text">什么是因子分解机？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#因子分解机的定义-Define"><span class="nav-number">1.1.1.</span> <span class="nav-text">因子分解机的定义 (Define)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#因子分解机的复杂度分析"><span class="nav-number">1.1.2.</span> <span class="nav-text">因子分解机的复杂度分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#因子分解机有什么用？"><span class="nav-number">1.2.</span> <span class="nav-text">因子分解机有什么用？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何实现因子分解机？"><span class="nav-number">1.3.</span> <span class="nav-text">如何实现因子分解机？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">1.4.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

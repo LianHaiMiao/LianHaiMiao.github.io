@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="GFS," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="理解Google File SystemGoogle的服务具有的特性是需要用到大数据，而且要面向全球用户提供实时服务，具有这样两个要求的服务，使得google需要大量的分布式机器，而且这些机器还必须能够实时被查询到。 于是，google在以往分布式文件系统的基础上，进行了创新。得到了 GFS（Google File System），它可以运行于廉价的普通硬件上，并提供容错功能。它还可以给大量的用户">
+<meta name="keywords" content="GFS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解Google File System">
+<meta property="og:url" content="http://yoursite.com/2018/03/10/理解Google-File-System/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="理解Google File SystemGoogle的服务具有的特性是需要用到大数据，而且要面向全球用户提供实时服务，具有这样两个要求的服务，使得google需要大量的分布式机器，而且这些机器还必须能够实时被查询到。 于是，google在以往分布式文件系统的基础上，进行了创新。得到了 GFS（Google File System），它可以运行于廉价的普通硬件上，并提供容错功能。它还可以给大量的用户">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/GFS/gfs_sys_arch.png">
+<meta property="og:updated_time" content="2018-04-10T12:21:16.909Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解Google File System">
+<meta name="twitter:description" content="理解Google File SystemGoogle的服务具有的特性是需要用到大数据，而且要面向全球用户提供实时服务，具有这样两个要求的服务，使得google需要大量的分布式机器，而且这些机器还必须能够实时被查询到。 于是，google在以往分布式文件系统的基础上，进行了创新。得到了 GFS（Google File System），它可以运行于廉价的普通硬件上，并提供容错功能。它还可以给大量的用户">
+<meta name="twitter:image" content="http://yoursite.com/images/GFS/gfs_sys_arch.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/10/理解Google-File-System/"/>
+
+
+
+
+
+  <title>理解Google File System | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/10/理解Google-File-System/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">理解Google File System</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-10T15:48:56+08:00">
+                2018-03-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/云计算/" itemprop="url" rel="index">
+                    <span itemprop="name">云计算</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="理解Google-File-System"><a href="#理解Google-File-System" class="headerlink" title="理解Google File System"></a>理解Google File System</h1><p>Google的服务具有的特性是<strong>需要用到大数据</strong>，而且要面向全球用户<strong>提供实时服务</strong>，具有这样两个要求的服务，使得google需要大量的分布式机器，而且这些机器还必须能够实时被查询到。</p>
+<p>于是，google在以往分布式文件系统的基础上，进行了创新。得到了 GFS（Google File System），它可以运行于廉价的普通硬件上，并提供容错功能。它还可以给大量的用户提供总体性能较高的服务。</p>
+<a id="more"></a>
+<h2 id="1-1-系统架构"><a href="#1-1-系统架构" class="headerlink" title="1.1 系统架构"></a>1.1 系统架构</h2><p>以往的分布式系统，是没有中心节点的，但是在 GFS 中，我们将 Metadata（元数据，可以理解为控制信息）保存在 Master节点中，将用户需要的数据保存在 Chuck Sever 中， 这样我们可以方便的从 Master 中得知各个  Chuck Sever 的运行情况，同时 Master 不会成为制约这个系统的瓶颈，而且我们可以使用廉价的普通硬件作为 Chuck Sever 一举多得。</p>
+<p><img src="/images/GFS/gfs_sys_arch.png" alt="GFS system architecture"></p>
+<p>如果所示：</p>
+<p>GFS将整个系统节点分为三类角色</p>
+<ul>
+<li>client（客户端） GFS提供给应用程序的访问接口</li>
+<li>Master（主服务器） GFS的管理节点，也就是主节点，负责管理整个文件系统</li>
+<li>Chuck Sever（数据块服务器）  负责具体的数据存储工作</li>
+</ul>
+<h3 id="1-1-1-GFS的实现机制"><a href="#1-1-1-GFS的实现机制" class="headerlink" title="1.1.1 GFS的实现机制"></a>1.1.1 GFS的实现机制</h3><ul>
+<li>client 首先访问 Master节点，从 Master 那里知道，自己应该去那些 Chuck Sever 那里去读取、写入数据，然后 client 再访问这个 Chuck Sever 去完成数据读写的工作。<strong>这样的设计方法实现了控制流和数据流的分离</strong></li>
+<li>clinet 和 Master 之间<strong>只有控制流，没有数据流</strong>，这样就极大的减轻了 Master 的负担。</li>
+<li>client 和 Chuck Sever 之间直接传输数据流，同时由于文件被分成多个 Chuck 进行分布式存储， client 可以同时访问多个 Chuck Sever 从而使得<strong>整个系统的 I/O 高度并行，系统整体性能得到提升</strong>。</li>
+</ul>
+<h3 id="1-1-2-GFS的特点"><a href="#1-1-2-GFS的特点" class="headerlink" title="1.1.2 GFS的特点"></a>1.1.2 GFS的特点</h3><ol>
+<li><strong>采用中心服务器模型</strong><ul>
+<li>可以方便地增加 Chuck Sever</li>
+<li>Master 可以掌握系统内所有 Chuck Sever 的情况，方便进行负载均衡。</li>
+<li>不存在元数据的一致性问题 （解释一下，元数据就是存储在 Master 中的信息，一个系统内部会有多个 Master，这些 Master 可以看作彼此的备份。）</li>
+</ul>
+</li>
+<li><strong>不缓存数据</strong><ul>
+<li>文件操作大部分是流式读写，不存在大量重复读写，使用 Cache 对性能提高不大。</li>
+<li>Chuck Sever 上数据存取使用本地文件系统，不用Cache 就不需要考虑缓存一致性的问题。</li>
+<li>但是 Master 中的 metadata（元数据） 会缓存。</li>
+</ul>
+</li>
+<li><strong>在用户态下实现</strong><ul>
+<li>利用 POSIX 编程接口，提高了通用性。</li>
+<li>Master 和 Chuck Sever 都以进程的方式运行，单个进行不影响整个操作系统。</li>
+<li>GFS和操作系统运行在不同的空间，两者耦合性降低。</li>
+</ul>
+</li>
+</ol>
+<h2 id="1-2-容错机制"><a href="#1-2-容错机制" class="headerlink" title="1.2 容错机制"></a>1.2 容错机制</h2><h3 id="1-2-1-Master-容错"><a href="#1-2-1-Master-容错" class="headerlink" title="1.2.1 Master 容错"></a>1.2.1 Master 容错</h3><p>Master维护文件系统所有的元数据（metadata），包括名字空间、访问控制信息、从文件到块的映射以及块的当前位置。</p>
+<p>另外，每个 Chuck Sever 上都会保存 Chuck 副本的信息，每个 Chuck 默认有三个副本，这样当某个 Chuck 坏了之后，不会影响 Chuck 数据的读取。</p>
+<p>当 Master 发生故障时，在磁盘数据保存完好的情况下，可以快速的恢复所有的 metadata。并且为了防止 Master 彻底死机的情况， GFS 还提供了 Master 的远程备份。</p>
+<h3 id="1-2-2-Chuck-Sever-容错"><a href="#1-2-2-Chuck-Sever-容错" class="headerlink" title="1.2.2 Chuck Sever 容错"></a>1.2.2 Chuck Sever 容错</h3><ul>
+<li>GFS采用副本的方式实现Chunk Server的容错</li>
+<li>每一个Chunk有多个存储副本（默认为三个）</li>
+<li>对于每一个Chunk，必须将所有的副本全部写入成功，才视为成功写入</li>
+<li>相关的副本出现丢失或不可恢复等情况，Master自动将该副本复制到其他 Chunk Server</li>
+<li>GFS中的每一个文件被划分成多个Chunk，Chunk的默认大小是64MB</li>
+<li>每一个Chunk以Block为单位进行划分，大小为64KB，每一个Block对应一个 32bit 的校验和</li>
+</ul>
+<h2 id="1-3-系统管理技术"><a href="#1-3-系统管理技术" class="headerlink" title="1.3 系统管理技术"></a>1.3 系统管理技术</h2><p><strong>大规模集群安装技术</strong></p>
+<blockquote>
+<p>GFS集群中通常有非常多的节点，需要相应的技术支撑</p>
+</blockquote>
+<p><strong>故障检测技术</strong></p>
+<blockquote>
+<p>GFS构建在不可靠廉价计算机之上的文件系统，由于节点数目众多，故障发生十分频繁</p>
+</blockquote>
+<p><strong>节点动态加入技术</strong></p>
+<blockquote>
+<p>新的 Chunk Server加入时 ，只需裸机加入，大大减少GFS维护工作量</p>
+</blockquote>
+<p><strong>节能技术</strong></p>
+<blockquote>
+<p>Google采用了多种机制降低服务器能耗，如采用蓄电池代替昂贵的UPS</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/GFS/" rel="tag"># GFS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/01/ubuntu上运行Angular程序/" rel="next" title="ubuntu上运行Angular程序">
+                <i class="fa fa-chevron-left"></i> ubuntu上运行Angular程序
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/10/分布式数据处理——MapReduce/" rel="prev" title="分布式数据处理——MapReduce">
+                分布式数据处理——MapReduce <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#理解Google-File-System"><span class="nav-number">1.</span> <span class="nav-text">理解Google File System</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-系统架构"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 系统架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-GFS的实现机制"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1 GFS的实现机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-GFS的特点"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.1.2 GFS的特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-容错机制"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 容错机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-1-Master-容错"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.2.1 Master 容错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-2-Chuck-Sever-容错"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2.2 Chuck Sever 容错</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-系统管理技术"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 系统管理技术</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

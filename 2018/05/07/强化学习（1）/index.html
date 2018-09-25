@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="强化学习," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Udacity《Reinforcement Learning》课程中内容的笔记">
+<meta name="keywords" content="强化学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强化学习（1）">
+<meta property="og:url" content="http://yoursite.com/2018/05/07/强化学习（1）/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Udacity《Reinforcement Learning》课程中内容的笔记">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/RL/1/example.jpg">
+<meta property="og:image" content="http://yoursite.com/images/RL/1/reward_exam.jpg">
+<meta property="og:image" content="http://yoursite.com/images/RL/1/sep_exam.jpg">
+<meta property="og:image" content="http://yoursite.com/images/RL/1/pollicy_exam.png">
+<meta property="og:image" content="http://yoursite.com/images/RL/1/CVQ.jpg">
+<meta property="og:updated_time" content="2018-05-10T02:55:10.198Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="强化学习（1）">
+<meta name="twitter:description" content="Udacity《Reinforcement Learning》课程中内容的笔记">
+<meta name="twitter:image" content="http://yoursite.com/images/RL/1/example.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/07/强化学习（1）/"/>
+
+
+
+
+
+  <title>强化学习（1） | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/07/强化学习（1）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">强化学习（1）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-07T14:48:47+08:00">
+                2018-05-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/强化学习/" itemprop="url" rel="index">
+                    <span itemprop="name">强化学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Udacity《Reinforcement Learning》课程中内容的笔记</p>
+<a id="more"></a>
+<h1 id="强化学习-1"><a href="#强化学习-1" class="headerlink" title="强化学习 (1)"></a>强化学习 (1)</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p><img src="/images/RL/1/example.jpg" alt="例子"></p>
+<p>对于上图，你需要找到一条从 <em>start</em> 到 <em>goal</em> 的路径，其中黑色的线条和方格分别是墙和陷阱，你可以选择什么样的路径？</p>
+<p>U, D, L and R for Up, Down, Left, and Right (respectively)</p>
+<blockquote>
+<p>很显然，一个比较简单的方法就是 UURRR </p>
+</blockquote>
+<p>现在，我们给出一个<strong>挑战</strong>，如果我们的 agent 行走的路线，并不会按照既定路线行走（也就是说它有 20% 的概率跑偏，比如我们要求它向上走，它有 80% 的几率向上走，也有 10% 的几率向左走，10% 的几率向右走） 。现在我们让这个 agent 按照路线 UURRR 去行走，它最终能走到 <em>goal</em> 的概率有多大？</p>
+<blockquote>
+<p>从 <em>start</em> 走到 <em>goal</em> 的情况有两种，第一种是，全部按照既定行程走，则最后的结果是 $0.8^5=0.32768$ ； 第二种是，前四个出错了，第五个对了，则最后的结果是 $0.1^4∗0.8=0.0008$。 所以总计： $0.32768 + 0.0008 = 0.32776$</p>
+</blockquote>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="与机器学习中概念对比"><a href="#与机器学习中概念对比" class="headerlink" title="与机器学习中概念对比"></a>与机器学习中概念对比</h3><ul>
+<li>监督学习：给定多组 $(x,y)$ 拟合出一个Loss 最低的 $f(x)$</li>
+<li>无监督学习: 给定多组 $x$ ,找到一组函数集可以联合描述 $x$ 的变化特性。</li>
+<li>强化学习：与监督学习相似，给定多组 $(x,y)$ ,同时一个抉择向量 $z$ 。强化学习可以称之为监督学习的扩展，扩展了一套<em>决策方案</em>而非单一的梯度下降。</li>
+</ul>
+<h3 id="强化学习的定义："><a href="#强化学习的定义：" class="headerlink" title="强化学习的定义："></a>强化学习的定义：</h3><ul>
+<li>提供了关于Decision Making在机器上的实现方案</li>
+<li>基于计算机尝试不按既定规则的权利</li>
+<li>通过 <em>奖励函数</em> 来使看似随机的函数行为变得可控</li>
+<li>通过 <em>延迟奖励</em> 使得决策注重整体，而非局部最优</li>
+<li>通过 <em>回滚决策</em> 对一系列决策进行判断，尝试寻找问题的所在</li>
+</ul>
+<p>延迟奖励：强化学习的驱动是每次按规则给每个状态丢到另一个状态。但具体这个决策好或者不好，只有在之后的特定条件时才会知道。比如下棋，当经过60步后你赢的了棋局。这时你才明白这60步的决策是好是坏。</p>
+<h2 id="强化学习中的核心概念：-Markov-Decision-Processes-（MDP）"><a href="#强化学习中的核心概念：-Markov-Decision-Processes-（MDP）" class="headerlink" title="强化学习中的核心概念： Markov Decision Processes （MDP）"></a>强化学习中的核心概念： Markov Decision Processes （MDP）</h2><blockquote>
+<p>the property of Markov is <strong>Only present matters!</strong></p>
+</blockquote>
+<p>STATES(状态): $S$</p>
+<p>ACTION(动作): $A(S)$, $A$</p>
+<p>MODEL(模型): $T(S, a, \acute{S}) \sim P_r (\acute{S} | S, a)$</p>
+<p>REWARD(奖励): $R(S)$, $R(S,a)$, $R(S,a,\acute{S})$</p>
+<p>——————————————</p>
+<p>POLICY(策略): $\pi (S) \to a$ </p>
+<blockquote>
+<p>状态就是用来描绘当前世界的环境的。 放在上面的例子中就是从 $(1, 1)$ 到 $(4, 3)$ 所组成的点的集合</p>
+</blockquote>
+<blockquote>
+<p>动作可以看成是状态的函数（因为有时候在某些状态下，有些动作是允许的，有些动作是不允许的），或者一组动作。 在上面的例子中就是 U, D, R, L 四个动作。</p>
+</blockquote>
+<blockquote>
+<p>模型描述的是<em>你正在进行的博弈的规则</em>。所以这个 function 具有三个变量 状态、动作、另一个状态。这个函数生成的是概率，也就是<em>你从状态 $S$ 采取动作 $a$ 转换到状态 $\acute{S}$ 的概率</em></p>
+</blockquote>
+<blockquote>
+<p>奖励在这里用了三个函数表示，它们的含义分别是：<em>进入一个状态下的奖励</em>、<em>进入一个状态下并采取某个动作获得的奖励</em>、<em>在当前状态下采取某个动作进入到另一个状态下获得的奖励</em>。</p>
+</blockquote>
+<blockquote>
+<p>策略告知了我们<em>在一个特定的状态中应该采取什么样的动作</em>。 Policy就像一个老师，<strong>如果这个 Policy是最优的，它就告诉了我们在什么状态下应该做什么事。</strong></p>
+</blockquote>
+<p>所以，一个 MDP 由 <strong>问题</strong> 和 <strong>策略</strong> 组成！</p>
+<p>STATES + ACTION + MODEL + REWARD = 问题</p>
+<p>POLICY = 策略</p>
+<blockquote>
+<p>MDP框架的核心是让程序关注在什么状态下，做什么比较好，是否会得到的奖励，所以，MDP的关键是奖励函数的设置，最终规则集合包含了一系列奖惩措施</p>
+</blockquote>
+<h3 id="奖励的重要性："><a href="#奖励的重要性：" class="headerlink" title="奖励的重要性："></a>奖励的重要性：</h3><p><img src="/images/RL/1/reward_exam.jpg" alt="奖励的例子"></p>
+<p>这是一个关于默认奖励不同的情况的两个例子，上面的区块默认奖励为+2，下面的默认奖励为-2。</p>
+<p>对于上面的而言，奖励为正值。为了能获得到更多的奖励，我们不能让程序进入停止游戏区间，最好的办法就是撞墙（不断的停留原地所以获得奖励）</p>
+<p>对于下面的区间，由于奖励为负值，我们需要尽快的离开游戏。右下角的方向为上的原因是，如果当前为其他方向，那么肯定会有至少一个-2出现在奖励序列里。所以最好的方法是：直接终止，取得那个-1的红色区间</p>
+<p>通过这个例子可以看出，当奖励函数不同，强化学习最后得到的规则集合也是截然不同的。</p>
+<p>所以，<strong>定义一个好的 reward 非常的重要</strong>！</p>
+<h2 id="偏向稳定性"><a href="#偏向稳定性" class="headerlink" title="偏向稳定性"></a>偏向稳定性</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><blockquote>
+<p>如果有两个时间序列 $A:s_0, s_1, s_2$ 与 $B:s_0, \acute{s_1}, \acute{s_2}$ ，如果 $A&gt;B$ 则 $A, B$ 的去掉相同元素的子序列$s_0$, 仍然满足$s_1, s_2 &gt; \acute{s_1}, \acute{s_2}$。我们称这种现象为<strong>偏向稳定性</strong>。</p>
+</blockquote>
+<h3 id="偏向稳定性与奖励序列"><a href="#偏向稳定性与奖励序列" class="headerlink" title="偏向稳定性与奖励序列"></a>偏向稳定性与奖励序列</h3><p>强化学习中，奖励是一个序列性的问题，也就是状态序列。学习的目的是希望最后能得到的总奖励最高。但请一定要注意时序的长短问题,即<em>时间长度是否无限</em>。 </p>
+<p><img src="/images/RL/1/sep_exam.jpg" alt="奖励序列"></p>
+<p>看上面的例子，如果问当上面情况一直重复时，哪个会更好？</p>
+<p>答案是：两者都一样</p>
+<p>因为，时间长度是无限，那么无论是上面的情况还是下面的情况，最终的结果都是 $+\infty$ 无法比较。</p>
+<p><strong>显然在无限时间内,讨论不受控制的没有负奖励的两个奖励序列的区别是无意义的</strong></p>
+<p>但是如上文单独讨论的一个序列的奖励大小也是无意义的。因为无穷大不是一个数。</p>
+<p>这时我们就需要对无限增长的正奖励一个界定空间，即折扣期望</p>
+<h3 id="折扣期望"><a href="#折扣期望" class="headerlink" title="折扣期望"></a>折扣期望</h3><p>对面上面例子，在无限情况下，奖励的期望(在奖励为正的情况下)应该是</p>
+<p>$$\sum_{t=0}^{\infty} R(S_t) = + \infty$$</p>
+<p>如果，我们给这个奖励添加一个参数 $0 \leq \gamma &lt; 1$，用如下形似表示：</p>
+<p>$$\sum_{t=0}^{\infty} \gamma^t R(S_t)$$</p>
+<p>此时当 $t$ 达到一定数量时，上式的值会停留在一个 $R_{max}$ 上。</p>
+<p>会有(将那个式子当成等比数列看待)</p>
+<p>$$\sum_{t=0}^{\infty} \gamma^t R(S_t) \leq \sum_{t=0}^{\infty} \gamma^t R_{max} = \frac{R_{max}}{1 - \gamma}$$</p>
+<p>所以，上式就是奖励的无穷总和的泛化，我们称之为<em>折扣期望</em></p>
+<p><strong>意义(这里的解释比较抽象，不好理解，建议观看原始视频，<a href="https://classroom.udacity.com/courses/ud600" target="_blank" rel="noopener">地址在这</a>)</strong></p>
+<p>让获得的奖励具有边界。这里实际是将 $R_{max}$ 值直接类比为无穷大 </p>
+<p>折扣期望级数加和序列退化为等比序列</p>
+<p>等比数列又允许我们使用无穷多的数字跟在奖励值后做乘积，但结果的是一个又穷的数字</p>
+<p>允许我们在有穷的时间接触到无穷大</p>
+<p>使之前的无穷时域具有了有穷性。</p>
+<h2 id="策略-Policy"><a href="#策略-Policy" class="headerlink" title="策略(Policy)"></a>策略(Policy)</h2><h3 id="效用"><a href="#效用" class="headerlink" title="效用"></a>效用</h3><p>最优策略是 $\pi^*$，这个最优策略应该可以<strong>最大化我们的长期期望奖励</strong>。</p>
+<p>$$\pi^* = arg \max \limits_{\pi} E[\sum_t \gamma^t R(S_t) | \pi]$$</p>
+<p><strong>决策的效用</strong>的形式如下所示（可以这样理解，我们从某个状态开始，状态策略的效用就是那之后所发生的所有事，也就是那之后得到的奖励的期望）：</p>
+<p>$$U^{\pi} (S) = E[\sum_t \gamma^t R(S_t) | \pi, s_0 = s]$$</p>
+<p>这里需要强调的是 $R(S) \neq U^{\pi} (S)$， <em>奖励给以我们的是及时的回报</em>，而<em>效用给以我们的是长期的反馈</em></p>
+<ul>
+<li>$R(s)$ 是在 $S$ 点状态时，得到的瞬时奖励</li>
+<li>$U(s)$ 是在 $S$ 点起遵循一种决策后，将得到的长期奖励的期望。也就是从 $S$ 点开始将获得所有奖励的和</li>
+</ul>
+<p>举一个例子：</p>
+<p>比如上大学会花费6000元，所以，在你选择上大学的时候，你会的回报是 -6000， 但是当你大学毕业之后，你找到了一份 12000 的工作，这个时候你的回报就是 +12000，因此，你选择上大学之后你的 reward 可能是 +6000， 但是你不选择上大学你的 reward 可能是 0.</p>
+<p><strong>所以，效用(utilites) 说明了所有延迟奖励的意义所在</strong>。</p>
+<h3 id="通过效用定义最优策略"><a href="#通过效用定义最优策略" class="headerlink" title="通过效用定义最优策略"></a>通过效用定义最优策略</h3><p>$$\pi^* (S) = arg \max \limits_{a} \sum_{\acute{S}} T(S, a, \acute{S}) U(\acute{S})$$</p>
+<blockquote>
+<p>这个公式的含义是从状态 $S$ 开始，寻找所有可以从 $S$ 到 $\acute{S}$ 的 action $a$，并且求和，这就是在状态 $S$ 下的最优策略，唯一的一个问题就是，在上面的定义中，我们并不知道 $U(\acute{S})$。</p>
+</blockquote>
+<p>于是我们可以定义 $U(S) = U^{\pi^*} (S)$ 。</p>
+<p>所以，这样最优策略的解释就清晰了 —— 就是对于每一个状态，返回的动作都能够最大化我的期望效用。</p>
+<p>然后，效用可以表示成：</p>
+<p>$$U(s) = R(s)+\gamma argmax_a \sum_{s’}{T(s,a.s’)U(s)}$$</p>
+<blockquote>
+<p>也就是当前 $s$ 状态的奖励 $R(s)$ 加上 $s’$ 状态的折扣效用值。 </p>
+</blockquote>
+<p>这个 $U(s)$ 也被称之为贝尔曼（Bellman）方程, 该方程是<strong>求解 MDP 与强化学习的关键方程</strong>，它定义了某个状态中的真实价值。整个MDP都在这个方程中被提及了~</p>
+<h3 id="寻找策略"><a href="#寻找策略" class="headerlink" title="寻找策略"></a>寻找策略</h3><p>如何求解下面的式子：</p>
+<p>$$U(s) = R(s)+ \gamma max_a \sum_{s’}{T(s,a.s’)U(s)}$$</p>
+<p>假设我们有 $N$ 个状态，那么应该也就会有 $N$ 个方程（因为每个方程都表示一个状态的转移）</p>
+<p>那么有多少个未知数呢？ 因为 $R$ 已知， $T$ 已知，剩下不知道的就是 $U$</p>
+<p>所以，我们需要求解的就是 N 个 N 元方程。</p>
+<p>普通的矩阵线性变换的解法并不适用于这里，因为那个 $max$</p>
+<p>所以，我们可以采取迭代的方式。</p>
+<ul>
+<li>1.从任意效用开始</li>
+<li>2.基于它们邻近的状态更新这些效用</li>
+<li>3.重复操作2，直到收敛（？？我不太确定这里的意思是不是收敛）</li>
+</ul>
+<p>所以，上面的操作合起来用一个式子表示就是：</p>
+<p>$$\hat{U}_{t+1} (s) = R(s) + \gamma \max_a \sum_{\acute{s}} T(s, a, \acute{s}) \hat{U}_{t} (\acute{s})$$</p>
+<p>OK，现在让我们做一道练习来巩固一下这个迭代求效用的概念。</p>
+<p><strong>迭代求效用的习题</strong></p>
+<p><img src="/images/RL/1/pollicy_exam.png" alt="迭代求效用习题"></p>
+<p>我们需要求状态 $x$ 处的效用，已知 $\gamma = \frac{1}{2}$, 除了两个吸收态的奖励分别是 $+1$ 和 $-1$，剩下状态的奖励都是 $R(s)=-0.04$ 且 $U_0 (S) = 0$，求状态 $x$ 的第一次迭代效用 $U_1 (x)$ 和第二次迭代效用 $U_2 (x)$ </p>
+<p>Tips: 每个 action 成功的概率只有 0.8</p>
+<p>对于 $x$ 来说，第一次迭代，除了 $+1$ 那个状态可以得到最高收益，别的状态的收益都是 -0.04,所以应该采取的措施就是向右走。</p>
+<p>所以 $U_1 (x) = -0.04 + \frac{1}{2} [0 <em> 0.1 + 0 </em> 0.1 + 1 * 0.8] = 0.36$</p>
+<p>如果，需要求 $U_2(x)$ ，应该先知道 $x$ 下方的状态的效用。该状态最好的 action 就是向左撞墙，这样可以避免掉落到右侧的 -1 之中，所以，这个效用可以用上述的式子计算 $-0.04 + \frac{1}{2} [0 <em> 0.1 + 0 </em> 0.1 + 0 * 0.8] = 0.04$</p>
+<p>于是，我们可以接着求出 $U_2(x)$。首先，得肯定的是，第二次的 action 肯定还是向右走,并且此时,我们的效能并不全是0. $U_2 (x) = -0.04 + \frac{1}{2} [0.1 <em> 0.36 + 0.1 </em> -0.04 + 0.8 * 1] = 0.376$.</p>
+<h3 id="策略迭代"><a href="#策略迭代" class="headerlink" title="策略迭代"></a>策略迭代</h3><p>步骤:</p>
+<ol>
+<li>从一个随机的规则 $\pi_0$ 开始</li>
+<li>给定 $\pi_t$ 计算 $U_t = U^{\pi_t}$ 作为规则的评价</li>
+<li>提升规则：$\pi_{t+1} = arg \max \limits_a \sum{T(s,a,s’)U_t(s’)}$</li>
+</ol>
+<p>计算 $U_t$ 我们应该想到利用 Bellman 等式</p>
+<p>$$U_t (s) = R(s) + \gamma \sum_{\acute{s}} T(s, \pi_t(s), \acute{s}) U_t (\acute{s})$$</p>
+<ul>
+<li>评估时假定当前为最优决策，所以 $s$ 的状态就直接由最优决策决定 </li>
+<li>这里我们有 n 个未知数，n 个方程。所以有唯一解</li>
+</ul>
+<h2 id="Bellman-函数与强化学习"><a href="#Bellman-函数与强化学习" class="headerlink" title="Bellman 函数与强化学习"></a>Bellman 函数与强化学习</h2><p><strong>为了避免糊涂,这里强调一下,下面表述中的价值等价于上面表述中的效能</strong></p>
+<p>对于 Bellman 等式,我们已知的是</p>
+<p>$$V(s_1) = \max_{a_1} (R(s_1,a_1)+\gamma \sum_{s_2}T(s_1,a_1,s_2)V(s_2))$$</p>
+<p>我们称该式为 <em>value</em> 层面的 Bellman Function ，在强化学习中这是重要的函数</p>
+<p>我们将 $max$ 中的内容看做一个整体，经过变换可得到 </p>
+<p>$$Q(s,a) = R(s,a)+\gamma\sum_{s’}T(s,a,s’) \max_{a’} (Q(s’,a’))$$</p>
+<p>我们称该式为 <em>Quality</em> 层面的 Bellman Function，在强化学习中这是重要的函数</p>
+<p>为什么会出现 Q Bellman Function 呢?</p>
+<p><strong>做一个小结： V function 其实是从 max开始迭代计算； Q function 是从 R(s)开始迭代计算，那么我们是不是可以从 $\gamma$ 开始迭代计算呢？如果沿着这条思路走，我们就可以定义出 C function</strong></p>
+<p>$$C(s,a) = \gamma \sum_{s’}T(s,a,s’) \max_{a’} (R(s’,a’)+C(s’,a’))$$</p>
+<h3 id="C-V-Q-之间的关系"><a href="#C-V-Q-之间的关系" class="headerlink" title="C V Q 之间的关系"></a>C V Q 之间的关系</h3><p><img src="/images/RL/1/CVQ.jpg" alt="C 和 V 和 Q 的关系"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/强化学习/" rel="tag"># 强化学习</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/24/《Introduction-to-Probability》—— Unit3 Counting/" rel="next" title="《Introduction-to-Probability》—— Unit3 Counting">
+                <i class="fa fa-chevron-left"></i> 《Introduction-to-Probability》—— Unit3 Counting
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/10/强化学习（2）/" rel="prev" title="强化学习（2）">
+                强化学习（2） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#强化学习-1"><span class="nav-number">1.</span> <span class="nav-text">强化学习 (1)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.2.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#与机器学习中概念对比"><span class="nav-number">1.2.1.</span> <span class="nav-text">与机器学习中概念对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强化学习的定义："><span class="nav-number">1.2.2.</span> <span class="nav-text">强化学习的定义：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#强化学习中的核心概念：-Markov-Decision-Processes-（MDP）"><span class="nav-number">1.3.</span> <span class="nav-text">强化学习中的核心概念： Markov Decision Processes （MDP）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#奖励的重要性："><span class="nav-number">1.3.1.</span> <span class="nav-text">奖励的重要性：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#偏向稳定性"><span class="nav-number">1.4.</span> <span class="nav-text">偏向稳定性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#定义"><span class="nav-number">1.4.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#偏向稳定性与奖励序列"><span class="nav-number">1.4.2.</span> <span class="nav-text">偏向稳定性与奖励序列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#折扣期望"><span class="nav-number">1.4.3.</span> <span class="nav-text">折扣期望</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#策略-Policy"><span class="nav-number">1.5.</span> <span class="nav-text">策略(Policy)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#效用"><span class="nav-number">1.5.1.</span> <span class="nav-text">效用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过效用定义最优策略"><span class="nav-number">1.5.2.</span> <span class="nav-text">通过效用定义最优策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#寻找策略"><span class="nav-number">1.5.3.</span> <span class="nav-text">寻找策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#策略迭代"><span class="nav-number">1.5.4.</span> <span class="nav-text">策略迭代</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bellman-函数与强化学习"><span class="nav-number">1.6.</span> <span class="nav-text">Bellman 函数与强化学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#C-V-Q-之间的关系"><span class="nav-number">1.6.1.</span> <span class="nav-text">C V Q 之间的关系</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

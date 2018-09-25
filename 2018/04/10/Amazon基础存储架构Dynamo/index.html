@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Dynamo," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Amazon 依靠在电子商务中积累的大量基础性设施和各类先进技术，很早地进入了云计算领域，并在提供计算、存储等服务方面处于领先地位。 Amazon 开发并提供了一系列云计算服务这些云计算服务共同构成了 Amazon Web Service">
+<meta name="keywords" content="Dynamo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Amazon基础存储架构Dynamo">
+<meta property="og:url" content="http://yoursite.com/2018/04/10/Amazon基础存储架构Dynamo/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Amazon 依靠在电子商务中积累的大量基础性设施和各类先进技术，很早地进入了云计算领域，并在提供计算、存储等服务方面处于领先地位。 Amazon 开发并提供了一系列云计算服务这些云计算服务共同构成了 Amazon Web Service">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/Dynamo/Amazon_framework.png">
+<meta property="og:image" content="http://yoursite.com/images/Dynamo/DHT.png">
+<meta property="og:image" content="http://yoursite.com/images/Dynamo/Partition.png">
+<meta property="og:image" content="http://yoursite.com/images/Dynamo/vector_clock.png">
+<meta property="og:image" content="http://yoursite.com/images/Dynamo/gossip.png">
+<meta property="og:image" content="http://yoursite.com/images/Dynamo/wrong_detection.png">
+<meta property="og:image" content="http://yoursite.com/images/Dynamo/hinted_handoff.png">
+<meta property="og:image" content="http://yoursite.com/images/Dynamo/Merkle.png">
+<meta property="og:updated_time" content="2018-04-10T12:15:04.574Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Amazon基础存储架构Dynamo">
+<meta name="twitter:description" content="Amazon 依靠在电子商务中积累的大量基础性设施和各类先进技术，很早地进入了云计算领域，并在提供计算、存储等服务方面处于领先地位。 Amazon 开发并提供了一系列云计算服务这些云计算服务共同构成了 Amazon Web Service">
+<meta name="twitter:image" content="http://yoursite.com/images/Dynamo/Amazon_framework.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/10/Amazon基础存储架构Dynamo/"/>
+
+
+
+
+
+  <title>Amazon基础存储架构Dynamo | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/10/Amazon基础存储架构Dynamo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Amazon基础存储架构Dynamo</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-10T19:10:55+08:00">
+                2018-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/云计算/" itemprop="url" rel="index">
+                    <span itemprop="name">云计算</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Amazon 依靠在电子商务中积累的大量基础性设施和各类先进技术，很早地进入了云计算领域，并在提供计算、存储等服务方面处于领先地位。</p>
+<p>Amazon 开发并提供了一系列云计算服务这些云计算服务共同构成了 <strong>Amazon Web Service</strong></p>
+<a id="more"></a>
+<p>amazon 提供的服务主要包括:</p>
+<ul>
+<li>弹性计算云 EC2</li>
+<li>简单存储服务 S3</li>
+<li>简单数据库服务 Simple DB</li>
+<li>简单队列服务 SQS</li>
+<li>弹性 MapReduce 服务</li>
+<li>内容推送服务 CloudFront</li>
+<li>电子商务服务 DevPay</li>
+<li>FPS</li>
+</ul>
+<p>这些服务涉及云计算的方方面面，用户完全可以根据自己的需要选取一个或多个Amazon云计算服务。所有的这些服务都是按需获取资源，具有极强的可扩展性和灵活性。</p>
+<h1 id="基础存储架构Dynamo"><a href="#基础存储架构Dynamo" class="headerlink" title="基础存储架构Dynamo"></a>基础存储架构Dynamo</h1><p>Amazon 作为目前世界上最主要的电子商务提供商之一，它的系统每天要接受全球数以百万计的服务请求，髙效的平台架构是保证其系统稳定性的根本。下图是面向服务的Amazon平台基本架构。</p>
+<p><img src="/images/Dynamo/Amazon_framework.png" alt="面向服务的Amazon平台基本架构"></p>
+<p>从图中可以看出整个Amazon平台的架构是完全的分布式、去中心化的，在Amazon的平台中处于底层位置的<strong>存储架构Dynamo</strong>也是如此。Amazon平台中有很多服务<strong>对存储的需求只是读取、写入，即满足简单的键/值（key/value)式存储即可</strong>，例如：常用的购物车、信息会话管理和推荐商品列表等，如果采取传统的关系数据库方式，则效率低下。<strong>针对这种需求，Dynamo应运而生</strong>，虽然Dynamo目前并不直接向公众提供服务，但是大量的用户服务数据被存储在Dynamo中。可以说<strong>它为Amazon的电子商务平台及其云计算服务提供了最基础的支持</strong>。</p>
+<h2 id="Dynamo概况"><a href="#Dynamo概况" class="headerlink" title="Dynamo概况"></a>Dynamo概况</h2><p>为了保证其稳定性，Amazon的系统采用完全的分布式、去中心化的架构</p>
+<ul>
+<li>作为底层存储架构的Dynamo也同样采用了无中心的模式</li>
+<li>Dynamo只支持简单的键/值（key/value）方式的数据存储，不支持复杂的查询</li>
+<li>Dynamo中存储的是数据值的原始形式，即按位存储，并不解析数据的具体内容</li>
+</ul>
+<h2 id="Dynamo架构的主要技术"><a href="#Dynamo架构的主要技术" class="headerlink" title="Dynamo架构的主要技术"></a>Dynamo架构的主要技术</h2><h3 id="Dynamo需要解决的主要问题及解决方案"><a href="#Dynamo需要解决的主要问题及解决方案" class="headerlink" title="Dynamo需要解决的主要问题及解决方案"></a>Dynamo需要解决的主要问题及解决方案</h3><p>Dynamo在设计时被定位为一个基于分布式存储架构的，高可靠、高可用且具有良好容错性的系统。下图列举了Dynamo设计时面临的主要问题及所采取的解决方案。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">问题</th>
+<th style="text-align:center">采取的相关技术</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">数据均衡分布</td>
+<td style="text-align:center">改进的一致性哈希算法</td>
+</tr>
+<tr>
+<td style="text-align:center">数据备份</td>
+<td style="text-align:center">参数可调的弱quorum机制</td>
+</tr>
+<tr>
+<td style="text-align:center">数据冲突处理</td>
+<td style="text-align:center">向量时钟（Vector Clock）</td>
+</tr>
+<tr>
+<td style="text-align:center">成员资格及错误检测</td>
+<td style="text-align:center">基于Gossip协议的成员资格和错误检测</td>
+</tr>
+<tr>
+<td style="text-align:center">临时故障处理</td>
+<td style="text-align:center">Hinted handoff（数据回传机制）</td>
+</tr>
+<tr>
+<td style="text-align:center">永久故障处理</td>
+<td style="text-align:center">Merkle哈希树</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Dynamo的存储节点"><a href="#Dynamo的存储节点" class="headerlink" title="Dynamo的存储节点"></a>Dynamo的存储节点</h3><blockquote>
+<p>Dynamo中的存储节点呈无中心的环状分布。</p>
+</blockquote>
+<p>两个基本概念：</p>
+<ol>
+<li>preference list （存储与某个特定键值相对应的数据的节点列表）</li>
+<li>coordinator （执行一次读或写操作的节点）</li>
+</ol>
+<p>通常，coordinator 是 preference list 上的第一个节点；一般情况下， preference list 的长度是5，也就是说第一个节点是数据操作节点，后面4个是备份节点。</p>
+<h3 id="数据均衡分布的问题"><a href="#数据均衡分布的问题" class="headerlink" title="数据均衡分布的问题"></a>数据均衡分布的问题</h3><p>Dynamo采用了分布式的数据存储架构，均衡的数据分布可以保证负载平衡和系统良好的扩展性。</p>
+<p>因此，如何保证各个节点上数据的均衡性是影响Dynamo性能的关键问题。</p>
+<p>Dynamo中使用<strong>改进后的一致性哈希算法</strong>，并在此基础上进行数据备份，以提高系统的可用性。</p>
+<p><strong>一致性哈希算法</strong></p>
+<blockquote>
+<p>一致性哈希算法是目前主流的<em>分布式哈希表（Distributed Hash Table，DHT）协议之一</em>，于1997年由麻省理工学院提出。</p>
+</blockquote>
+<p>一致性哈希算法通过修正简单哈希算法，解决了网络中的热点问题，使得DHT可以真正地应用于P2P环境中。</p>
+<p><img src="/images/Dynamo/DHT.png" alt="Distributed Hash Table"></p>
+<p>给定一个hash值空间，[0~2^32)，假设分布在一个圆环上，对每个结点算出一个固定hash值，将结点置于环上，对新加入的对象的 key 算出hash值，假设落在节点1和节点2之间，那么这个数据项&lt; key，Value &gt;就存在节点2开始的结点上。假定副本数为3，那么就存在节点2和节点2后面两个结点上面。</p>
+<p>一致性哈希算法除了能够保证哈希运算结果充分分散到整个环上外，还能保证在添加或删除设备节点时只会影响到其在哈希环中的前驱设备节点，而不会对其他设备节点产生影响。</p>
+<p>一致性哈希算法可以大大降低在添加或删除节点时引起的节点间的数据传输开销</p>
+<p><strong>改进的一致性哈希算法</strong></p>
+<blockquote>
+<p>因为每台机器的性能不一样，所以我们为了能够充分利用每台机器的性能，我们需要改进一致性哈希算法。于是在Dynamo中引入了虚拟节点的概念</p>
+</blockquote>
+<p>每个虚拟节点都隶属于某一个实际的物理节点，一个物理节点根据其性能的差异被分为一个或多个虚拟节点。</p>
+<p>各个虚拟节点的能力基本相当，并随机分布在哈希环上。</p>
+<p>Dynamo将整个哈希环划分成Q等份，每个等份称为一个数据分区（Partition）</p>
+<p>在存储数据时，每个数据会被先分配到某个数据分区，再根据负责该数据分区的虚拟节点，最终确定其所存储的物理节点。</p>
+<p><img src="/images/Dynamo/Partition.png" alt="数据分区（Partition）"></p>
+<p>数据分区的好处有：</p>
+<ol>
+<li>减小数据分布不均衡的可能性  </li>
+<li>添加或删除设备节点时引起较小的数据传输</li>
+</ol>
+<h3 id="数据备份"><a href="#数据备份" class="headerlink" title="数据备份"></a>数据备份</h3><p>在Dynamo中，<strong>每个数据的副本备份存储在哈希环顺时针方向上该数据所在虚拟节点的后继节点中。</strong></p>
+<p>数据备份在存储数据的同时进行，会使每次写操作的延时变长。</p>
+<p>Dynamo中<em>对写操作进行了优化</em>，保证一个副本必须写入硬盘，其他副本只要写入节点的内存即返回写成功。</p>
+<p>每个虚拟节点上实际存储了分配给它以及分配它的前N-1个前驱虚拟节点的数据。</p>
+<h3 id="数据冲突问题"><a href="#数据冲突问题" class="headerlink" title="数据冲突问题"></a>数据冲突问题</h3><p>分布式系统架构中通常考虑的三个因素：</p>
+<ol>
+<li>可靠性（Reliability）</li>
+<li>可用性（Availability）</li>
+<li>一致性（Consistency）</li>
+</ol>
+<p>Dynamo选择通过<strong>牺牲一致性</strong>来<strong>保证系统的可靠性和可用性</strong> ，没有<strong>采用强一致性模型</strong> 而<strong>采用了最终一致性模型</strong>。</p>
+<p>由于Dynamo中可能出现同一个数据<strong>被多个节点同时更新</strong>的情况，且无法保证数据副本的<strong>更新顺序</strong>，这有可能会<strong>导致数据冲突</strong>。</p>
+<p>数据冲突问题如何解决？</p>
+<p>Dynamo中采用了向量时钟技术（Vector Clock）</p>
+<p>Dynamo中的向量时钟通过<strong>[node, counter]</strong>对来表示。其中 node 表示操作节点。 counter是其对应的计数器，初始值为 0 节点每进行一次更新操作则计数器加 1 </p>
+<p><img src="/images/Dynamo/vector_clock.png" alt="向量时钟技术"></p>
+<p>如上图所示，D3 和 D4 的操作有冲突，于是，我们会把 D3 和 D4 同时交给应用层，让应用层来选择合并策略</p>
+<p><strong>既然有版本冲突的问题，冲突版本的合并就只能交给上层应用来做</strong>，每次读操作Dynamo将返回读到的所有版本，若上层应用无法解决合并，那就只能选择一个最新版本，从而丢失一部分数据，Dynamo论文只举了购物车的例子，每个值为一个购物车物品集合，每次更新可以往购物车添加，删除物品，冲突时合并购物车取并集。这样添加到购物车的操作不会出问题，但是可能会导致删除的物品重新出现。</p>
+<h3 id="成员资格及错误检测"><a href="#成员资格及错误检测" class="headerlink" title="成员资格及错误检测"></a>成员资格及错误检测</h3><p>由于Dynamo采用了无中心的架构，每个成员节点都需要保存其他节点的路由信息。</p>
+<p>为了保证每个节点都能拥有最新的成员节点信息，Dynamo中采用了一种类似于Gossip（闲聊）协议的技术</p>
+<p><img src="/images/Dynamo/gossip.png" alt="Gossip（闲聊）协议"></p>
+<blockquote>
+<p>Dynamo中还通过Gossip来实现错误检测任何节点向其他节点发起通信后，如果对方没有回应，则认为对方节点失效</p>
+</blockquote>
+<p>为了避免新加入的节点之间不能及时发现其他节点的存在，<strong>Dynamo中设置了一些种子节点（Seed Node）</strong>。种子节点和所有的节点都有联系。当新节点加入时，它扮演一个中介的角色，使新加入节点之间互相感知。</p>
+<p>错误检测的方法是：</p>
+<ul>
+<li>自底向上每一层代表一次随机通信</li>
+<li>第一层节点1将信息交换给节点2</li>
+<li>第二层节点1和2同时开始随机选择</li>
+<li>其他节点交换信息</li>
+<li>直到N个节点全部传遍</li>
+</ul>
+<p>如下图所示：</p>
+<p><img src="/images/Dynamo/wrong_detection.png" alt="错误检测"></p>
+<p>结论：</p>
+<ul>
+<li>Dynamo中的节点数不能太多</li>
+<li>Amazon采用了分层Dynamo结构来解决该问题</li>
+</ul>
+<h3 id="容错机制"><a href="#容错机制" class="headerlink" title="容错机制"></a>容错机制</h3><p><strong>临时故障处理机制</strong></p>
+<p>为了处理临时失效的节点，Dynamo中采用了一种带有监听的数据回传机制（Hinted Handoff）</p>
+<p>当虚拟节点A失效后，会将数据临时存放在节点D的临时空间中，并在节点A重新可用后，由节点D将数据回传给节点A。</p>
+<p><img src="/images/Dynamo/hinted_handoff.png" alt="临时故障处理机制"></p>
+<p><strong>永久性故障处理机制</strong></p>
+<p>Dynamo采用Merkle哈希树技术来加快检测和减少数据传输量</p>
+<p>每个虚拟节点保存三颗Merkle树，即每个键值区间建立一个Merkle树。Dynamo中Merkle哈希树的叶子节点是存储每个数据分区内所有数据对应的哈希值，父节点是其所有子节点的哈希值。下图是两棵不同的Merkle哈希树A和B。</p>
+<p><img src="/images/Dynamo/Merkle.png" alt="Merkle哈希树A和B"></p>
+<p>系统比较两棵同一键值区的Merkle哈希树时，首先査看根节点，如果相同则说明数据一致，不需要进行数据同步，否则需要继续比较，直到哈希值不同的叶子节点，快速定位差异。例如，上图中A和B的根节点不同，说明需要进行数据同步。紧接着比较A和B的子节点，发现右子树的根节点2≠5,继续比较右予树根节点的子节点，按同样的步骤一直进行下去，发现需要同步的数据位置。Merkle树最大特点是只要比较某个子树就可以完成数据同步检测和定位，进而进行同步，大大减少了同步过程中所需传输数据量，提高了系统效率。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Dynamo/" rel="tag"># Dynamo</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/10/分布式存储系统Megastore/" rel="next" title="分布式存储系统Megastore">
+                <i class="fa fa-chevron-left"></i> 分布式存储系统Megastore
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/10/弹性计算云EC2/" rel="prev" title="弹性计算云EC2">
+                弹性计算云EC2 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#基础存储架构Dynamo"><span class="nav-number">1.</span> <span class="nav-text">基础存储架构Dynamo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamo概况"><span class="nav-number">1.1.</span> <span class="nav-text">Dynamo概况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamo架构的主要技术"><span class="nav-number">1.2.</span> <span class="nav-text">Dynamo架构的主要技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dynamo需要解决的主要问题及解决方案"><span class="nav-number">1.2.1.</span> <span class="nav-text">Dynamo需要解决的主要问题及解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dynamo的存储节点"><span class="nav-number">1.2.2.</span> <span class="nav-text">Dynamo的存储节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据均衡分布的问题"><span class="nav-number">1.2.3.</span> <span class="nav-text">数据均衡分布的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据备份"><span class="nav-number">1.2.4.</span> <span class="nav-text">数据备份</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据冲突问题"><span class="nav-number">1.2.5.</span> <span class="nav-text">数据冲突问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#成员资格及错误检测"><span class="nav-number">1.2.6.</span> <span class="nav-text">成员资格及错误检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#容错机制"><span class="nav-number">1.2.7.</span> <span class="nav-text">容错机制</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

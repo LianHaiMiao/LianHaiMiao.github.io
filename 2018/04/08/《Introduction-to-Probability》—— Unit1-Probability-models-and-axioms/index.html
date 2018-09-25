@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Probability," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="edx 课程《Introduction to Probability - The Science of Uncertainty》Unit1 笔记">
+<meta name="keywords" content="Probability">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Introduction to Probability》—— Unit1 Probability models and axioms">
+<meta property="og:url" content="http://yoursite.com/2018/04/08/《Introduction-to-Probability》—— Unit1-Probability-models-and-axioms/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="edx 课程《Introduction to Probability - The Science of Uncertainty》Unit1 笔记">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/probability%20theory/unit1/probability_theory_framework.png">
+<meta property="og:image" content="http://yoursite.com/images/probability%20theory/unit1/question3.jpg">
+<meta property="og:updated_time" content="2018-04-23T16:29:40.868Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Introduction to Probability》—— Unit1 Probability models and axioms">
+<meta name="twitter:description" content="edx 课程《Introduction to Probability - The Science of Uncertainty》Unit1 笔记">
+<meta name="twitter:image" content="http://yoursite.com/images/probability%20theory/unit1/probability_theory_framework.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/08/《Introduction-to-Probability》—— Unit1-Probability-models-and-axioms/"/>
+
+
+
+
+
+  <title>《Introduction to Probability》—— Unit1 Probability models and axioms | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/08/《Introduction-to-Probability》—— Unit1-Probability-models-and-axioms/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《Introduction to Probability》—— Unit1 Probability models and axioms</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-08T19:42:39+08:00">
+                2018-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/概率论/" itemprop="url" rel="index">
+                    <span itemprop="name">概率论</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>edx 课程《Introduction to Probability - The Science of Uncertainty》Unit1 笔记</p>
+<a id="more"></a>
+<h1 id="Unit1-Probability-models-and-axioms"><a href="#Unit1-Probability-models-and-axioms" class="headerlink" title="Unit1 Probability models and axioms"></a>Unit1 Probability models and axioms</h1><h2 id="1-Sample-Space（样本空间）"><a href="#1-Sample-Space（样本空间）" class="headerlink" title="1. Sample Space（样本空间）"></a>1. Sample Space（样本空间）</h2><p><strong>样本空间 $\Omega$ </strong>是一次实验所有可能结果的集合。</p>
+<p>对于一个样本空间而言，它需要满足的条件是：</p>
+<ol>
+<li><p>Mutually exclusive（互斥性） 也就是说，一次性只可能有一个结果出现</p>
+</li>
+<li><p>collectively exhaustive（穷尽所有可能） 也就是说，所有的结果都会在这个样本空间里面。</p>
+</li>
+<li><p>At the “right” granularity 也就是说，我们样本空间的结果应该在适合的“粒度”</p>
+</li>
+</ol>
+<p>这里解释一下第3个条件。</p>
+<p>比如，现在的事件是 “掷骰子” 我们的样本空间有两个选择</p>
+<blockquote>
+<p>{数字 、 人头}</p>
+</blockquote>
+<p>和</p>
+<blockquote>
+<p>{数字,下雨 、 数字,晴天、 人头,下雨 人头,晴天}</p>
+</blockquote>
+<p>那么在 “掷骰子” 这个事件中，适合“粒度”的样本空间是 {数字 、 人头}</p>
+<h2 id="2-Event（事件）-and-Probability（概率）"><a href="#2-Event（事件）-and-Probability（概率）" class="headerlink" title="2. Event（事件） and Probability（概率）"></a>2. Event（事件） and Probability（概率）</h2><p><strong>事件</strong>是样本空间的一个子集。 当一个实验结束之后，会产生一个结果，这个时候，这个结果就可以看成是事件<em>A</em>发生了。 (A是泛指)</p>
+<p>注意，事件A发生的 “可能性” 被我们称为 <strong>概率</strong>，用符号表示就是 $P(A)$</p>
+<h3 id="2-1-概率的三条公理："><a href="#2-1-概率的三条公理：" class="headerlink" title="2.1 概率的三条公理："></a>2.1 <strong>概率</strong>的三条公理：</h3><ol>
+<li><p>Nonnegativity（非负性） 对于样本空间中所有的事件 —— A (A是泛指)，都有 P(A) ≥ 0</p>
+</li>
+<li><p>Additivity（可列可加性） 即互不相容事件的并集的概率为各事件概率之和，也就是 如果 $A \cap B = \varnothing$ 那么 $P(A \cup B) = P(A) + P(B)$。 更一般地，如果样本空间是有限的，且 $A_1, A_2, …$ 是<strong>一系列</strong>不相交事件，那么它们的概率和应该满足 $P(A_1 \cup A_2 \cup …) = P(A_1) + P(A_2) + …$ </p>
+</li>
+<li><p>Normalization（规范性） 即整个样本空间的概率是 1 ， 也就是 $P(\Omega) = 1$</p>
+</li>
+</ol>
+<p>通过上面的三条公理，我们可以推出一系列结论：</p>
+<h3 id="2-2-概率的一系列推论："><a href="#2-2-概率的一系列推论：" class="headerlink" title="2.2 概率的一系列推论："></a>2.2 <strong>概率</strong>的一系列推论：</h3><ol>
+<li><p>$P(A) \leqq 1$</p>
+</li>
+<li><p>$P(\varnothing) = 0$</p>
+</li>
+<li><p>$P(A) + P(A^c) = 1$ 也就是事件 $A$ 和事件 $A$ 的补集的和为1， <em>A的补集</em> 就是符合 $A \cap A^c = \varnothing$ 和 $A \cup A^c = \Omega$ 的事件</p>
+</li>
+</ol>
+<p>上面三个推论比较简单，我们就不写出证明过程了。</p>
+<ol start="4">
+<li><p>如果 $A \subset B$, 那么 $P(A)\leqq P(B)$ ； 证明： 因为 $B = A \cup (B \cap A^c)$ 所以 $P(B) = P(A) + P(B \cap A^c) \geq P(A)$</p>
+</li>
+<li><p>$P(A \cup B) = P(A) + P(B) - P(A \cap B)$ ； 证明： 设 $a = P(A \cap B^c)$ ， $b = P(A \cap B)$ ， $c = P(B \cap A^c)$ 那么 $P(A \cup B) = a + b + c$ ； 同时 $P(A) + P(B) - P(A \cap B) = (a+b) + (b+c) - b = a + b + c$，所以两者相等。</p>
+</li>
+<li><p>$P(A \cup B) \leqq P(A) + P(B)$ ； 证明：由公理(1) 可知， $P(A \cap B) \geq 0$ ，再结合推论(5)，可以得证。这一个式子比较重要，我们通常称呼它为 <strong>Union Bound</strong></p>
+</li>
+<li><p>$P(A \cup B \cup C) = P(A) + P(A^c \cap B) + P(A^c \cap B^c \cap C)$</p>
+</li>
+</ol>
+<h3 id="2-3-概率的计算步骤"><a href="#2-3-概率的计算步骤" class="headerlink" title="2.3 概率的计算步骤"></a>2.3 <strong>概率</strong>的计算步骤</h3><ul>
+<li><p>确定样本空间</p>
+</li>
+<li><p>确定一个 probability law (概率分布)</p>
+</li>
+<li><p>确定一个感兴趣的事件</p>
+</li>
+<li><p>计算…</p>
+</li>
+</ul>
+<p>对于离散、有限数据，我们通常采取的措施是计数； （例子：略）</p>
+<p>对于连续数据，我们通常采取的措施是计算面积 （例子：略）</p>
+<p>对于离散、无限数据，通常会需要用到一些数列相关的知识。</p>
+<p>比如，现在我们有一个实验是扔骰子直到数字向上的事件发生，理论上来说，这个事件发生可能会在第一次、第二次、第三次、 … </p>
+<p>所以，上述实验的<strong>样本空间是所有正整数的集合</strong>。</p>
+<p>那么概率分布可以用 $P(n) = \frac{1}{2^n}, \ \ n=1,2,3 …$</p>
+<p>现在，我们来证明，这个概率分布是合理的！</p>
+<p>$$ \sum_{n=1}^{\infty} \frac{1}{2^n} = \frac{1}{2} \sum_{n=1}^{\infty} \frac{1}{2^n} = \frac{1}{2} \cdot \frac{1}{1 - \frac{1}{2}} = 1 $$</p>
+<p>符合我们对概率的定义。</p>
+<p>那么接下来，我们来求事件 <em>结果是偶数</em> 的概率。</p>
+<p>$$P(outcome \ is \ even) = P({2, 4, 6, …}) \<br>    = P({2} \cup {4} \cup {6} \cup …) = P(2) + P(4) + … \<br>    = \frac{1}{2^2} + \frac{1}{2^4} + \frac{1}{2^6} + … \<br>    = \frac{1}{4} (1 + \frac{1}{4} + \frac{1}{4^2} + …) \<br>    = \frac{1}{4} \cdot \frac{1}{1 - \frac{1}{4}} = \frac{1}{3}$$</p>
+<p><strong>一个有趣的现象</strong></p>
+<p>对于一个单位面积的矩阵。它的样本空间是整个矩阵的面积。</p>
+<p>那么我们是否可以得到如下的式子呢？</p>
+<p>$$P(\cup {(x, y) } ) = \sum P( {(x, y) } ) \ \ (*)$$</p>
+<p>我们先假设可以得到这样的式子，那么很显然左边会有 $P(\cup {(x, y) }  = P(\Omega) = 1$ ，而右边却又是 $P( {(x, y) } ) = 0$, 则 $\sum P( {(x, y) } ) = 0$ ,这样会出现一个悖论 $1 = 0$ ！！</p>
+<p>为什么会这样呢？原因出在了我们刚才的式子 $(<em>)$ 上，等式 $(</em>)$ 真的成立么？</p>
+<p>不成立！！ 因为这样划分得到的结果并不是一个 sequence。</p>
+<blockquote>
+<p>这里是我的个人理解：因为我们如果把一个单位面积的矩阵，确实可以用无穷多个点来表示，但是这无穷多个点是<strong>不可数的</strong>！！只有当我们对无限但可数个元素进行求和，才能满足可列可加性。</p>
+</blockquote>
+<h3 id="2-4-概率的一些解释"><a href="#2-4-概率的一些解释" class="headerlink" title="2.4 概率的一些解释"></a>2.4 <strong>概率</strong>的一些解释</h3><p>狭义上来讲，<strong>概率</strong> 可以看成是数学的一个分支。</p>
+<p>在这个分支中，我们通常用事件 $A$ 发生的<strong>频率</strong>表示概率。</p>
+<p>但是，不够完整，比如如果现在事件 $A$ 是 “我们上课会迟到”</p>
+<p>那，我们没办法用频率表示…</p>
+<p>这时候，我们会引申出另外一个含义，那就是 <strong>信念</strong>。刚才的列子 $P(“我们上课会迟到”) = 0.7$ 就是我们对上课迟到这件事发生的信念是 0.7</p>
+<p>我个人的理解是，<strong>概率就是我们用来描述不确定性事件的工具</strong>。具体关系图，如下图所示：</p>
+<p><img src="/images/probability theory/unit1/probability_theory_framework.png" alt="probability_theory_framework"></p>
+<h2 id="3-数学背景回顾"><a href="#3-数学背景回顾" class="headerlink" title="3. 数学背景回顾"></a>3. 数学背景回顾</h2><h3 id="3-1-Sets（集合）"><a href="#3-1-Sets（集合）" class="headerlink" title="3.1 Sets（集合）"></a>3.1 Sets（集合）</h3><blockquote>
+<p>集合的定义： <strong>A collection of distinct elements</strong></p>
+</blockquote>
+<p>集合有两种： 有限集 和 无限集。 比如 ${ a, b, c, d}$ 就是有限集； $R: real number$ 就是无限集</p>
+<p>集合的元素跟集合的关系有 $x \in S$ 和 $x \notin S$</p>
+<p>一个比较常见的集合例子： $x \in R : cos(x) &gt; \frac{1}{2}$  [有范围、有限制] 是比较常见的集合。</p>
+<blockquote>
+<p>全集的定义：<strong>a universal set is a set which contains all elements, including itself.</strong> 我们通常用 $\Omega$ 表示全集</p>
+</blockquote>
+<blockquote>
+<p>补集的定义： $x \in S^c \ \ if \ \ x \in \Omega \ \ and \ \  x \notin S$</p>
+</blockquote>
+<blockquote>
+<p>空集的定义： <strong>the empty set or null set is the unique set having no elements</strong></p>
+</blockquote>
+<blockquote>
+<p>子集的定义和性质：<strong>a set A is a subset of a set B, if A is “contained” inside B, that is, all elements of A are also elements of B. A and B may coincide. The relationship of one set being a subset of another is called inclusion or sometimes containment. A is a subset of B may also be expressed as B includes A; or A is included in B.</strong>  </p>
+</blockquote>
+<p>$S$ 是 $T$ 的子集用数学公式表达就是 $S \subset T: \ \ x \in S \Rightarrow x \in T$</p>
+<blockquote>
+<p>并集的定义： $x \in S \cup T  \Leftrightarrow x \in S \ \ or \ \ x \in T$</p>
+</blockquote>
+<blockquote>
+<p>交集的定义： $x \in S \cap T  \Leftrightarrow x \in S \ \ and \ \ x \in T$</p>
+</blockquote>
+<p>交集和并集的定义可以推广到无穷多个集合上。</p>
+<p><strong>集合的一些性质</strong></p>
+<p>(1) $\Omega^c = \emptyset$<br>(2) $S \cup T = T \cup S$<br>(3) $S \cup (T \cup U) = (S \cup T) \cup U$<br>(4) $S \cap (T \cup U) = (S \cap T) \cup (S \cap U)$<br>(5) $S \cup (T \cap U) = (S \cup T) \cap (S \cup U)$<br>(6) ${(S^c)}^c = S$<br>(7) $S \cap S^c = \emptyset$<br>(8) $S \cup \Omega = \Omega$<br>(9) $S \cap \Omega = S$</p>
+<p><strong>De Morgan’s law</strong></p>
+<p>$${(\bigcup \limits_n S_n)}^c = \bigcap \limits_n S_n^c$$</p>
+<p>$${(\bigcap \limits_n S_n)}^c = \bigcup \limits_n S_n^c$$</p>
+<p>解释一下：我们用两个集合来进行表示</p>
+<p>对于 ${(S \cap T)}^c = S^c \cup T^c$ 来说，我们可以证明</p>
+<p>$$x \in {(S \cap T)}^c \Leftrightarrow x \notin S \cap T \<br>    \Leftrightarrow x \notin S \ \ or \ \ x \notin T \<br>    \Leftrightarrow x \in S^c \ \ or \ \  x \in T^c \<br>    x \in S^c \cup T^c$$</p>
+<p>对于 ${(S \cup T)}^c = S^c \cap T^c$ 来说，我们可以证明</p>
+<p>$$x \in {(S \cup T)}^c \Leftrightarrow x \notin S \cup T \<br>    \Leftrightarrow x \notin S \ \ and \ \ x \notin T \<br>    \Leftrightarrow x \in S^c \ \ and \ \ x \in T^c \<br>    \Leftrightarrow x \in S^c \cap T^c$$</p>
+<h3 id="3-2-Sequences（数列）-and-their-limits（极限）"><a href="#3-2-Sequences（数列）-and-their-limits（极限）" class="headerlink" title="3.2 Sequences（数列） and their limits（极限）"></a>3.2 Sequences（数列） and their limits（极限）</h3><blockquote>
+<p>数列的定义： 对于一列有序的数 $a_1$, $a_2$, $a_3$, $…$ ，然后简记为 ${ a_i }$ 那么 ${ a_i }$ 就被我们称为数列。数列中的每一个元素，被我们称为 “项”。</p>
+</blockquote>
+<p>对于数列来说，它的索引是 $i \in N = {1, 2, 3, …}$， 但是它的 “项” 没有固定的值，可以为任意值。</p>
+<p>所以，我们可以把一个数列理解为一个函数。这个函数是 $f: N \Rightarrow S$，且 $f(i) = a_i$</p>
+<p>那么什么是<strong>数列的极限</strong>呢？</p>
+<p>对于一个数列来说，它的极限是</p>
+<p>$$if \ \ have \ \ real \ \ number \ \ a \ \ for \ \ any \ \ \epsilon &gt; 0 , \ \ there \ \ exists \ \ N, \ \ such \ \ that \<br>    if \ \ i \geq N, \ \ then \ \ |a_i - a| &lt; \epsilon$$</p>
+<p>这时候，我们就称 $a$ 为数列 $a_i$ 的极限。</p>
+<p><strong>数列何时收敛？(sequence converge)</strong></p>
+<p>两个证明方式：</p>
+<ol>
+<li><p>对于所有的 $i$ 来说，如果 $a_i &lt; a_{i+1}$ 那么：</p>
+<ul>
+<li>数列发散 (也就是收敛到无穷大)</li>
+<li>数列收敛到某个实数 $a$</li>
+</ul>
+</li>
+<li><p>对于所有的 $i$ 来说，如果 $|a_i - a| \leq b_i$ 成立，且 $b_i \to 0$， 那么 $a_i \to a$</p>
+</li>
+</ol>
+<p><strong>无穷级数（infinite series）</strong></p>
+<blockquote>
+<p>无穷级数的定义： 对于一个数列，我们有 $\sum \limits_{i=1}^{\infty} a_i = \lim \limits_{n \to \infty} \sum \limits_{i=1}^{n} a_i$ 当且仅当极限存在的时候成立。</p>
+</blockquote>
+<p>什么时候极限存在呢？</p>
+<ol>
+<li><p>如果 $a_i \geq 0$， 极限存在。 （因为这个时候，它是一个单调级数）</p>
+</li>
+<li><p>如果所有的 $a_i$ 不一定有着相同的符号</p>
+<ul>
+<li>极限不存在</li>
+<li>极限可能存在，但是当我们通过不同的顺序来加的时候，结果可能不同（举个例子就是：奇数顺序和偶数顺序得到的结果是不同的）</li>
+<li><strong>事实上</strong> 如果我们可以证明 $\sum \limits_{i=1}^{\infty} |a_i| &lt; \infty$ 那么极限存在。</li>
+</ul>
+</li>
+</ol>
+<p><strong>等比级数</strong></p>
+<p>$$S = \sum \limits_{i=0}^{\infty} |\alpha_i| = 1 + \alpha + \alpha^2 + … \ \ \ \ \ \ \ \ |\alpha| &lt; 1$$</p>
+<p>那么 $S$ 等于多少呢？</p>
+<p>很简单，我们可以通过如下式子证得：</p>
+<p>$$(1 - \alpha) (1 + \alpha + … + \alpha^n) = 1 - \alpha^{n+1} \<br>    n \to \infty \<br>    (1 - \alpha) S = 1 \<br>    S = \frac{1}{1 - \alpha}$$</p>
+<p><strong>多指标级数</strong></p>
+<p>只要我们能保证 $\sum |a_{ij}| &lt; \infty$， 那么我们用什么样的顺序进行加操作都是OK的。</p>
+<p>所以 </p>
+<p>$$\sum \limits_{i \geq 1, j \geq 1} a_{ij} = \sum \limits_{i=0}^{\infty} ( \sum \limits_{j=0}^{\infty} a_{ij}) = \sum \limits_{j=0}^{\infty} ( \sum \limits_{i=0}^{\infty} a_{ij})$$</p>
+<p>又比如：</p>
+<p>$$\sum \limits_{(i, j) : j \leq i} a_{ij} = \sum \limits_{i=1}^{\infty} ( \sum \limits_{j=1}^{i} a_{ij}) = \sum \limits_{i=j}^{\infty} ( \sum \limits_{j=1}^{\infty} a_{ij})$$</p>
+<h3 id="3-3-可数集合和不可数集合"><a href="#3-3-可数集合和不可数集合" class="headerlink" title="3.3 可数集合和不可数集合"></a>3.3 可数集合和不可数集合</h3><blockquote>
+<p>可数的定义： can be put in 1-1 correspondence with positive integers.</p>
+</blockquote>
+<p>也就是说对于集合 $\Omega$ 来说，我们可以对 $\Omega$ 中的每一个元素都给定一个下标，使得 ${ a_1, a_2, … } = \Omega$</p>
+<p>比如 正整数（ $1, 2, 3, …$ ）就是可数的、整数（ $0, 1, -1, 2, -2, …$ ）也是可数的、成对的整数（ $a_{ij}$ ）也是可数的、有理数 $q$ 且 $0 &lt; q &lt; 1$ （ $\frac{1}{2}, \frac{1}{3}, \frac{2}{3}, \frac{1}{4}, …$ ）也是可数的</p>
+<blockquote>
+<p>不可数的定义： not countable </p>
+</blockquote>
+<p>比如区间 $[0, 1]$ 就是不可数的。再比如 实数集、平面 都是不可数的。</p>
+<p>证明：实数是不可数的。</p>
+<p>对于区间 $[0, 1]$ 来说，我们假设它是可数的。那么 $[0, 1]$ 中的所有元素可以写成集合 ${ x_1, x_2, …}$</p>
+<p>现在，假设 $x_1 = 0.A_{11} A_{12} A_{13} …$ , $x_2 = 0.A_{21} A_{22} A_{23} …$, $x_3 = 0.A_{31} A_{32} A_{33} …$ 然后我们选择一个不同于 $A_{11}$ 的元素 $A_1$ 和不同于 $A_{22}$ 的元素 $A_2$ 和不同于 $A_{33}$ 的元素 $A_3$ … 将这些元素组合在一起形成了一个新的数 $\hat{x} = 0.A_1A_2A_3A_4…$ 那么很显然 $\hat{x}$ 不等于 $x_1$, 也不等于 $x_2$, 也不等于 $x_3$, 也不等于 $x_4$, … 它跟集合中所有项都不相等，但是 $\hat{x}$ 又在 $[0,1]$ 之间，那么结论跟假设冲突，则假设是错误的，所以区间 $[0, 1]$ 不可数。</p>
+<h2 id="4-作业"><a href="#4-作业" class="headerlink" title="4. 作业"></a>4. 作业</h2><ol>
+<li>证明 ${\bf P}\Big((A \cap B^ c) \cup (A^ c \cap B)\Big)={\bf P}(A)+{\bf P}(B)-2\cdot {\bf P}(A\cap B)$</li>
+</ol>
+<p>证明如下：</p>
+<p>因为 $(A \cap B^c) \cap (A^c \cap B) = (A \cap A^c) \cap (B^c \cap B) = \varnothing$ </p>
+<p>那么 ${\bf P}\Big((A \cap B^ c) \cup (A^ c \cap B)\Big) = {\bf P}(A \cap B^ c) + {\bf P}(A^ c \cap B)$</p>
+<p>其中 ${\bf P}(A \cap B^ c) = {\bf P}(A) - {\bf P}(A \cap B)$, ${\bf P}(A^ c \cap B) = {\bf P}(B) - {\bf P}(A \cap B)$</p>
+<p>所以${\bf P}\Big((A \cap B^ c) \cup (A^ c \cap B)\Big) = {\bf P}(A) + {\bf P}(B) - 2 \cdot {\bf P}(A \cap B)$</p>
+<ol start="2">
+<li>Geniuses and chocolates. Out of the students in a class, 60% are geniuses, 70% love chocolate, and 40% fall into both categories. Determine the probability that a randomly selected student is neither a genius nor a chocolate lover.</li>
+</ol>
+<p>解：</p>
+<p>设事件 A 为 “student is genius”, 事件 B 为 “student love chocolate”</p>
+<p>由题意可得 ${\bf P}(A) = 0.6$, ${\bf P}(B) = 0.7$, ${\bf P}(A \cap B) = 0.4$ </p>
+<p>所以，结果为 ${\bf P}(A^c \cap B^c) = {\bf P}( (A \cup B)^c ) = 1 - ( {\bf P}(A) + {\bf P}(B) - {\bf P}(A \cap B)) = 1 - (0.6 + 0.7 - 0.4) = 0.1$ </p>
+<ol start="3">
+<li>Uniform probabilities on a square. Romeo and Juliet have a date at a given time, and each will arrive at the meeting place with a delay between 0 and 1 hour, with all pairs of delays being “equally likely,” that is, according to a uniform probability law on the unit square. The first to arrive will wait for 15 minutes and will leave if the other has not arrived. What is the probability that they will meet?</li>
+</ol>
+<p>解：</p>
+<p>我们设 $i$ 表示 Romeo 到达的时间，所以 $0 &lt; i &lt; 60$，设 $j$ 表示 Juliet 达到的时间，所以 $i - 15  \leq j \leq i + 15$ 为此，我们可依据上述的表达式在一个二维平面上画出图像来。</p>
+<p><img src="/images/probability theory/unit1/question3.jpg" alt="问题3的图像解答"></p>
+<p>黑色平面的部分就是 Romeo 和 Juliet 能够碰到的时间。</p>
+<p>所以，我们可以算出黑色部分的面积是 $2 \cdot \frac{1}{2} \cdot \frac{3}{4} \cdot \frac{3}{4} = \frac{7}{16}$</p>
+<p>所以，它们能够成功约会的概率是 $\frac{7}{16}$</p>
+<ol start="4">
+<li><p>Bonferroni’s inequality.</p>
+<p> (a) Prove that for any two events $A1$ and $A2$, we have<br>$${\bf P}(A_1 \cap A_2) \geq {\bf P}(A_1) + {\bf P}(A_2)-1.$$</p>
+<p> (b) Generalize to the case of n events $A1,A2,…,An$, by showing that<br>$${\bf P}(A_1 \cap A_2 \cap \cdots \cap A_ n)\geq {\bf P}(A_1)+{\bf P}(A_2)+\cdots +{\bf P}(A_ n)-(n-1).$$</p>
+</li>
+</ol>
+<p>解：(a)</p>
+<p>因为  ${\bf P}(A_1 \cup A_2) = {\bf P}(A_1) + {\bf P}(A_2) - {\bf P}(A_1 \cap A_2)$</p>
+<p>所以 ${\bf P}(A_1 \cap A_2) = {\bf P}(A_1) + {\bf P}(A_2) - {\bf P}(A_1 \cup A_2)$</p>
+<p>又因为 ${\bf P}(A_1 \cup A_2) \leq 1$</p>
+<p>所以 ${\bf P}(A_1 \cap A_2) \geq {\bf P}(A_1) + {\bf P}(A_2) - 1$</p>
+<p>所以，得证。</p>
+<p>解：(b)</p>
+<p>因为 ${\bf P} ({(A_1 \cap A_2)}^c) = {\bf P}(A_1^c \cup A_2^c) \leq {\bf P}(A_1^c) + {\bf P}(A_2^c)$</p>
+<p>所以 $1 - {\bf P}(A_1 \cap A_2) \leq 1 - {\bf P}(A_1) + 1 - {\bf P}(A_2)$</p>
+<p>所以 ${\bf P}(A_1 \cap A_2) \geq {\bf P}(A_1) + {\bf P}(A_2) - 1$</p>
+<p>类似的情况可以推广到 $A_n$</p>
+<p>因为 ${\bf P}({(A_1 \cap A_2 \cap … \cap A_n)}^c) = {\bf P}(A_1^c \cup … \cup A_n^c) \leq {\bf P}(A_1^c) + … + {\bf P}(A_n^c)$</p>
+<p>所以利用 ${\bf P}(A^c) = 1 - {\bf P}(a)$ 带入上式可以得到结果。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Probability/" rel="tag"># Probability</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/05/《统计学习方法》第六章——逻辑回归和最大熵模型/" rel="next" title="《统计学习方法》第六章——逻辑回归和最大熵模型.md">
+                <i class="fa fa-chevron-left"></i> 《统计学习方法》第六章——逻辑回归和最大熵模型.md
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/10/分布式存储系统Megastore/" rel="prev" title="分布式存储系统Megastore">
+                分布式存储系统Megastore <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Unit1-Probability-models-and-axioms"><span class="nav-number">1.</span> <span class="nav-text">Unit1 Probability models and axioms</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Sample-Space（样本空间）"><span class="nav-number">1.1.</span> <span class="nav-text">1. Sample Space（样本空间）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Event（事件）-and-Probability（概率）"><span class="nav-number">1.2.</span> <span class="nav-text">2. Event（事件） and Probability（概率）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-概率的三条公理："><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 概率的三条公理：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-概率的一系列推论："><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 概率的一系列推论：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-概率的计算步骤"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 概率的计算步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-概率的一些解释"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 概率的一些解释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-数学背景回顾"><span class="nav-number">1.3.</span> <span class="nav-text">3. 数学背景回顾</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Sets（集合）"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 Sets（集合）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Sequences（数列）-and-their-limits（极限）"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 Sequences（数列） and their limits（极限）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-可数集合和不可数集合"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 可数集合和不可数集合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-作业"><span class="nav-number">1.4.</span> <span class="nav-text">4. 作业</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

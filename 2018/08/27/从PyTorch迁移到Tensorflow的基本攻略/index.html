@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning,TF," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文是一个记录，用于记录自己如何快速上手 TF 的经历。 PS: 本文中的大部分概念基于莫烦的 MorvanZhou/Tensorflow-Tutorial">
+<meta name="keywords" content="Deep Learning,TF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="知识如何迁移？从用 Pytorch 变成用 Tensorflow。">
+<meta property="og:url" content="http://yoursite.com/2018/08/27/从PyTorch迁移到Tensorflow的基本攻略/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="本文是一个记录，用于记录自己如何快速上手 TF 的经历。 PS: 本文中的大部分概念基于莫烦的 MorvanZhou/Tensorflow-Tutorial">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/tf_basic/regression.png">
+<meta property="og:updated_time" content="2018-08-28T12:54:48.857Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="知识如何迁移？从用 Pytorch 变成用 Tensorflow。">
+<meta name="twitter:description" content="本文是一个记录，用于记录自己如何快速上手 TF 的经历。 PS: 本文中的大部分概念基于莫烦的 MorvanZhou/Tensorflow-Tutorial">
+<meta name="twitter:image" content="http://yoursite.com/images/tf_basic/regression.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/08/27/从PyTorch迁移到Tensorflow的基本攻略/"/>
+
+
+
+
+
+  <title>知识如何迁移？从用 Pytorch 变成用 Tensorflow。 | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/27/从PyTorch迁移到Tensorflow的基本攻略/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">知识如何迁移？从用 Pytorch 变成用 Tensorflow。</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-27T14:27:20+08:00">
+                2018-08-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TF/" itemprop="url" rel="index">
+                    <span itemprop="name">TF</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是一个记录，用于记录自己如何快速上手 TF 的经历。</p>
+<p>PS: 本文中的大部分概念基于莫烦的 <a href="https://github.com/MorvanZhou/Tensorflow-Tutorial" target="_blank" rel="noopener">MorvanZhou/Tensorflow-Tutorial</a></p>
+<a id="more"></a>
+<h1 id="一、什么是-session"><a href="#一、什么是-session" class="headerlink" title="一、什么是 session"></a>一、什么是 session</h1><blockquote>
+<p>seesion 就是 TF 中的启动器，我们需要通过调用 session 来将数据传入整个计算图中，得到想要的结果，没有 session 就没有结果。</p>
+</blockquote>
+<p>比如我们要计算：</p>
+<p>$\begin{bmatrix}</p>
+<ol>
+<li>&amp; 1. &amp; 1. \</li>
+<li>&amp; 1. &amp; 1. \<br>\end{bmatrix} +<br>\begin{bmatrix}</li>
+<li>&amp; 2. &amp; 3. \</li>
+<li>&amp; 5. &amp; 6. \<br>\end{bmatrix} =<br>\begin{bmatrix}</li>
+<li>&amp; 3. &amp; 4. \</li>
+<li>&amp; 6. &amp; 7. \<br>\end{bmatrix}$</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">input1 = tf.constant(1.0, shape=[2, 3])</span><br><span class="line">input2 = tf.constant(np.reshape(np.arange(1.0, 7.0, dtype=np.float32), (2, 3)))</span><br><span class="line">add_output = tf.add(input1, input2)</span><br><span class="line">print(add_output)</span><br></pre></td></tr></table></figure>
+<p><strong>output:</strong></p>
+<blockquote>
+<p>Tensor(“Add_2:0”, shape=(2, 3), dtype=float32)</p>
+</blockquote>
+<p>为什么没有得到我们想要的结果？</p>
+<blockquote>
+<p>因为在我们写完上述代码之后，我们完成的是 <strong>“定义了一个可以运行的计算图”</strong>。如果我们需要启动这个计算图，我们还需要使用 tf.Session()。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">input1 = tf.constant(1.0, shape=[2, 3])</span><br><span class="line">input2 = tf.constant(np.reshape(np.arange(1.0, 7.0, dtype=np.float32), (2, 3)))</span><br><span class="line">add_output = tf.add(input1, input2)</span><br><span class="line"></span><br><span class="line"># 使用 session() 有两种方式 (就像使用 open 打开文件一样)</span><br><span class="line"></span><br><span class="line"># 第一种：</span><br><span class="line">sess = tf.Session()</span><br><span class="line">result1 = sess.run(add_output)</span><br><span class="line">print(result1)</span><br><span class="line">sess.close()</span><br><span class="line"></span><br><span class="line"># 第二种：</span><br><span class="line"># 推荐使用这种，不会漏泄 sess.close() </span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    result2 = sess.run(dot_operation)</span><br><span class="line">    print(result2)</span><br></pre></td></tr></table></figure>
+<h1 id="二、什么是-variable"><a href="#二、什么是-variable" class="headerlink" title="二、什么是 variable"></a>二、什么是 variable</h1><blockquote>
+<p>variable 就是变量的含义，通俗一点说就是<strong>“模型中的参数”</strong>，比如我们要训练一个线性模型 $y = k x + b$，那么 $x$ 和 $b$ 就是我们的 variable，<strong>值得注意的是，一旦定义了变量，在运行之前，要对变量进行初始化</strong>。</p>
+</blockquote>
+<p>接下来，我们会定义一个变量 $x$，初始时候 $x=0$，之后每次运行都让 $x = x + 1$ </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">x = tf.Variable(0, name=&quot;x&quot;) </span><br><span class="line">add_one = tf.add(x, 1)</span><br><span class="line">update_x = tf.assign(x, add_one) # 将 add_one 的结果赋值给 x</span><br><span class="line"></span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 请注意： 一旦我们定义了变量，我们需要将他们初始化，可以使用如下语句：</span><br><span class="line">    sess.run(tf.global_variables_initializer())</span><br><span class="line">    # 开始时候的x</span><br><span class="line">    print(sess.run(x))</span><br><span class="line">    # 我们运行三次</span><br><span class="line">    for _ in range(3):</span><br><span class="line">        sess.run(update_x)</span><br><span class="line">        print(sess.run(x))</span><br></pre></td></tr></table></figure>
+<h1 id="三、什么是-placeholder"><a href="#三、什么是-placeholder" class="headerlink" title="三、什么是 placeholder"></a>三、什么是 placeholder</h1><blockquote>
+<p>placeholder 翻译过来是占位符，通俗一点说就是<strong>“每次训练的过程中会输入到模型的数据”</strong>。我们在定义 placeholder 的时候需要将它的数据类型和数据格式一起传入。 </p>
+</blockquote>
+<blockquote>
+<p>比如下面会看到的 tf.float32 表示的就是每次训练扔进模型中的数据类型是 tf.float32。 而数据格式默认是 None 就是一维值也可以是多维，比如 [2,3] 表示2行、3列的数据格式。而 [None, 3] 表示列为3，行不定。</p>
+</blockquote>
+<p>使用占位符的关键就是在 sess.run() 的时候使用 feed_dict 参数，将真实数据传入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line"></span><br><span class="line"># 第一个操作</span><br><span class="line">x1 = tf.placeholder(dtype=tf.float32, shape=None)</span><br><span class="line">y1 = tf.placeholder(dtype=tf.float32, shape=None)</span><br><span class="line">z1 = x1 + y1</span><br><span class="line"></span><br><span class="line"># 第二个操作</span><br><span class="line">x2 = tf.placeholder(dtype=tf.float32, shape=[2, 1])</span><br><span class="line">y2 = tf.placeholder(dtype=tf.float32, shape=[1, 2])</span><br><span class="line">z2 = tf.matmul(x2, y2)</span><br><span class="line"></span><br><span class="line"># 开始运行</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    # 当我们只运行一个操作的时候</span><br><span class="line">    z1_value = sess.run(z1, feed_dict=&#123;x1: 1, y1: 2&#125;)</span><br><span class="line"></span><br><span class="line">    # 当我们运行多个操作的时候</span><br><span class="line">    z1_value, z2_value = sess.run(</span><br><span class="line">        [z1, z2],       # 同时运行 z1 和 z2</span><br><span class="line">        feed_dict=&#123;</span><br><span class="line">            x1: 1, y1: 2,</span><br><span class="line">            x2: [[2], [2]], y2: [[3, 3]]</span><br><span class="line">        &#125;)</span><br><span class="line">    print(z1_value)</span><br><span class="line">    print(z2_value)</span><br></pre></td></tr></table></figure>
+<h1 id="四、用-Neural-Network-来拟合一个曲线（回归模型）"><a href="#四、用-Neural-Network-来拟合一个曲线（回归模型）" class="headerlink" title="四、用 Neural Network 来拟合一个曲线（回归模型）"></a>四、用 Neural Network 来拟合一个曲线（回归模型）</h1><p>这里，我们想要做的是用 TF 来拟合一个非常简单的类似于 $y=x^2$ 的曲线。</p>
+<blockquote>
+<p>用实现这个拟合的目标，我们会使用一个简单的两层神经网络来完成。这时候，我们会用到 tf.layers 这个模块。如果用 Pytorch 来类比，这就是基础版的 torch.nn，之所叫基础版本，是因为里面只给你简单的封装了一些常用的 layers， 不过也勉强够用了。</p>
+</blockquote>
+<blockquote>
+<p>再介绍一下求梯度的过程， pytorch 中求梯度有两种方式 1： 用 backward() 求出梯度之后，手动对梯度进行处理；2：backward() 求出梯度之后，使用 step() 来自动为我们更新所有的梯度。</p>
+</blockquote>
+<blockquote>
+<p>tf 中也是这样的，我们有两种方式： 1：optimizer.compute_gradients(loss) + optimizer.apply_gradients()； 2： optimizer.minimize(loss) 。</p>
+</blockquote>
+<blockquote>
+<p>如果你不需要用 graident 做什么事，推荐使用第二种。</p>
+</blockquote>
+<p>模拟数据如下图所示：</p>
+<p><img src="/images/tf_basic/regression.png" alt="regression picture"></p>
+<p>导入包加使用模拟数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">import tensorflow as tf</span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import numpy as np</span><br><span class="line"></span><br><span class="line">tf.set_random_seed(1)</span><br><span class="line">np.random.seed(1)</span><br><span class="line"></span><br><span class="line"># 生成模拟数据</span><br><span class="line">x = np.linspace(-1, 1, 100).reshape(-1, 1)        # shape (100, 1)</span><br><span class="line">noise = np.random.normal(0, 0.1, size=x.shape)</span><br><span class="line">y = np.power(x, 2) + noise                        # shape (100, 1) + some noise</span><br><span class="line"></span><br><span class="line"># 画出来的杂音图，如上图所示。</span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">plt.show()</span><br><span class="line"></span><br><span class="line"># 定义占位符，用来表示要扔进模型中的数据</span><br><span class="line">input_data_x = tf.placeholder(tf.float32, x.shape)     # input x</span><br><span class="line">input_data_y = tf.placeholder(tf.float32, y.shape)     # input y</span><br><span class="line"></span><br><span class="line"># 定义模型： 我们用一个两层的神经网络来进行拟合</span><br><span class="line"># 第一层：线性层， inputs 表示输入数据， units 表示隐含层大小， activation 表示激活函数</span><br><span class="line">linear_layer = tf.layers.dense(inputs=input_data_x, units=10, activation=tf.nn.relu)   # 隐含层</span><br><span class="line"># 第二层：输出层</span><br><span class="line">output_layer = tf.layers.dense(inputs=linear_layer, units=1)                     # output layer</span><br><span class="line"></span><br><span class="line"># 定义损失函数、优化器</span><br><span class="line"># 损失函数：因为是拟合，最好用的就是最小二乘法的。</span><br><span class="line">loss = tf.losses.mean_squared_error(input_data_y, output_layer)   </span><br><span class="line"># 优化器：我们使用的是梯度下降</span><br><span class="line">optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.5)</span><br><span class="line"># 第一种更新梯度的方法：</span><br><span class="line">train_op = optimizer.minimize(loss)</span><br><span class="line"></span><br><span class="line"># 第二种更新梯度的办法：</span><br><span class="line"># get_gradient = optimizer.compute_gradients(loss)</span><br><span class="line"># update_parameters = optimizer.apply_gradients(get_gradient)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 定义 Session()</span><br><span class="line">sess = tf.Session()      </span><br><span class="line"># 初始化计算图中的变量                         </span><br><span class="line">sess.run(tf.global_variables_initializer())         </span><br><span class="line"></span><br><span class="line"># 开始训练</span><br><span class="line">for step in range(100):</span><br><span class="line">    # 运行流程一共有3个输出， train_op 会输出； loss 会输出； 拟合的结果也会输出。</span><br><span class="line">    _, l, pred = sess.run([train_op, loss, output_layer], &#123;input_data_x: x, input_data_y: y&#125;)</span><br><span class="line">    if step % 10 == 0:</span><br><span class="line">        print(l)</span><br><span class="line"># 画出最后的拟合结果图。</span><br><span class="line">plt.cla()</span><br><span class="line">plt.scatter(x, y)</span><br><span class="line">plt.plot(x, pred, &apos;r-&apos;, lw=5)</span><br><span class="line">plt.text(0.5, 0, &apos;Loss=%.4f&apos; % l, fontdict=&#123;&apos;size&apos;: 20, &apos;color&apos;: &apos;red&apos;&#125;)</span><br><span class="line">plt.pause(0.1)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<h1 id="五、模型的存储和重载"><a href="#五、模型的存储和重载" class="headerlink" title="五、模型的存储和重载"></a>五、模型的存储和重载</h1><p>很多时候，我们会需要使用预训练的模型，这样我们需要把模型重载。但是重载之前，我们得先学会如何保存模型。</p>
+<blockquote>
+<p>tf 中模型的保存也比较简单，讲起来两步就能搞定。</p>
+</blockquote>
+<blockquote>
+<p>1.实例化 Saver 类 （Saver 类是 tf 中用来存储和重载的类）</p>
+</blockquote>
+<blockquote>
+<p>2.保存模型数据</p>
+</blockquote>
+<p>代码形式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 定义一个 Saver 类</span><br><span class="line">saver = tf.train.Saver()</span><br><span class="line"></span><br><span class="line"># 训练模型的过程</span><br><span class="line">....</span><br><span class="line"></span><br><span class="line"># 模型训练完了， 将模型保存到 save/model.ckpt 文件中，</span><br><span class="line"># write_meta_graph=False 表示不存储网络结构，只存储网络中的参数。 如同 pytorch 中的 torch.save(model.state_dict(), &quot;save/model.ckpt&quot;)</span><br><span class="line">saver.save(sess, &quot;./model_params&quot;, write_meta_graph=False)</span><br></pre></td></tr></table></figure>
+<p>我们保存完模型之后，如果下次要用这个模型，该怎么办呢？ 同样使用 Saver 类就行了，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 模型重新建立的过程</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"># 这次我们不需要初始化，直接将存储好的模型进行加载</span><br><span class="line">saver = tf.train.Saver() </span><br><span class="line">saver.restore(sess, &quot;./model_params&quot;)</span><br></pre></td></tr></table></figure>
+<h1 id="六、数据处理和分批"><a href="#六、数据处理和分批" class="headerlink" title="六、数据处理和分批"></a>六、数据处理和分批</h1><p>用过 Pytorch 的人都知道 Dataset 和 Dataloader 合起来用起来有多爽。那么 tf 有没有这么爽的东西呢？</p>
+<blockquote>
+<p>有的，而且功能也差不多… 叫 tf.data.Dataset 和 tf.data.Iterator</p>
+</blockquote>
+<p>先从一个简单的例子来看。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 创建一个Dataset对象</span><br><span class="line">dataset = tf.data.Dataset.from_tensor_slices([1,2,3,4,5,6,7,8,9])</span><br><span class="line"># 创建一个迭代器</span><br><span class="line">iterator = dataset.make_one_shot_iterator()</span><br><span class="line"># get_next()函数可以帮助我们从迭代器中获取元素</span><br><span class="line">element = iterator.get_next()</span><br><span class="line"></span><br><span class="line"># 遍历迭代器，获取所有元素</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">   for i in range(9):</span><br><span class="line">       print(sess.run(element))</span><br><span class="line"></span><br><span class="line"># 打印结果</span><br><span class="line"># 1 2 3 4 5 6 7 8 9</span><br></pre></td></tr></table></figure>
+<p>当我们需要封装的数据是比较简单的数据的时候，我们可以直接使用 tf.data.Dataset.from_tensor_slices() 将数据包装成 Dataset 类。然后调用 make_one_shot_iterator() 变成一个可以迭代器，最后通过 get_next() 帮助我们从迭代器中获取元素。</p>
+<p>再从一个复杂一些的例子来看，比如现在我们需要从硬盘中读取图片信息。假设，我们知道文件夹下面放着的图片的信息，那么我们可以这样做。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># 先建立一个常量保存所有图片的路径</span><br><span class="line">filenames = tf.constant([&quot;/var/data/image1.jpg&quot;, &quot;/var/data/image2.jpg&quot;, ...])</span><br><span class="line"></span><br><span class="line"># 再理想一些，每个图片对应的类别我们也清楚</span><br><span class="line">labels = tf.constant([0, 37, ...])</span><br><span class="line"></span><br><span class="line"># 构建一个用于解析图片数据的函数</span><br><span class="line">def _parse_images(filename, label):</span><br><span class="line">  image_string = tf.read_file(filename)</span><br><span class="line">  # 当这个报错了，可以查看 API 文档，选择对应的图片格式进行解析，</span><br><span class="line">  # 比如 tf.image.decode_jpg(image_string) 用来处理 jpg 格式的图片</span><br><span class="line">  image_decoded=tf.image.decode_image(image_string)</span><br><span class="line">  # 调整图片大小，并且选用 method,使用最邻近插值，返回的结果仍为图像数据，使用其他方法则返回float数据</span><br><span class="line">  image_resized = tf.image.resize_images(image_decoded, [28, 28],method=1)</span><br><span class="line">  </span><br><span class="line">  return image_resized, label</span><br><span class="line"></span><br><span class="line"># 构建 dataset</span><br><span class="line">dataset = tf.data.Dataset.from_tensor_slices((filenames, labels))</span><br><span class="line"># 用 _parse_images 函数来处理对应的 dataset</span><br><span class="line">dataset = dataset.map(_parse_function)</span><br><span class="line"># 使用 batch = 64 </span><br><span class="line">batched_dataset = dataset.batch(64)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 构建迭代器</span><br><span class="line">iterator=batched_dataset.make_one_shot_iterator()</span><br><span class="line"># 构建 next element</span><br><span class="line">next_element = iterator.get_next()</span><br><span class="line"># 得到数据和标签</span><br><span class="line">features, label=sess.run(next_element)</span><br></pre></td></tr></table></figure>
+<p>最后再补充一些理论知识，看得懂就看，看不懂就随意吧…</p>
+<blockquote>
+<p>tf.data.Dataset：表示一串元素（elements，tfrecors中的example），其中每个元素包含了一或多个Tensor对象。例如：在一个图片pipeline中，<strong>一个元素可以是单个训练样本，它们带有一个表示图片数据的tensors和一个label组成的pair</strong>。对于datasets其实理解为一个数据堆就行，我们可以在这个数据堆上进行多种操作，预处理、排序、batching等等。<strong>有两种不同的方式创建一个dataset</strong>： </p>
+</blockquote>
+<blockquote>
+<ul>
+<li>创建一个source (例如：Dataset.from_tensor_slices())， 从一或多个tf.Tensor对象中构建一个dataset</li>
+<li>应用一个transformation（例如：Dataset.batch()），从一或多个tf.data.Dataset对象上构建一个dataset</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>tf.data.Iterator：它提供了主要的方式来从一个dataset中抽取元素。通过Iterator.get_next() 返回的该操作会yields出Datasets中的下一个元素，作为输入pipeline和模型间的接口使用。</p>
+</blockquote>
+<p><strong>其实数据处理的过程有时候才是最花时间的过程，这里仅仅只是蜻蜓点水一般的略过了一下，还是得多看 API 文档</strong></p>
+<h1 id="七、CNN-和-MNIST"><a href="#七、CNN-和-MNIST" class="headerlink" title="七、CNN 和 MNIST"></a>七、CNN 和 MNIST</h1><p>终于到了用 CNN 来处理 MNIST 的环节了….</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          
+            <a href="/tags/TF/" rel="tag"># TF</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/21/Pointer-Network-的一些理解/" rel="next" title="Pointer Network 的一些理解">
+                <i class="fa fa-chevron-left"></i> Pointer Network 的一些理解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、什么是-session"><span class="nav-number">1.</span> <span class="nav-text">一、什么是 session</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、什么是-variable"><span class="nav-number">2.</span> <span class="nav-text">二、什么是 variable</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、什么是-placeholder"><span class="nav-number">3.</span> <span class="nav-text">三、什么是 placeholder</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、用-Neural-Network-来拟合一个曲线（回归模型）"><span class="nav-number">4.</span> <span class="nav-text">四、用 Neural Network 来拟合一个曲线（回归模型）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、模型的存储和重载"><span class="nav-number">5.</span> <span class="nav-text">五、模型的存储和重载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、数据处理和分批"><span class="nav-number">6.</span> <span class="nav-text">六、数据处理和分批</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、CNN-和-MNIST"><span class="nav-number">7.</span> <span class="nav-text">七、CNN 和 MNIST</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

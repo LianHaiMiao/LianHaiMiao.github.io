@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="逻辑回归,最大熵模型," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、逻辑回归1.1 什么是逻辑回归？(1) 通俗版本：逻辑回归实际上就是在线性回归的基础上加了一个逻辑函数 (sigmoid) (2) 学术版：逻辑回归是一种分类模型，由条件概率分布 $P(Y|X)$ 表示">
+<meta name="keywords" content="逻辑回归,最大熵模型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《统计学习方法》第六章——逻辑回归和最大熵模型.md">
+<meta property="og:url" content="http://yoursite.com/2018/04/05/《统计学习方法》第六章——逻辑回归和最大熵模型/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、逻辑回归1.1 什么是逻辑回归？(1) 通俗版本：逻辑回归实际上就是在线性回归的基础上加了一个逻辑函数 (sigmoid) (2) 学术版：逻辑回归是一种分类模型，由条件概率分布 $P(Y|X)$ 表示">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/tongjixuexi/six/sigmoid.png">
+<meta property="og:updated_time" content="2018-04-10T12:14:46.197Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《统计学习方法》第六章——逻辑回归和最大熵模型.md">
+<meta name="twitter:description" content="一、逻辑回归1.1 什么是逻辑回归？(1) 通俗版本：逻辑回归实际上就是在线性回归的基础上加了一个逻辑函数 (sigmoid) (2) 学术版：逻辑回归是一种分类模型，由条件概率分布 $P(Y|X)$ 表示">
+<meta name="twitter:image" content="http://yoursite.com/images/tongjixuexi/six/sigmoid.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/05/《统计学习方法》第六章——逻辑回归和最大熵模型/"/>
+
+
+
+
+
+  <title>《统计学习方法》第六章——逻辑回归和最大熵模型.md | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/05/《统计学习方法》第六章——逻辑回归和最大熵模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">《统计学习方法》第六章——逻辑回归和最大熵模型.md</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-05T11:26:12+08:00">
+                2018-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/统计学习方法/" itemprop="url" rel="index">
+                    <span itemprop="name">统计学习方法</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、逻辑回归"><a href="#一、逻辑回归" class="headerlink" title="一、逻辑回归"></a>一、逻辑回归</h1><h2 id="1-1-什么是逻辑回归？"><a href="#1-1-什么是逻辑回归？" class="headerlink" title="1.1 什么是逻辑回归？"></a>1.1 什么是逻辑回归？</h2><p>(1) 通俗版本：逻辑回归实际上就是在线性回归的基础上加了一个逻辑函数 (sigmoid)</p>
+<p>(2) 学术版：逻辑回归是一种分类模型，由条件概率分布 $P(Y|X)$ 表示</p>
+<a id="more"></a>
+<h2 id="1-2-逻辑回归的形式"><a href="#1-2-逻辑回归的形式" class="headerlink" title="1.2 逻辑回归的形式"></a>1.2 逻辑回归的形式</h2><p>按照李航老师的书中，应该介绍的是 logistic 分布。但是，我们先来一个简单的。 </p>
+<p><strong>sigmoid 函数</strong></p>
+<p>其数学形式是：</p>
+<p>$$g(x) = \frac{1}{1 + e ^ {-x}}$$</p>
+<p><img src="/images/tongjixuexi/six/sigmoid.png" alt="sigmoid"></p>
+<p>从上图可以看到 sigmoid 函数是一个 S形的曲线，它的取值在[0, 1]之间，在远离0的地方函数的值会很快接近0/1。</p>
+<p><strong>logistic 分布</strong></p>
+<p>设 $X$ 是连续随机变量， $X$ 服从 logistic 分布是指 $X$ 具有下列分布函数</p>
+<p>$$F(x) = P(X \leqslant x) = \frac{1}{1 + e^{-(x-\mu) / \gamma}}$$</p>
+<p>式中， $\mu$ 为位置参数， $\gamma &gt; 0$ 为形状参数。</p>
+<p>通俗点就是，曲线以点 $(\mu , \frac12)$ 为中心对称，且 $\gamma$ 的值越小，曲线在中心附近增长得越快。</p>
+<blockquote>
+<p>所以，可以这样认为 sigmoid 函数其实就是满足 $\mu = 0 , \gamma = 1$ 的 logistic 分布</p>
+</blockquote>
+<p><strong>logistic 模型</strong></p>
+<p>这里，我们以二项逻辑斯蒂回归模型为例。</p>
+<p>那么在给定随机变量 $X$ 和 随机变量 $Y$ 的情况下， 二项逻辑斯蒂回归模型是：</p>
+<p>$$P(Y=1 | X) = \frac{1}{1 + e^{-\theta^T x}}$$</p>
+<p>其中， $\theta$ 是我们需要求的模型的参数。</p>
+<h2 id="1-3-求解-logistic-回归模型"><a href="#1-3-求解-logistic-回归模型" class="headerlink" title="1.3 求解 logistic 回归模型"></a>1.3 求解 logistic 回归模型</h2><p>对于训练数据集，特征数据 $X = { x_1, x_2, … , x_n }$ 和对应的分类数据 $Y = { y_1, y_2, … , y_n }$ 我们采取极大似然估计的方法来估计模型参数即找到一组参数，使得在这组参数下，我们的数据的似然度（概率）可以达到最大。在逻辑回归模型中，似然度可表示为：</p>
+<p>$$L(\theta) = P(Y|\theta) = \prod P(y|x;\theta) = \prod g(\theta^T x) ^ y (1-g(\theta^T x))^{1-y}$$</p>
+<p>取对数可以得到对数似然度：</p>
+<p>$$l(\theta) = \sum {y\log{g(\theta^T x)} + (1-y)\log{(1-g(\theta^T x))}}$$</p>
+<p>另一方面，在机器学习领域，我们更经常遇到的是损失函数的概念，其衡量的是模型预测错误的程度。常用的损失函数有0-1损失，log损失，hinge损失等。其中log损失在单个数据点上的定义为</p>
+<p>$$-y\log{p(y|x)}-(1-y)\log{1-p(y|x)}$$</p>
+<p>如果取整个数据集上的平均log损失，我们可以得到</p>
+<p>$$J(\theta) = -\frac{1}{N} l(\theta)$$</p>
+<p>即在逻辑回归模型中，我们最大化似然函数和最小化log损失函数实际上是等价的。对于该优化问题，存在多种求解方法，这里以梯度下降的为例说明。梯度下降(Gradient Descent)又叫作最速梯度下降，是一种迭代求解的方法，通过在每一步选取使目标函数变化最快的一个方向调整参数的值来逼近最优值。基本步骤如下：</p>
+<blockquote>
+</blockquote>
+<ul>
+<li>选择下降方向（梯度方向，$\nabla {J(\theta)}$）</li>
+<li>选择步长，更新参数 $\theta^i = \theta^{i-1} - \alpha^i \nabla {J(\theta^{i-1})}$</li>
+<li>重复以上两步直到满足终止条件</li>
+</ul>
+<p>其中损失函数的梯度计算方法为：</p>
+<p>$$\frac{\partial{J}}{\partial{\theta}} = -\frac{1}{n}\sum_i (y_i - y_i^*)x_i + \lambda \theta$$</p>
+<p>沿梯度负方向选择一个较小的步长可以保证损失函数是减小的，另一方面，逻辑回归的损失函数是凸函数（加入正则项后是严格凸函数），可以保证我们找到的局部最优值同时是全局最优。</p>
+<h1 id="二、最大熵模型"><a href="#二、最大熵模型" class="headerlink" title="二、最大熵模型"></a>二、最大熵模型</h1><h2 id="2-1-最大熵原理"><a href="#2-1-最大熵原理" class="headerlink" title="2.1 最大熵原理"></a>2.1 最大熵原理</h2><p>熵反应的是事物的无序程度，或者说随机变量分布的均匀程度。</p>
+<p>用数学形式表示就是：</p>
+<p>$$H(P) = -\sum_x P(x) log P(x)$$</p>
+<p>熵满足以下不等式：</p>
+<p>$$0 \leq H(P) \leq log(|x|)$$</p>
+<p>其中 $|X|$ 为 $X$ 取值个数，仅当 $X$ 均匀分布时，右等号成立，熵最大。</p>
+<p>我们知道了一个变量 $X$ 的熵的表达式，很容易推广到多个变量的熵，很显然随机变量 $X$ 和  $Y$ 的联合熵的表达式是</p>
+<p>$$H(X, Y) = - \sum_{x, y}^n p(x, y) log p(x, y)$$</p>
+<p>但是，在最大熵模型中，我们会使用的是<strong>条件熵</strong>， $H(Y|X)$ 表示在已知随机变量X的条件下随机变量Y的不确定性。它的推导过程如下所示：</p>
+<p>$$H(Y|X) = \sum_{x \in X} p(x) H(Y|X = x) \<br>    = -\sum_{x \in X} p(x) \sum_{y \in Y} p(y|x) log p(y|x) \<br>    = -\sum_{x \in X} \sum_{y \in Y} p(x, y) log p(y|x)$$</p>
+<p>直观地讲，<strong>最大熵原理认为，在所有可能的概率模型（分布）中，熵最大的模型是最好的模型。</strong>也就是说，在那些满足已有事实（或约束条件）的概率模型中，那些不确定的部分都是无序的、混乱的、等可能的、均匀分布的。这个“等可能、混乱”只是个感性的词语，需要一个量化的标准，这个标准就是熵。</p>
+<p>用一个例子介绍最大熵原理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">例 1 随机变量 X 取值 &#123;A,B,C,D,E&#125; , 要估计各值的概率 P(A) ，P(B) ...   </span><br><span class="line"></span><br><span class="line">解：</span><br><span class="line"></span><br><span class="line">约束条件： P(A) + P(B) + P(C) + P(D) + P(E) = 1   </span><br><span class="line"></span><br><span class="line">满足条件的分布有无穷多，一个可行的办法就是认为分布中各个值是等可能的  </span><br><span class="line"></span><br><span class="line">P(A)=P(B)=P(C)=P(D)=P(E)=1/5   </span><br><span class="line"></span><br><span class="line">但是，有时，我们能从先验知识得到一些约束条件，如： </span><br><span class="line"></span><br><span class="line">P(A)+P(B)=3/10</span><br><span class="line"></span><br><span class="line">P(A)+P(B)+P(C)+P(D)+P(E)=1 </span><br><span class="line"></span><br><span class="line">这时满足上述两个约束的概率分布仍旧由无穷多个，所以，在缺少其他信息的情况下，我们可以认为A，B等可能，而 C,D,E等可能。</span><br><span class="line"></span><br><span class="line">所以：</span><br><span class="line"></span><br><span class="line">P(A)=P(B)=3/20 </span><br><span class="line"></span><br><span class="line">P(C)=P(D)=P(E)=7/30   </span><br><span class="line"></span><br><span class="line">这时，如果又有一个新约束 </span><br><span class="line"></span><br><span class="line">P(A)+P(C)=1/2</span><br><span class="line"></span><br><span class="line">那么，我们可以继续按照满足约束条件下求等概率的方法估计概率分布。</span><br><span class="line"></span><br><span class="line">上面的方法就遵循着最大熵原理。</span><br></pre></td></tr></table></figure>
+<h2 id="2-2-最大熵模型的定义"><a href="#2-2-最大熵模型的定义" class="headerlink" title="2.2 最大熵模型的定义"></a>2.2 最大熵模型的定义</h2><p><strong>将最大熵原理应用于分类就得到了最大熵模型。</strong></p>
+<p>假设分类模型是一个条件概率分布 $P(Y|X)$，$X \in \mathcal{X} \subseteq R^n$ 表示输入, $Y \in \mathcal{Y}$ 表示输出, $\mathcal{X}$  和 $\mathcal{Y}$ 分别是输入、输出的集合，这个模型表示的是对于给定的输入 $\X$ ，以条件 $P(Y|X)$ 输出 $Y$.</p>
+<p>给定一个训练数据集 </p>
+<p>$$T = { (x_1, y_1), (x_2, y_2) …, (x_n, y_n) }$$</p>
+<p>学习的目标是使用最大熵原理选择最好的分类模型。</p>
+<h3 id="2-2-1-两个经验分布"><a href="#2-2-1-两个经验分布" class="headerlink" title="2.2.1 两个经验分布"></a>2.2.1 两个经验分布</h3><p>因为，我们给定了训练数据集，所以，我们可以确定<strong>联合分布 $P(X, Y)$ 的经验分布</strong>和<strong>边缘分布 $P(X)$ 的经验分布</strong>。 </p>
+<blockquote>
+<p>我对于经验分布的理解就是：经验分布就是我们通过样本得到的概率分布，因为总体的分布，我们是未知的，所以我们需要<strong>通过样本来估计总体</strong></p>
+</blockquote>
+<p>这里，我们用 $\widetilde{P}(X, Y)$ 和 $\widetilde{P}(X)$ 表示 $P(X, Y)$ 的经验分布和 $P(X)$ 的经验分布。</p>
+<p>所以，我们有：</p>
+<p>$$\widetilde{P}(X = x, Y = y) = \frac{v(X = x, Y = y)}{N}<br>    \ \widetilde{P}(X = x) = \frac{v(X = x)}{N}$$</p>
+<p>其中， $v(X = x, Y = y)$ 表示训练数据中样本 $(x, y)$ 出现的频数， $v(X = x)$ 表示训练数据中输入 $x$ 出现的频数， N表示样本容量。</p>
+<h3 id="2-2-2-特征函数"><a href="#2-2-2-特征函数" class="headerlink" title="2.2.2 特征函数"></a>2.2.2 特征函数</h3><p>我们用特征函数 $f(x, y)$ 描述输入 $x$ 和输出 $y$ 之间的某一个事实, 它是一个二值函数。其定义是</p>
+<p>$$f(x,y)=\begin{cases}<br>    1, &amp; x, y 满足某一事实\<br>    0, &amp; 否则<br>    \end{cases}$$</p>
+<p>特征函数 $f(x, y)$ 关于经验分布 $\widetilde{P}(X, Y)$ 的期望值，用 $E_{\widetilde{P}}(f)$ 表示。</p>
+<p>$$E_{\widetilde{P}}(f) = \sum_{x, y} \widetilde{P}(x, y) f(x, y)$$</p>
+<p>特征函数 $f(x, y)$ 关于模型 $P(Y|X)$ 与经验分布 $\widetilde{P}(X)$ 的期望值，用 $E_{P}(f)$ 表示。</p>
+<blockquote>
+<p>按道理来说，我们应该是想要获得 $P(X)$ 的分布，但是没办法，我们有的是样本，而不是总体，所以我们只能近似的认为经验分布 $\widetilde{P}(X)$ == 总体分布 $P(X)$</p>
+</blockquote>
+<p>$$E_{P}(f) = \sum_{x, y} \widetilde{P}(x) P(y|x) f(x, y)$$</p>
+<p>如果模型能够获取训练数据中的信息，那么久可以假设这两个期望值相等，也就是</p>
+<p>$$E_P (f) = E_{\widetilde{P}}(f)$$</p>
+<p>或</p>
+<p>$$\sum_{x, y} \widetilde{P}(x) P(y|x) f(x, y) = \sum_{x, y} \widetilde{P}(x, y) f(x, y)$$</p>
+<p>我们将上面的式子，作为模型学习的约束条件。 假如有 $n$ 个特征函数 $f_i (x, y), i=1, 2, 3, …, n$ 那么就有 $n$ 个约束条件。</p>
+<h3 id="2-2-3-最大熵模型"><a href="#2-2-3-最大熵模型" class="headerlink" title="2.2.3 最大熵模型"></a>2.2.3 最大熵模型</h3><p>假设满足所有约束条件的模型集合为</p>
+<p>$$\mathcal{C} \equiv { P \in \mathcal{P} | E_{\widetilde{P}}(f_i), i=1, 2, …, n  }$$</p>
+<p>定义在条件概率分布 $P(Y|X)$ 上的条件熵为</p>
+<p>$$H(P) = - \sum_{x, y} \widetilde{P} (x) P(y|x) log P(y|x)$$</p>
+<p>则模型集合 $\mathcal{C}$ 中条件熵 $H(P)$ 最大的模型称为最大熵模型。 式中的对数为自然对数。</p>
+<p>上面的定义或许显得太枯燥了，那么我们就用一个例子来表示。</p>
+<h3 id="2-2-4-一个例子"><a href="#2-2-4-一个例子" class="headerlink" title="2.2.4 一个例子"></a>2.2.4 一个例子</h3><p><strong>例1：</strong> 假设我们需要判断 “打” 字是动词还是量词，已知的训练数据有</p>
+<blockquote>
+<p>$(x_1, y_1)$ = (一打火柴， 量词) ,</p>
+</blockquote>
+<blockquote>
+<p>$(x_2, y_2)$ = (三打啤酒， 量词) ,</p>
+</blockquote>
+<blockquote>
+<p>$(x_3, y_3)$ = (五打塑料袋， 量词) ,</p>
+</blockquote>
+<blockquote>
+<p>$(x_4, y_4)$ = (打电话， 动词) ,</p>
+</blockquote>
+<blockquote>
+<p>$(x_5, y_5)$ = (打篮球， 动词) ,</p>
+</blockquote>
+<p>通过观察，我们会发现 “打” 字前面为数字的时候，“打” 是量词， “打” 字后面是名词的时候， “打” 是动词。这是我们从训练数据中提取出来的两个特征，可以分别用特征函数 $f_1(x=“打”字前面为数字, y=量词)$ 和 $f_2(x=“打”字后面为名词, y=动词)$ 表示。</p>
+<p>$$f_1(x,y)=\begin{cases}<br>    1, &amp; 若“打”字前面为数字；\<br>    0, &amp; 否则<br>    \end{cases}$$</p>
+<p>$$f_2(x,y)=\begin{cases}<br>    1, &amp; 若“打”字后面是名词；\<br>    0, &amp; 否则<br>    \end{cases}$$</p>
+<p>在有了特征函数之后，对于训练数据，我们有：</p>
+<p>$$f_1(x_1, y_1) = f_1(x_2, y_2) = f_1(x_3, y_3) = 1; f_1(x_4, y_4) = f_1(x_5, y_5) = 0$$</p>
+<p>$$f_2(x_1, y_1) = f_2(x_2, y_2) = f_2(x_3, y_3) = 0; f_2(x_4, y_4) = f_2(x_5, y_5) = 1$$</p>
+<p>同时，对于特征函数 $f_1$ 来说，它的经验分布是:</p>
+<p>$$\widetilde{P}(X = 若“打”字前面为数字, Y = 量词) = \frac{3}{5}<br>    \ \widetilde{P}(X = 若“打”字前面为数字) = \frac{3}{5}$$</p>
+<p>对于特征函数 $f_2$ 来说，它的经验分布是:</p>
+<p>$$\widetilde{P}(X = 若“打”字后面是名词, Y = 动词) = \frac{2}{5}<br>    \ \widetilde{P}(X = 若“打”字后面是名词) = \frac{2}{5}$$</p>
+<p>所以，我们有两个约束条件</p>
+<p>$$\sum_{x, y} \frac{3}{5} P(y=量词 | x = 若“打”字前面为数字) = \frac{9}{5}$$</p>
+<p>$$\sum_{x, y} \frac{2}{5} P(y=动词 | x = 若“打”字后面是名词) = \frac{4}{5}$$</p>
+<h2 id="2-3-最大熵模型的学习"><a href="#2-3-最大熵模型的学习" class="headerlink" title="2.3 最大熵模型的学习"></a>2.3 最大熵模型的学习</h2><p>最大熵模型的学习过程就是求解最大熵模型的过程，最大熵模型的学习可以形式化为约束最优化的问题。</p>
+<p>对于给定的训练数据集 $T = { (x_1, y_1), (x_2, y_2), …, (x_N, y_N) }$ 以及特征函数 $f_i(x, y), i=1, 2, …, n$， 最大熵模型的学习等价于约束最优化问题：</p>
+<p>$$\max \limits_{P \in C}  \ H(P) = - \sum_{x, y} \widetilde{P} (x) P(y|x) log P(y|x) \<br>    s.t. \ E_P (f_i) = E_{\widetilde{P}} (f_i), \ i=1,2,…, n \<br>    \sum_y P(y|x) = 1$$</p>
+<p>我们通常习惯上求最小值问题，所以我们把这里的最大值问题改写为等价的求最小值问题</p>
+<p>$$\min \limits_{P \in C}  \ - H(P) =  \sum_{x, y} \widetilde{P} (x) P(y|x) log P(y|x) \ \ (2.1) \<br>    s.t. \ E_P (f_i) - E_{\widetilde{P}} (f_i) = 0, \ i=1,2,…, n \ \ (2.2) \<br>    \sum_y P(y|x) = 1 \ \ (2.3)$$</p>
+<p>一旦，我们求出了约束最优化问题 $(2.1) ~ (2.3)$ 的解，我们就得到了最大熵模型学习的解。</p>
+<p>下面是详细的推导公式：</p>
+<p>1、首先，我们先将约束最优化问题转换成无约束最优化的对偶问题 (<strong>todo: 写一篇关于拉格朗日对偶性的blog</strong>) . 通过求出对偶问题的解来求原始问题的解。</p>
+<p>引入拉格朗日乘子 $w_0, w_1, w_2, …, w_n$，定义拉格朗日函数 $L(P, w)$ ：</p>
+<p>$$L(P, w) \equiv -H(P) + w_0 \lgroup 1 - \sum_y P(y|x) \rgroup + \sum_{i=1}^n w_i (E_\widetilde{P} (f_i) - E_P (f_i)) \<br>    = \sum_{x, y} \widetilde{P} (x) P(y|x) log P(y|x) + w_0 \lgroup 1 - \sum_y P(y|x) \rgroup + \<br>    \sum_{i=1}^n w_i \lgroup \sum_{x, y} \widetilde{P} (x, y) f_i (x, y) - \sum_{x, y} \widetilde{P}(x) P(y|x) f_i {x, y} \rgroup \ \ (2.4)$$</p>
+<p>最优化的原始问题是：</p>
+<p>$$\min_{P \in C} \ \max_{w} L(P, w) \ \ (2.5)$$</p>
+<p>对偶问题就是</p>
+<p>$$\max_{w}  \min_{P \in C} L(P, w) \ \ (2.6)$$</p>
+<p>由于拉格朗日函数 $L(P, w)$ 是 $P$ 的凸函数，原始问题 $(2.5)$ 的解与对偶问题 $(2.6)$ 的解是等价的。这样，可以通过求解对偶问题 $(2.6)$ 来求解原始问题 $(2.5)$。</p>
+<p>2、我们先求里面的极小化问题 $\min \limits_{P \in C} L(P, w)$， 因为 $\min \limits_{P \in C} L(P, w)$ 是 $w$ 的函数，我们将其记为：</p>
+<p>$$\Psi (w) = \min_{P \in C} L(P, w) = L(P_w, w) \ \ (2.7)$$</p>
+<p>$\Psi (w)$ 称为对偶函数。 同时，将其解记为：</p>
+<p>$$P_w = arg \min \limits_{P \in C} L(P, w) = P_w(y|x) \ \ (2.8)$$</p>
+<p>具体来说，我们可以求 $L(P, w)$ 对 $P(y|x)$ 的偏导数：</p>
+<p>$$\frac{\partial L(P, w)}{\partial L(y|x)} = \sum_{x, y} \widetilde{P}(x) (log P(y|x) + 1) - \sum_y w_0 - \sum_{x,y} \lgroup \widetilde{P}(x) \sum_{i=1}^n w_i f_i(x, y) \rgroup \<br>    = \sum_{x, y} \widetilde{P}(x) \lgroup log P(y|x) + 1 - w_0 - \sum_{i=1}^n w_i f_i (x,y) \rgroup \ \ (2.9)$$</p>
+<p>令偏导数等于 0，在 $\widetilde{P}(x) &gt; 0$ 的情况下，我们可以解出：</p>
+<p>$$P(y|x) = exp (\sum_{i=1}^n w_i f_i (x,y) + w_0 - 1) = \frac{exp(\sum \limits_{i=1}^n w_i f_i (x,y))}{exp(1 - w_0)} \ \ (2.10)$$</p>
+<p>由 $\sum \limits_y P(y|x) = 1$ 得：</p>
+<p>$\sum \limits_y \frac{exp(\sum \limits_{i=1}^n w_i f_i (x,y))}{exp(1 - w_0)} = 1$ 可以推出 $exp(1 - w_0) = \sum \limits_y exp(\sum \limits_{i=1}^n w_i f_i (x,y))$</p>
+<p>所以：</p>
+<p>$$P_w (y|x) = \frac{exp(\sum \limits_{i=1}^n w_i f_i (x,y))}{\sum \limits_y exp(\sum \limits_{i=1}^n w_i f_i (x,y))} \ \ (2.11)$$</p>
+<p>然后，我们再让 </p>
+<p>$$Z_w (x) = \sum \limits_y exp \lgroup \sum \limits_{i=1}^n w_i f_i (x,y) \rgroup \ \ (2.12)$$</p>
+<p>这时候，我们称呼 $Z_w (x)$ 为规范化因子； $f_i (x, y)$ 是特征函数；$w_i$ 是特征的权值，由式 $(2.11)$ 和 $(2.12)$ 表示的模型 $P_w = P_w (y|x)$ 就是最大熵模型。这里， $w$ 是最大熵模型中的参数向量。 </p>
+<p>3、求解对偶问题外部的极大化问题。</p>
+<p>$$\max_x \Psi (w) \ \ (2.13)$$</p>
+<p>将其解记作 $w^*$，即：</p>
+<p>$$w^* = arg \max_w \Psi (w)$$</p>
+<p>也就是说，可以应用最优化算法求对偶函数 $\Psi (w)$ 的极大值，得到 $w^<em>$，用来表示 $P^</em> \in C$. 这里， $P^<em> = P_{w^</em>} =P_{w^*} (y|x)$ 是学习到的最优模型（最大熵模型）。也就是说，最大熵模型的学习归结为对偶函数 $\Psi (w)$ 的极大化。</p>
+<h2 id="2-4-一个关于最大熵模型的栗子"><a href="#2-4-一个关于最大熵模型的栗子" class="headerlink" title="2.4 一个关于最大熵模型的栗子"></a>2.4 一个关于最大熵模型的栗子</h2><p>问题：假设随机变量 $X$ 有5个取值 ${ A,B,C,D,E }$ ，且 $P(A) + P(B) = \frac{3}{10}$， 问，我们如何估计取各个值的概率？</p>
+<p>解：</p>
+<p>为了方便，我们用 $y_1, y_2, y_3, y_4, y_5$ 表示 $A, B, C, D, E$ ，于是最大熵模型学习的最优化问题就是</p>
+<p>$$min - H(P) = \sum_{i=1}^5 P(y_i) log P(y_i) \<br>    s.t. \ \ P(y_1) + P(y_2) = \widetilde{P}(y_1) + \widetilde{P}(y_2) = \frac{3}{10} \<br>    \sum_{i=1}^5 P(y_i) = \sum_{i=1}^5 \widetilde{P}(y_i) = 1$$</p>
+<p>引进拉格朗日乘子 $w_0$, $w_1$，定义拉格朗日函数</p>
+<p>$$L(P, w) = \sum_{i=1}^5 P(y_i) log P(y_i) + w_1 \lgroup P(y_1) + P(y_2) - \frac{3}{10} \rgroup + w_0 \lgroup \sum_{i=1}^5 P(y_i) - 1 \rgroup$$</p>
+<p>根据拉格朗日对偶性，可以通过求解对偶最优化问题得到原始最优化问题的解，所以求解</p>
+<p>$$\max \limits_w  \min \limits_P L(P, w)$$</p>
+<p>1、我们首先求解 $L(P, w)$ 关于 $P$ 的极小化问题，因此， $w_0, w_1$ 被我们看成常数，对 $y_i$ 求偏导，可以得到：</p>
+<p>$$\frac{\partial L(P,w)}{\partial P(y_1)} = 1 + log P(y_1) + w_1 + w_0$$</p>
+<p>$$\frac{\partial L(P,w)}{\partial P(y_2)} = 1 + log P(y_2) + w_1 + w_0$$</p>
+<p>$$\frac{\partial L(P,w)}{\partial P(y_3)} = 1 + log P(y_3) + w_0$$</p>
+<p>$$\frac{\partial L(P,w)}{\partial P(y_4)} = 1 + log P(y_4) + w_0$$</p>
+<p>$$\frac{\partial L(P,w)}{\partial P(y_5)} = 1 + log P(y_5) + w_0$$</p>
+<p>令各个偏导数等于0，解得</p>
+<p>$$P(y_1) = P(y_2) = e^{-w_1 -w_0 - 1}$$</p>
+<p>$$P(y_3) = P(y_4) = P(y_5) = e^{-w_0 - 1}$$</p>
+<p>于是，</p>
+<p>$$\min \limits_P L(P, w) = L(P_w, w) = -2 e^{-w_1 -w_0 - 1} - 3 e^{-w_0 - 1} - \frac{3}{10} w_1 - w_0$$</p>
+<p>再求解 $L(P_w, w)$ 关于 $w$ 的极大化问题：</p>
+<p>$$\max \limits_w L(P_w, w) = -2 e^{-w_1 -w_0 - 1} - 3 e^{-w_0 - 1} - \frac{3}{10} w_1 - w_0$$</p>
+<p>同样的，对 $w_0, w_1$ 求导得到</p>
+<p>$$2 e^{-w_1 -w_0 - 1} +  3 e^{-w_0 - 1} - 1 = 0$$</p>
+<p>$$2 e^{-w_1 -w_0 - 1} +  - \frac{3}{10} = 0$$</p>
+<p>通过上面两个式子，我们可以得到</p>
+<p>$$e^{-w_1 -w_0 - 1} = \frac{3}{20}$$</p>
+<p>$$e^{-w_0 - 1} = \frac{7}{30}$$</p>
+<p>于是，得到所要求的概率分布为：</p>
+<p>$$P(y_1) = P(y_2) = \frac{3}{20}$$</p>
+<p>$$P(y_3) = P(y_4) = P(y_5) = \frac{7}{30}$$</p>
+<h2 id="2-5-最大熵模型的极大似然估计"><a href="#2-5-最大熵模型的极大似然估计" class="headerlink" title="2.5 最大熵模型的极大似然估计"></a>2.5 最大熵模型的极大似然估计</h2>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/逻辑回归/" rel="tag"># 逻辑回归</a>
+          
+            <a href="/tags/最大熵模型/" rel="tag"># 最大熵模型</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/19/理解BigTable/" rel="next" title="理解BigTable">
+                <i class="fa fa-chevron-left"></i> 理解BigTable
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/08/《Introduction-to-Probability》—— Unit1-Probability-models-and-axioms/" rel="prev" title="《Introduction to Probability》—— Unit1 Probability models and axioms">
+                《Introduction to Probability》—— Unit1 Probability models and axioms <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、逻辑回归"><span class="nav-number">1.</span> <span class="nav-text">一、逻辑回归</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-什么是逻辑回归？"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 什么是逻辑回归？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-逻辑回归的形式"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 逻辑回归的形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-求解-logistic-回归模型"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 求解 logistic 回归模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、最大熵模型"><span class="nav-number">2.</span> <span class="nav-text">二、最大熵模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-最大熵原理"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 最大熵原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-最大熵模型的定义"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 最大熵模型的定义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-两个经验分布"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 两个经验分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-特征函数"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 特征函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-最大熵模型"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3 最大熵模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-4-一个例子"><span class="nav-number">2.2.4.</span> <span class="nav-text">2.2.4 一个例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-最大熵模型的学习"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 最大熵模型的学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-一个关于最大熵模型的栗子"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 一个关于最大熵模型的栗子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-最大熵模型的极大似然估计"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 最大熵模型的极大似然估计</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

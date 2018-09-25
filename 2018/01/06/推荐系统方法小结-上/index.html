@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="推荐系统," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="对传统推荐方法的一个小结，文章长度较长，分为两部分。">
+<meta name="keywords" content="推荐系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="推荐系统方法小结(上)">
+<meta property="og:url" content="http://yoursite.com/2018/01/06/推荐系统方法小结-上/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="对传统推荐方法的一个小结，文章长度较长，分为两部分。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/Structure.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/userCF.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/itemCF.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/compare.png">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/decisionTree.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/jiaquan.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/qiehuan.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/hunzha.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/tezhengzuhe.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/cengdie.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/tezhengbuchong.jpg">
+<meta property="og:image" content="http://yoursite.com/images/recSysSummary/jilian.jpg">
+<meta property="og:updated_time" content="2018-07-15T05:53:02.301Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="推荐系统方法小结(上)">
+<meta name="twitter:description" content="对传统推荐方法的一个小结，文章长度较长，分为两部分。">
+<meta name="twitter:image" content="http://yoursite.com/images/recSysSummary/Structure.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/06/推荐系统方法小结-上/"/>
+
+
+
+
+
+  <title>推荐系统方法小结(上) | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/06/推荐系统方法小结-上/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">推荐系统方法小结(上)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-06T20:05:39+08:00">
+                2018-01-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/推荐系统/" itemprop="url" rel="index">
+                    <span itemprop="name">推荐系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>对传统推荐方法的一个小结，文章长度较长，分为两部分。</p>
+<a id="more"></a>
+<h1 id="推荐系统的结构（Structure）"><a href="#推荐系统的结构（Structure）" class="headerlink" title="推荐系统的结构（Structure）"></a>推荐系统的结构（Structure）</h1><p><img src="/images/recSysSummary/Structure.jpg" alt="Structure"></p>
+<h1 id="推荐引擎算法（Algorithm）"><a href="#推荐引擎算法（Algorithm）" class="headerlink" title="推荐引擎算法（Algorithm）"></a>推荐引擎算法（Algorithm）</h1><h2 id="1、协同过滤推荐算法"><a href="#1、协同过滤推荐算法" class="headerlink" title="1、协同过滤推荐算法"></a>1、协同过滤推荐算法</h2><h3 id="1-1、关系矩阵与矩阵计算"><a href="#1-1、关系矩阵与矩阵计算" class="headerlink" title="1.1、关系矩阵与矩阵计算"></a>1.1、关系矩阵与矩阵计算</h3><p>在一个推荐系统中，存在三类关系：用户与用户（U-U矩阵）、物品与物品（I-I矩阵）和用户与物品（U-I矩阵）。</p>
+<h4 id="1-1-1、U-U矩阵"><a href="#1-1-1、U-U矩阵" class="headerlink" title="1.1.1、U-U矩阵"></a>1.1.1、<strong>U-U矩阵</strong></h4><p><strong>原理解读：</strong></p>
+<p>在基于用户相似度的协同过滤中，用户相似度的计算是基本前提。简单的方法可以采用余弦相似度，计算公式为： </p>
+<p>$$similarity _ user _ value(i, j) =  \frac{\sum_{c\in I_{ij}} (r_{i,c} - \bar{r_i}) (r_{j,c} - \bar{r_j}) }{ \sqrt{\sum_{c\in I_i} (r_{i,c} - \bar{r_i}) ^ 2} \sqrt{\sum_{c\in I_j} (r_{j,c} - \bar{r_j}) ^ 2} }$$</p>
+<p><strong>公式解答：</strong></p>
+<p>$I_{ij}$ 表示 用户 $i$ 和 用户 $j$ 共同评价过的 物品 的集合， $c$ 是这个集合中的某个 物品 , $r_{i,c}$ 表示 用户 $i$ 对 物品 $c$ 的评分, $r_{j,c}$ 表示 用户 $j$ 对 物品 $c$ 的评分, $\bar{r_i}$ 和 $\bar{r_j}$ 表示 用户 $i$ 和 用户 $j$ 对 该 物品 集合的平均评分。</p>
+<p><strong>实际操作：</strong></p>
+<p>input: 用户行为日志</p>
+<p>output: 基于协同的用户相似度矩阵（也就是 user-user 矩阵）</p>
+<p>A：从用户行为日志中获取用户与物品之间的关系数据，即用户对物品的评分数据。</p>
+<p>B：对于 $n$ 个用户，依次计算用户 $1$ 与其他 $n-1$ 个用户的相似度；再计算用户 $2$ 与其他 $n-2$ 个用户的相似度。对于其中任意两个用户 $i$ 和 $j$ ： </p>
+<blockquote>
+<p>a) 查找两个用户共同评价过的物品集 $I_{ij}$ ;<br>b) 分别计算用户 $i$ 和 $j$ 对物品 的平均评分 $\bar{r_i}$ 和 $\bar{r_j}$ ;<br>c) 计算用户间相似度，得到用户 $i$ 和 $j$ 的相似度。 </p>
+</blockquote>
+<p>C. 将计算得到的相似度结果存储于数据库中。</p>
+<h4 id="1-1-2、I-I矩阵"><a href="#1-1-2、I-I矩阵" class="headerlink" title="1.1.2、I-I矩阵"></a>1.1.2、<strong>I-I矩阵</strong></h4><p>原理解读：</p>
+<p>在基于物品相似度的协同过滤中，物品相似度的计算是基本前提。将n个用户，看成物品的n个属性,<em>简单的方法可以采用余弦相似度</em>，计算公式为： </p>
+<p>$$similarity _ itme_value(x_i, x_j) =  \frac{\sum_{u\in U_{x_i, x_j}} (r_{u,x_i} - \bar{r_{x_i}}) (r_{u,x_j} - \bar{r_{x_j}}) }{ \sqrt{\sum_{u\in U_{x_i, x_j}} (r_{u,x_i} - \bar{r_{x_i}}) ^ 2} \sqrt{\sum_{u\in U_{x_i, x_j}} (r_{u,x_j} - \bar{r_{x_j}}) ^ 2} }$$</p>
+<p>公式解答：</p>
+<p>$U_{x_i, x_j}$表示 对物品 $x_i$ 和物品 $x_j$ 都做出过评价的用户的集合， $u$ 是这个集合中的某个用户 , $r_{u,x_i}$ 表示 用户 $u$ 对 物品 $x_i$ 的评分, $r_{u,x_j}$ 表示 用户 $u$ 对 物品 $x_j$ 的评分, $\bar{r_{x_i}}$ 和 $\bar{r_{x_j}}$ 分别表示 用户对物品$x_i$ 和 $x_j$的平均评分</p>
+<p>实际操作：</p>
+<p>input: 用户行为日志</p>
+<p>output: 基于协同的物品相似度矩阵（也就是 item-item 矩阵）</p>
+<p>A：从用户行为日志中获取用户与物品之间的关系数据，即用户对物品的评分数据。</p>
+<p>B：对于 $n$ 个物品，依次计算物品 $1 $ 与其他 $n-1$ 个物品的相似度；再计算物品 $2$ 与其他 $n-2$ 个物品的相似度。对于其中任意两个物品 $i$ 和 $j$ ： </p>
+<blockquote>
+<p>a) 查找对物品 $i$ 和 $j$ 都做出过评价的用户集 $U_{ij}$ ;<br>b) 分别计算用户 对物品 $i$ 和 $j$ 的平均评分 $\bar{r_i}$ 和 $\bar{r_j}$ ;<br>c) 计算物品间相似度，得到物品 $i$ 和 $j$ 的相似度。 </p>
+</blockquote>
+<p>C. 将计算得到的相似度结果存储于数据库中。</p>
+<h4 id="1-1-3、U-I矩阵"><a href="#1-1-3、U-I矩阵" class="headerlink" title="1.1.3、U-I矩阵"></a>1.1.3、<strong>U-I矩阵</strong></h4><p>在真实的推荐系统中，一方面U-I矩阵的行列数会随着用户和物品数量变得庞大，另一方面，因为用户实际上只能对有限数量的物品做出评价，所以U-I矩阵的内部会非常稀疏。系统在直接处理这些庞大稀疏矩阵时，耗费的时间、内存和计算资源都十分巨大。因此需要采取降低计算复杂度的方法。<em>矩阵分解(matrix factorization)</em>是一种有效降低矩阵计算复杂的方法，它的实质是将高维矩阵进行有效降维。</p>
+<p>奇异值分解（SVD）</p>
+<p>SVD将给定矩阵分解为3个矩阵的乘积： </p>
+<p>$$M = U \Sigma V^T$$</p>
+<p>式中，矩阵 $\Sigma$ 为对角阵，其对角线上的值 $\sigma$ 为矩阵M的奇异值。<br>按大小排列，代表着矩阵M的重要特征。将SVD用在推荐系统上，其意义是将一个稀疏性较高的评分矩阵 $M$ 分解为表示<em>用户特性的 $U$ 矩阵，表示物品特性的 $V$ 矩阵，以及表示用户和物品相关性的矩阵$\Sigma$</em>。</p>
+<p>主成分分析（PCA） </p>
+<p>在推荐系统中，对于有较多属性的物品（物品的信息用向量 $m[i_1, i_2, …, i_n]$ 表示）可用PCA来进行降维处理，将 $m \times n$的物品矩阵转化为$m \times k$的新矩阵。</p>
+<h3 id="1-2、基于记忆的协同过滤算法（memory-based）"><a href="#1-2、基于记忆的协同过滤算法（memory-based）" class="headerlink" title="1.2、基于记忆的协同过滤算法（memory-based）"></a>1.2、基于记忆的协同过滤算法（memory-based）</h3><h4 id="1-2-1、基于用户的协同过滤算法"><a href="#1-2-1、基于用户的协同过滤算法" class="headerlink" title="1.2.1、基于用户的协同过滤算法"></a>1.2.1、<strong>基于用户的协同过滤算法</strong></h4><p><strong>基于用户的协同过滤（user-based collaborative filtering）算法</strong>是推荐系统中最古老的算法，产生于1992年，最初应用于邮件过滤系统，1994年被GroupLens用于新闻过滤。在此之后直到2000年，该算法都是推荐系统领域最著名的算法。</p>
+<p>原理解读：</p>
+<p><img src="/images/recSysSummary/userCF.jpg" alt="userCF"></p>
+<p>什么是基于用户的协同过滤算法？举个简单的例子，我们知道樱桃小丸子喜欢葡萄、草莓、西瓜和橘子，而我们通过某种方法了解到小丸子和花伦有相似的喜好，所以我们会把小丸子喜欢的而花伦还未选择的水果（葡萄和橘子）推荐给花伦。 </p>
+<p>通过上面的例子我们假设用户为$U_i(i = 1, 2, 3, …, n)$，物品$I_j(j=1, 2, 3, … n)$，$U_i$对$I_j$的评分为$r_{ij}$。</p>
+<p>那么，基于用户的协同过滤算法（user-CF）主要包含以下两个步骤：</p>
+<p>A：  搜集用户和物品的历史信息，计算用户$u_i$和其他用户的相似度$Sim(u_i, N_i)$，找到和目标用户$u_i$兴趣相似的用户集合$N(u_i)$</p>
+<p>B：  找到这个集合$N(u_i)$中用户喜欢，且目标用户$u_i$还没消费过的商品，推荐给目标用户$u_i$</p>
+<p>在上面的B步骤中，我们得到的物品集合可能包含很多物品，我们称呼这个物品集为<em>候选物品集合</em>，我们不可能将这么多物品同时推荐给用户，所以，我们在基于用户的协同过滤子引擎上，通过下面的公式来计算用户对物品的喜好程度： </p>
+<p>$$p_{uj} = \frac{\sum\limits_{N_i \in N(u)} Sim(u, N_i) \times r_{N_{i,j}}}{\sum\limits_{N_i \in N(u)} Sim(u, N_i)}$$</p>
+<p>上式中，$u$ 是我们的目标用户， $p_{uj}$ 表示的是用户 $u$ 对物品 $j$ 的喜好程度， $r_{N_i,j}$表示用户 $N_i$ 对物品 $j$ 的评分， $Sim(u, N_i)$ 表示用户 $u$ 和用户 $N_i$ 的相似度。</p>
+<p>最后，根据 $p_{uj}$来对候选物品进行排序，来为用户推荐分值最高的 Top-N 个物品</p>
+<p>实际操作：</p>
+<p>input：用户行为日志，基于协同的用户相似性矩阵。 </p>
+<p>output：初始推荐结果</p>
+<p>A. 访问用户行为日志，获取一段时间内的用户集合$U$。 </p>
+<p>B. 针对集合 $U$ 中每个用户 $u$：</p>
+<blockquote>
+<p>a) 访问用户相似矩阵，获取与用户相似的用户合集$N(u)$。<br>b) 对于$N(u)$中的每一个用户$u_i$：<br>获取与用户$u_i$有关联的物品合集$I_{u_i}$。<br>针对物品合集$I_{u_i}$中的每个物品，计算用户的喜好程度。<br>c) 对集$I_{u_i}$中的所有物品按照用户偏好进行加权、去重、排序。<br>d) 取Top-N个物品，为每个物品赋予解释。<br>e) 保存Top-N个物品到初始推荐列表中。</p>
+</blockquote>
+<p>适用性：</p>
+<p><strong>由于需计算用户相似度矩</strong>阵，基于用户的协同过滤算法适用于用户较少的场合； <strong>由于时效性较强</strong>，该方法适用于用户个性化兴趣不太明显的领域。</p>
+<h4 id="1-2-2、基于物品的协同过滤算法"><a href="#1-2-2、基于物品的协同过滤算法" class="headerlink" title="1.2.2、基于物品的协同过滤算法"></a>1.2.2、<strong>基于物品的协同过滤算法</strong></h4><p><strong>基于物品的协同过滤（item-based collaborative filtering）</strong>算法是目前业界应用最多的算法。无论是亚马逊网，还是Netflix、Hulu、Youtube，其推荐算法的基础都是该算法。</p>
+<p>原理解读：</p>
+<p><img src="/images/recSysSummary/itemCF.jpg" alt="itemCF"></p>
+<p><strong>基于物品的协同过滤算法给用户推荐那些和他们之前喜欢的物品相似的物品</strong>。比如，我们知道樱桃小丸子和小玉都喜欢葡萄和西瓜，那么我们就认为葡萄和西瓜有较高的相似度，在花伦选择了西瓜的情况下，我们会把葡萄推荐给花伦。</p>
+<p><strong>Item-CF算法并不利用物品的内容属性计算物品之间的相似度</strong>，它主要通过分析用户的行为记录计算物品之间的相似度。该算法认为，物品A和物品B具有很大的相似度是因为喜欢物品A的用户大都也喜欢物品B。 补充一下：<strong>基于物品的协同过滤算法可以利用用户的历史行为给推荐结果提供解释</strong>比如给用户推荐《天龙八部》的解释可以是因为用户之前喜欢《射雕英雄传》</p>
+<p>假设用户为$U_i(i =1, 2, 3, …, n)$，物品$I_j(j =1, 2, 3, …, n)$，$U_i$ 对 $I_j$ 的评分为$r_{i, j}$，基于物品的协同过滤算法主要分为两步：</p>
+<p>A. 对于目标用户 $U_i$ 及其待评分的物品 $I_j$ ，根据用户对物品的历史偏好数据，计算物品 $I_j$ 与其他已评分物品之间的相似度  $Sim(j,i)$ ，找到与物品 $I_j$ 相似的物品合集 $N(I_j)$ ； </p>
+<p>B. 根据用户对物品合集 $N(I_j)$ 的喜欢程度，选出 $N(I_j)$ 中目标用户可能喜欢的且没有观看过的推荐给目标用户并预测评分。 </p>
+<p>ItemCF通过下面的公式来计算用户对物品的喜好程度：</p>
+<p>$$p_{ui} = \frac{\sum\limits_{ i \in N(I_j)} Sim(i, j) \times r_{uj}}{\sum\limits_{i \in N(I_j)} Sim(i, j)}$$</p>
+<p>式中， $p_{ui}$ 表示用户 $u$ 对物品 $i$ 的喜欢程度，物品 $j$ 是用户买过的， $r_{uj}$ 表示用户 $u$ 对物品 $j$ 的评分。然后根据$p_{ui}$来对候选物品进行排序，为用户推荐分值最高的物品。</p>
+<p>实际操作：</p>
+<p>input：用户行为日志，基于协同的物品相似性矩阵<br>output：初始推荐结果 </p>
+<p>A. 访问用户行为日志，获取最近浏览过物品的用户集合U。<br>B. 针对集合U中每个用户u： </p>
+<blockquote>
+<p>a) 选择用户当前正在浏览的商品 $i$<br>b) 访问物品相似矩阵，获取与 $i$ 相似的物品合集 $N(i)$<br>c) 计算用户对当前物品合集的喜好程度，并进行排序<br>d) 取Top-N个物品，为每个物品赋予解释。<br>e) 保存Top-N个物品到初始推荐列表中。</p>
+</blockquote>
+<p>适用性 </p>
+<p>适用于物品数明显小于用户数的场合； 长尾物品丰富，用户个性化需求强烈的领域。</p>
+<p><img src="/images/recSysSummary/compare.png" alt="compare itemCF with userCF"></p>
+<h3 id="1-3、基于模型的协同过滤算法（model-based）"><a href="#1-3、基于模型的协同过滤算法（model-based）" class="headerlink" title="1.3、基于模型的协同过滤算法（model-based）"></a>1.3、基于模型的协同过滤算法（model-based）</h3><h4 id="1-3-1、基于隐因子模型的推荐算法"><a href="#1-3-1、基于隐因子模型的推荐算法" class="headerlink" title="1.3.1、基于隐因子模型的推荐算法"></a>1.3.1、基于隐因子模型的推荐算法</h4><p>隐语义模型是最近几年推荐系统领域最为热门的研究话题，它的核心思想是通过隐含特征(latent factor)联系用户兴趣和物品。也就是，对于某个用户，首先找到他的兴趣分类，然后从分类中挑选他可能喜欢的物品。</p>
+<p><strong>基本算法</strong></p>
+<p>基于兴趣分类的方法大概需要解决3个问题： </p>
+<p>A. 如何给物品进行分类？<br>B. 如何确定用户对哪些类的物品感兴趣，以及感兴趣的程度？<br>C. 对于一个给定的类，选择哪些属于这个类的物品推荐给用户，以及如何确定这些物品在一个类中的权重？ </p>
+<p><strong>隐含语义分析技术采取基于用户行为统计的自动聚类，可以自动解决物品分类问题</strong>。隐语义模型(latent factor model) (LFM) 通过如下公式计算用户 $u$ 对物品 $i$ 的兴趣： </p>
+<p>$$Preference(u,i) = r_{ui} = p_u^T q_i = \sum_{f=1}^F p_{u,k} q_{i,k}$$</p>
+<p>这个公式中，$p_{u,k}$ 和 $q_{i,k}$ 是模型的参数，其中，$p_{u,k}$ 度量了用户 $u$ 的兴趣和第 $k$ 个隐类的关系，而 $q_{i,k}$ 度量了第 $k$ 个隐类和物品 $i$ 之间的关系。</p>
+<p>要计算这两个参数，需要一个训练集，对于每个用户 $u$ ，训练集里都包含了用户 $u$ 喜欢的物品和不感兴趣的物品，通过学习这个数据集，就可以获得上面的模型参数。</p>
+<h4 id="1-3-2、LFM和基于邻域的方法的比较"><a href="#1-3-2、LFM和基于邻域的方法的比较" class="headerlink" title="1.3.2、LFM和基于邻域的方法的比较"></a>1.3.2、LFM和基于邻域的方法的比较</h4><p><strong>理论基础</strong> </p>
+<p>LFM具有比较好的理论基础，它是一种学习方法，通过优化一个设定的指标建立最优的模型。基于邻域的方法更多的是一种基于统计的方法，并没有学习过程。</p>
+<p><strong>离线计算的空间复杂度</strong> </p>
+<p>基于邻域的方法需要维护一张离线的相关表。在离线计算相关表的过程中，如果用户/物品数很多，将会占据很大的内存。而LFM在建模过程中，可以很好地节省离线计算的内存。</p>
+<p><strong>离线计算的时间复杂度</strong> </p>
+<p>在一般情况下，LFM的时间复杂度要稍微高于UserCF和ItemCF，这主要是因为该算法需要多次迭代。但总体上，这两种算法在时间复杂度上没有质的差别。</p>
+<p><strong>在线实时推荐</strong> </p>
+<p>UserCF和ItemCF在线服务算法需要将相关表缓存在内存中，然后可以在线进行实时的预测。LFM在给用户生成推荐列表时，需要计算用户对所有物品的兴趣权重，然后排名，不太适合用于物品数非常庞大的系统，如果要用，我们也需要一个比较快的算法给用户先计算一个比较小的候选列表，然后再用LFM重新排名。另一方面，LFM在生成一个用户推荐列表时速度太慢，因此不能在线实时计算，而需要离线将所有用户的推荐结果事先计算好存储在数据库中。因此，LFM不能进行在线实时推荐，也就是说，当用户有了新的行为后，他的推荐列表不会发生变化。</p>
+<p><strong>推荐解释</strong> </p>
+<p>ItemCF算法支持很好的推荐解释，它可以利用用户的历史行为解释推荐结果。但LFM无法提供这样的解释，它计算出的隐类虽然在语义上确实代表了一类兴趣和物品，却很难用自然语言描述并生成解释展现给用户。</p>
+<h3 id="1-4、基于内容-CB-的推荐算法（content-based）"><a href="#1-4、基于内容-CB-的推荐算法（content-based）" class="headerlink" title="1.4、基于内容(CB)的推荐算法（content-based）"></a>1.4、基于内容(CB)的推荐算法（content-based）</h3><h4 id="1-4-1、基础CB推荐算法"><a href="#1-4-1、基础CB推荐算法" class="headerlink" title="1.4.1、基础CB推荐算法"></a>1.4.1、基础CB推荐算法</h4><p><strong>算法背景</strong></p>
+<p>基础CB（content-based）推荐算法利用物品的基本信息和用户偏好内容的相似性进行物品推荐。通过分析用户已经浏览过的物品内容，生成用户的偏好内容，然后推荐与用户感兴趣的物品内容相似度高的其他物品。</p>
+<p>比如，用户近期浏览过冯小刚导演的电影“非诚勿扰”，主演是葛优；那么如果用户没有看过“私人订制”，则可以推荐给用户。因为这两部电影的导演都是冯小刚，主演都有葛优。 </p>
+<p>计算公式为： </p>
+<p>$$Sim(U_i, I_j) = \sum_k \lambda_k Sim(U_{ik}, I_{jk})$$</p>
+<p>式中， $U_i$ 表示用户, $I_j$ 表示商品， $U_{ik}$ 表示用户 $U_i$ 的第 $k$ 个特征，$I_{jk}$ 表示商品 $I_j$ 的第 $k$ 个特征。</p>
+<p>所以 $Sim(U_i, I_j)$ 表示的是用户 $U_i$ 和商品 $I_j$ 的相似度。其中 $\lambda_k$ 可以表示第 $k$ 个特征的权重。</p>
+<p><strong>算法流程</strong> </p>
+<p>input：物品信息，用户行为日志。<br>output：初始推荐结果。 </p>
+<p>A. 使用特征表示物品：每个物品$\vec{I} = (I_1, I_2, … , I_m)$，其中$I_i$表示物品的特征属性；</p>
+<p>B. 从用户行为日志中，获取该用户所浏览、收藏、评价、分享的物品集合$M$，根据物品集合$M$中物品的特征数据，可以学到用户的内容偏好，按照 $\vec{U} = (U_1, U_2, … , U_m)$的格式表示出用户。</p>
+<p>C. 选取用户未消费过的商品用来求用户、商品的相似度，选择其中较高的。</p>
+<p>D. 保存Top-K个物品到初始推荐结果中。</p>
+<p><strong>适用场景</strong> </p>
+<p>适用于基础CB架构的搭建，尤其是对新上线物品会马上被推荐非常有效，被推荐的机会与老的物品是相同的。</p>
+<p><strong>缺陷</strong> </p>
+<p>需要手动设置各个特征，前期数据量不大的时候可能还好，假如数据量很大，则会比较麻烦。</p>
+<h4 id="1-4-2、基于TF-IDF的CB推荐算法"><a href="#1-4-2、基于TF-IDF的CB推荐算法" class="headerlink" title="1.4.2、基于TF-IDF的CB推荐算法"></a>1.4.2、基于TF-IDF的CB推荐算法</h4><p>假设一个场景是要给用户推荐新闻、书籍，我们已知用户阅读过的新闻、书籍，该如何给用户推荐新的新闻或者书籍呢？</p>
+<p>对于这样的场景我们需要从文字当中提取关键信息，这时可以采用TF-IDF（Term Frequency-Inverse Document Frequency）。TF-IDF算法被公认为信息检索中最重要的发明，在搜索、文献分类和其他相关领域有广泛应用。</p>
+<p>TF-IDF是自然语言处理领域中<strong>计算文档中词或短语的权值的方法</strong>，是词频（Term Frequency, TF）和逆转文档频率（Inverse Document Frequency, IDF）的乘积。<strong>TF指的是某一个给定的词语在该文件中出现的次数</strong>，这个数字通常会被正规化，以防止它偏向长的文件（同一个词语在长文件里可能会比段文件有更高的词频，而不管该词语重要与否）。<strong>IDF是一个词语普遍重要性的度量，某一特定词语的IDF，可以由总文件数目除以包含该词语的文件数目，再将得到的商取对数得到</strong>。</p>
+<p><strong>算法原理</strong> </p>
+<p>TF-IDF算法基于这样一个假设：若一个词语在目标文档中出现的频率高而在其他文档中出现的频率低，那么这个词语就可以用来区分出目标文档。这个假设的主要信息有两点：</p>
+<ul>
+<li>在本文档出现的频率高；</li>
+<li>在其他文档出现的频率低。</li>
+</ul>
+<p>因此，TF-IDF算法的计算可以分为词频（TF）和逆转文档频率（IDF）两部分，由TF和IDF的乘积来设置文档词语的权重。 </p>
+<p>假设文档集包含的文档数为 $N$，文档集中包含关键词 $k_i$ 的文档数为 $n_i$ ， $f_{ij}$ 表示关键词 $k_i$ 在文档 $d_j$ 中出现的次数， $f_{dj}$ 表示文档 $d_j$ 中出现的词语总数， $k_i$ 在文档 $d_j$ 中的 $TF_{ij}$ 定义未：</p>
+<p>$$TF_{ij} = \frac{ f_{ij} }{ f_{dj} }$$</p>
+<p>这个数字通常会被正规化，以防止它偏向长的文件。</p>
+<p>IDF衡量词语的普遍重要性。 $\frac{n_i}{N}$ 表示某一词语在整个文档中出现的频率， 由它计算的结果取对数得到关键词 $k_i$ 的逆文档频率 $IDF_i$ ：</p>
+<p>$$IDF_i = log \frac{N}{n_i + 1}$$</p>
+<p>由TF和IDF计算词语的权重为 </p>
+<p>$$w_{ij} = TF_{ij} \cdot IDF_i = \frac{ f_{ij} }{ f_{dj} } \cdot log \frac{N}{n_i + 1}$$</p>
+<p>举一个例子就是，我们现在有 100000 篇新闻， 包含关键词“科比”的新闻有100篇， 在新闻《科比退役——时代的终结》 里面，“科比” 出现了 60 次， 这篇新闻的词语总数是 2000，那么 “科比” 在新闻《科比退役——时代的终结》 中的 $TF$ 为：</p>
+<p>$$TF_{科比, 《科比退役——时代的终结》} = \frac{60}{2000}$$</p>
+<p>关键词“科比”的 $IDF_{科比}$为：</p>
+<p>$$IDF_{科比} = log \frac{100000}{100 + 1}$$</p>
+<p>我们取出 Item 中的关键词，可以用这些关键词代表这篇新闻，就得到了这个Item 的特征表示（其实也直接对新闻类的 Item 直接使用 word2vec）。</p>
+<p>然后，我们表示用户，对于用户来说，它看过了的新闻，用喜欢和不喜欢进行标记，然后根据已有数据我们可以用如下公式表示用户：</p>
+<p>$$profile = \frac{\sum_{i=1}^a x_1 + x_2 + … + x_a}{a} - \frac{\sum_{i=1}^b x_1 + x_2 + … + x_b}{b}$$</p>
+<p>其中 $x$ 是用户喜欢的item， $a$ 是喜欢item的总数， $y$ 是用户不喜欢的item， $b$ 是不喜欢item的总数。</p>
+<p>这样就表示出了用户。</p>
+<p><strong>算法流程</strong> </p>
+<p>input：新闻内容，用户行为日志。<br>output：初始推荐结果。 </p>
+<p>A. 使用特征表示新闻：每个新闻都提取 $m$ 个关键字来表示新闻的特征属性，然后每篇新闻用一个长度为$n (n &gt; m)$的向量表示；</p>
+<p>B. 从用户行为日志中，获取该用户所浏览、收藏、评价、分享的新闻集合$M$，根据新闻集合$M$中物品的特征数据，可以学到用户的内容偏好，按照 $\vec{U} = (U_1, U_2, … , U_n)$的格式表示出用户。</p>
+<p>C. 选取用户未看过的新闻来求用户、新闻的相似度，选择其中较高的。</p>
+<p>D. 保存Top-K个物品到初始推荐结果中。</p>
+<p><strong>适用场景</strong> </p>
+<p>可以使用当前的用户评价来构建用户的个人信息；由于过程简单解释性强，推荐的结果容易被人接受；对于新物品来没有任何用户评分的也可以推荐给用户。</p>
+<p><strong>缺陷</strong> </p>
+<p>可分析的内容有限，且新颖度较差，新用户需要用户的偏好信息，无法解决冷启动问题。</p>
+<h4 id="1-4-3、基于KNN的CB推荐算法"><a href="#1-4-3、基于KNN的CB推荐算法" class="headerlink" title="1.4.3、基于KNN的CB推荐算法"></a>1.4.3、基于KNN的CB推荐算法</h4><p><strong>算法背景</strong></p>
+<p>KNN(k-Nearest Neighbor)算法基于这样的假设：如果在特征空间中，一个样本的k个最邻近样本中的大多数样本属于某一个类别，则该样本也属于这个类别。</p>
+<p><strong>算法原理</strong></p>
+<p>KNN在CB推荐算法中的应用与在CF推荐算法中的应用极为相似，它们都是要首先找到与目标物品相似的且已经被用户 $u$ 评价过的 $k$ 个物品，然后根据用户 $u$ 对这 $k$ 个物品的评价来预测其目标物品的评价。</p>
+<p>它们的差别在于，<strong>CF推荐算法中的KNN是根据用户对物品的评分来计算物品间相似度的，而CB推荐算法中KNN是根据物品画像来计算相似度的</strong>，所以对于后者来说，如何通过物品画像来计算物品间的相似度是算法中的关键步骤。相似度的计算可以使用余弦相似度或Pearson相关系数的计算方法。</p>
+<p><strong>算法流程</strong></p>
+<p>input：用户已评分物品，目标物品 $I_j$ 。<br>output：用户对目标物品 $r_j$ 的评分。</p>
+<p>A. 采用余弦相似度公式计算相似度。 </p>
+<p>B. 选择最近邻。在用户 $u$ 评过分的所有物品中，找出 $k$ 个与目标物品 $j$ 相似度最高的物品，并用 $N(u,j)$ 来表示这 $k$ 个物品的集合。 </p>
+<p>C. 计算预测值。在第二步的基础上，可使用以下公式计算用户对目标物品的评分： </p>
+<p>$$\hat{r}<em>{u,j} = \frac{\sum</em>{n \in N(u,j)} S_{j,n} r_{u,n}}{ \sum_{n \in N(u,j)} S_{j,n} }$$</p>
+<p>式中， $\hat{r}<em>{u,j}$ 表示用 $u$ 对物品 $j$ 的预测评分， $S</em>{j,n}$ 是物品相似度， $r_{u,n}$ 表示用户对物品 $n$ 的评分。</p>
+<h4 id="1-4-4、基于Rocchio的CB推荐算法"><a href="#1-4-4、基于Rocchio的CB推荐算法" class="headerlink" title="1.4.4、基于Rocchio的CB推荐算法"></a>1.4.4、基于Rocchio的CB推荐算法</h4><p><strong>算法背景</strong></p>
+<p><strong>Rocchio是从用户浏览历史中抽取用户喜好的物品特征来构建用户画像的一种常用算法</strong>，是信息检索领域处理相关反馈（Relevance Feedback）的一个著名算法。它提供了如何通过用户浏览的物品，反馈计算用户特征向量中属性值的方法。</p>
+<p>举个简单例子，假如用户观看过“星球大战”和“加勒比海盗”，并给予高分，那么根据用户的行为历史数据构建画像时，用户的特征向量可表示为{“动作”：1，“欧美”：1，“科幻”：1，“冒险”：0.5}。</p>
+<p><strong>算法原理</strong> </p>
+<p>Rocchio算法基于这样的假设：<strong>如果我们需要计算出最精准度的用户特征向量 $U_c$ ，那么这个用户特征向量应该与用户喜欢的物品特征最相似，与用户讨厌的物品特征最不同</strong>。若 $V_l$ 表示用户喜欢的物品， $V_h$ 表示用户讨厌的物品，那么根据Rocchio算法的思想，定义最优的用户特征向量为： </p>
+<p>$$U_{opt} = arg max [Sim(U_c, V_l) - Sim(U_c, V_h)]$$</p>
+<p>更新用户的特征向量，修改公式为： </p>
+<p>$$U_{opt} = \alpha U_0 + \beta \frac{1}{ |V_l| } \sum_{\vec{w}_j \in V_l} \vec{w}_j - \gamma \frac{1}{ |V_h| } \sum_{\vec{w}_j \in V_h} \vec{w}_j$$</p>
+<p>式中， $U_0$ 是原始的用户特征向量，$\alpha$、$\beta$、$\gamma$  为权重。若用户新的历史数据较多，那么可以增大 $\beta$ 和 $\gamma$ 的值，反之，用户更新数据较少则可以适当减小$\beta$ 和 $\gamma$  的值。</p>
+<p>在基于内容的物品推荐中，根据用户的历史行为数据建立用户画像，我们可以采用Rocchio算法不断地调整用户的特征向量 $U_c$ 。</p>
+<h4 id="1-4-5、基于决策树的CB推荐算法"><a href="#1-4-5、基于决策树的CB推荐算法" class="headerlink" title="1.4.5、基于决策树的CB推荐算法"></a>1.4.5、基于决策树的CB推荐算法</h4><p><strong>算法背景</strong></p>
+<p>基于决策树的推荐算法在训练阶段会生成一个显示的决策模型。决策树可以通过训练数据构建并有效判断一个新的物品是否可能受到欢迎。当物品的特征属性较少时，采用决策树算法能够取得不错的效果，另外，决策树学习的思想也比较容易被理解，在物品推荐时的可解释性较好。</p>
+<p><strong>算法原理</strong></p>
+<p>在物品推荐系统中，决策树的内部节点通常表示物品的特征属性，这些节点用于区分物品集合，例如，通过物品中是否包含这个特征将其进行分类。在只有两个分类的简单数据集中，用户是否对物品感兴趣一般出现在决策树的叶子节点上。</p>
+<p><img src="/images/recSysSummary/decisionTree.jpg" alt="decisionTree"></p>
+<h4 id="1-4-6、基于线性分类的CB推荐算法"><a href="#1-4-6、基于线性分类的CB推荐算法" class="headerlink" title="1.4.6、基于线性分类的CB推荐算法"></a>1.4.6、基于线性分类的CB推荐算法</h4><p><strong>算法背景</strong></p>
+<p>将基于内容的物品推荐问题视为分类问题时，可以采用多种机器学习方法。从一个更抽象的角度上看，大部分学习方法致力于找到一个可以准确区分用户喜欢和不喜欢的物品的线性分类模型系数。</p>
+<p>将物品数据用 $n$ 维特征向量来表示，线性分类器试图在给定的物品特征空间中找到一个能够将物品正确分类的平面，一类点尽可能在平面的某一边（喜欢），另一类在平面的另一边（不喜欢）。</p>
+<p><strong>算法原理</strong></p>
+<p>基于线性分类器的CB推荐算法通过物品特征的线性组合进行分类。若输入的物品特征向量为 $\vec{v} = (v_1, v_2, … , v_n)$ ，输出的结果 $y$  表示用户是否喜欢物品，则线性分类器可以表示为： </p>
+<p>$$y = \vec{w}^T \cdot \vec{v} = \sum_{i=1}^n \vec{w}_i \cdot \vec{v}_i $$</p>
+<p>式中， $\vec{w}_i$ 表示物品特征向量对应的权重，根据输入的物品特征属性做出决定输出结果。</p>
+<h4 id="1-4-7、基于朴素贝叶斯的CB推荐算法"><a href="#1-4-7、基于朴素贝叶斯的CB推荐算法" class="headerlink" title="1.4.7、基于朴素贝叶斯的CB推荐算法"></a>1.4.7、基于朴素贝叶斯的CB推荐算法</h4><p><strong>算法背景</strong></p>
+<p>基于朴素贝叶斯的推荐系统假设用户和物品的特征向量中的各个分量之间条件独立，判断用户是否对某个物品有兴趣的方法是将这个问题转化为分类问题：喜欢和不喜欢。</p>
+<p>计算物品分类情况的后验概率为： </p>
+<p>$$P(C|v) = \frac{P(v|C) \times P(C)}{P(v)} = \frac{\prod_{i=1}^n (v_i|C) \times P(C)}{P(v)}$$</p>
+<p>式中， $v_i(i=1, 2, 3, …, n)$ 表示物品的相关属性；$C$ 为物品的分类, $P(v_i | C=c)$ 表示在分类 $c$ 中一个物品的特征属性 $v_i$ 出现的概率。这样，物品分类的后验概率可以通过观察分析训练数据得到。</p>
+<p><strong>算法原理</strong></p>
+<p>推荐系统中，分类 $c$ 下的一个物品特征属性 $v_i$ 的条件概率用在分类 $c$ 下所有物品中出现的频率近似表示，即 </p>
+<p>$$P(v_i | C) = \frac{CountTerms(v_i, item(c))}{ALLterms(item(c))}$$</p>
+<p>式中， $CountTerms(v_i, item(c))$ 表示在标记为的物品 $c$ 出现的次数， $ALLterms(item(c))$ 表示在这些物品中出现的所有特征属性的个数。为了预防计算概率为0的情况，对式子进行平滑，新公式如下： </p>
+<p>$$\hat{P}(v_i | C) = \frac{CountTerms(v_i, item(c)) + 1}{ALLterms(item(c)) + |V|}$$</p>
+<p>式中, $|V|$ 表示所有物品中的出现的不同特征属性数。</p>
+<h3 id="1-5、基于知识的推荐算法（knowledge-based）"><a href="#1-5、基于知识的推荐算法（knowledge-based）" class="headerlink" title="1.5、基于知识的推荐算法（knowledge-based）"></a>1.5、基于知识的推荐算法（knowledge-based）</h3><h4 id="1-5-1、概述"><a href="#1-5-1、概述" class="headerlink" title="1.5.1、概述"></a>1.5.1、概述</h4><p>基于知识（Knowledge-based, KB）的推荐算法,是区别于基于CB和基于CF的常见推荐方法。</p>
+<p>如果说CB和CF像通用搜索引擎的话，KB好比某个领域的垂直搜索引擎，可以提供该领域的特殊需求，包括专业性的优质特征，帮助提高搜索引擎在特定领域的服务。</p>
+<p>以视频推荐为例，一部电影的上映时期和档期热度，哪些导演执导的一定是大片，变形金刚和指环王系列口碑肯定不会太差，都是非常有价值的推荐信息。此外，基于知识的推荐，也更容易满足主观个性化需求。例如，对于VIP用户，如果配置好了偏好，就可以为其提供更加精准的推荐服务。</p>
+<h4 id="1-5-2、约束知识与约束推荐算法-相当于线性规划"><a href="#1-5-2、约束知识与约束推荐算法-相当于线性规划" class="headerlink" title="1.5.2、约束知识与约束推荐算法(相当于线性规划)"></a>1.5.2、约束知识与约束推荐算法(相当于线性规划)</h4><p>如今网上购物所能涵盖的物品越来越丰富，人们逐渐发现推荐系统的CF和CB推荐算法并不能很好地适应某些特殊物品的推荐需求。例如，更新换代非常快的而人们又通常不会经常更换的电子产品。对于这些产品来说，其各方面的性能参数在几年间就会有很大变化，代表历史偏好的用户画像并不能很好地反映用户当前的购买需求，于是就需要推荐系统将用户当前的需求作为重要信息参考源。人们发现可以利用物品的参数特征等属性形成约束知识，再将用户对物品的特定刻画为约束条件，然后经过对物品集合的约束满足问题的求解，就可以得到用户所期望的物品了。</p>
+<p><strong>创建推荐任务</strong> </p>
+<p>推荐任务是以元组 $(R,I)$ 的形式表示出来，其中用集合 $R$ 表示目标用户对物品的特定需求，即对物品的约束条件，用集合 $I$ 表示一个物品集合。<strong>推荐的任务就是从集合 $I$ 中确定出能够满足集合 $R$ 要求的物品集。</strong></p>
+<p><strong>推荐任务的解决</strong> </p>
+<p>推荐任务的解决是以找到可能的集合 $S$ 为目标，集合 $S$ 应满足的条件是 $S \subseteq I$ ，并且 $\forall I_i \in S : I_i \in \sigma_{(R)} I$ ，其中 $\sigma$ 表示对集合 $I$ 进行合取查询的运算符，$R$ 表示对物品的约束条件或选择标准。</p>
+<p><strong>冲突集</strong> </p>
+<p>冲突集 $CS$ 应满足的条件为 $CS \subseteq R$ ：，并且 $\sigma_{(CS)}I \neq \phi$ 。特别地，当不存在集合 $C’S’ \subset CS$ 时，集合 $CS$ 被称为最小冲突集。</p>
+<p><strong>诊断集</strong> </p>
+<p>诊断集 $\Delta$ 应满足的条件是 $\Delta \subseteq R$ ，并且。特别地$\sigma_{(CS)}I \neq \phi$，当不存在集合$\Delta’ \subset \Delta$时，集合 $\Delta$ 被称为最小诊断集。</p>
+<h4 id="1-5-3、关联知识与关联推荐算法"><a href="#1-5-3、关联知识与关联推荐算法" class="headerlink" title="1.5.3、关联知识与关联推荐算法"></a>1.5.3、关联知识与关联推荐算法</h4><p><strong>算法原理</strong></p>
+<p>关联知识以关联规则为表现形式，用以描述数据库中数据之间关联性的知识。在推荐系统领域，可以通过对用户画像中关联规则的挖掘分析来分析用户的习惯，发现物品之间的关联性，并利用这种关联性指导系统做出推荐。</p>
+<p><strong>算法流程</strong></p>
+<p>input： $n$ 个用户画像。<br>output：针对目标用户 $u$ 的Top-N推荐列表。</p>
+<p>A. 从系统中的$n$个用户画像中挖掘出所有的强关联规则，建立集合 $P_u$<br>以表示目标用户 $u$ 尚未观看但极有可能感兴趣的物品。</p>
+<p>B. 再次使用置信度对集合 $P_u$ 中的物品进行高低排序。</p>
+<p>C. 取出排序列表中的前 $N$ 个物品构成Top-N推荐列表。 由于对系统中全体用户的画像进行规则关联挖掘意义不明显且计算量大，所以<strong>基于关联规则的推荐算法常与CF推荐算法混合使用。</strong>在这类混合方案中，使用了CF推荐算法中的最近邻算法将用户画像数目 $n$ 限定在目标用户的最邻近范围内，使得关联规则挖掘算法处理的数据规模被有针对性地限定在一定范围内。</p>
+<h3 id="1-6、混合推荐算法-Hybrid-Recommendation"><a href="#1-6、混合推荐算法-Hybrid-Recommendation" class="headerlink" title="1.6、混合推荐算法 (Hybrid Recommendation)"></a>1.6、混合推荐算法 (Hybrid Recommendation)</h3><p>各种推荐方法都有优缺点，为了扬长补短，在实际中常常采用混合推荐（Hybrid Recommendation）。</p>
+<p><strong>研究和应用最多的是内容推荐和协同过滤推荐的组合</strong>。最简单的做法就是分别用基于内容的方法和协同过滤推荐方法去产生一个推荐预测结果，然后用某方法组合其结果。<br>尽管从理论上有很多种推荐组合方法，但在某一具体问题中并不见得都有效，组合推荐一个最重要原则就是通过组合后要能避免或弥补各自推荐技术的弱点。</p>
+<ul>
+<li>加权式：加权多种推荐技术结果。</li>
+</ul>
+<p><img src="/images/recSysSummary/jiaquan.jpg" alt="加权式"></p>
+<ul>
+<li>切换式：根据问题背景和实际情况或要求决定变换采用不同的推荐技术。</li>
+</ul>
+<p><img src="/images/recSysSummary/qiehuan.jpg" alt="切换式"></p>
+<ul>
+<li>混杂式：同时采用多种推荐技术给出多种推荐结果为用户提供参考。</li>
+</ul>
+<p><img src="/images/recSysSummary/hunzha.jpg" alt="混杂式"></p>
+<ul>
+<li>特征组合：组合来自不同推荐数据源的特征被另一种推荐算法所采用。</li>
+</ul>
+<p><img src="/images/recSysSummary/tezhengzuhe.jpg" alt="特征组合"></p>
+<ul>
+<li>层叠式：先用一种推荐技术产生一种粗糙的推荐结果，第二种推荐技术在此推荐结果的基础上进一步作出更精确的推荐。</li>
+</ul>
+<p><img src="/images/recSysSummary/cengdie.jpg" alt="层叠式"></p>
+<ul>
+<li>特征补充：一种技术产生附加的特征信息嵌入到另一种推荐技术的特征输入中。</li>
+</ul>
+<p><img src="/images/recSysSummary/tezhengbuchong.jpg" alt="特征补充"></p>
+<ul>
+<li>级联式：用一种推荐方法产生的模型作为另一种推荐方法的输入。</li>
+</ul>
+<p><img src="/images/recSysSummary/jilian.jpg" alt="级联式"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/推荐系统/" rel="tag"># 推荐系统</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/28/《IRGAN》阅读笔记/" rel="next" title="《IRGAN》阅读笔记">
+                <i class="fa fa-chevron-left"></i> 《IRGAN》阅读笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/07/推荐系统方法小结-下/" rel="prev" title="推荐系统方法小结(下)">
+                推荐系统方法小结(下) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#推荐系统的结构（Structure）"><span class="nav-number">1.</span> <span class="nav-text">推荐系统的结构（Structure）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#推荐引擎算法（Algorithm）"><span class="nav-number">2.</span> <span class="nav-text">推荐引擎算法（Algorithm）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、协同过滤推荐算法"><span class="nav-number">2.1.</span> <span class="nav-text">1、协同过滤推荐算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、关系矩阵与矩阵计算"><span class="nav-number">2.1.1.</span> <span class="nav-text">1.1、关系矩阵与矩阵计算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-1、U-U矩阵"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">1.1.1、U-U矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-2、I-I矩阵"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">1.1.2、I-I矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-3、U-I矩阵"><span class="nav-number">2.1.1.3.</span> <span class="nav-text">1.1.3、U-I矩阵</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、基于记忆的协同过滤算法（memory-based）"><span class="nav-number">2.1.2.</span> <span class="nav-text">1.2、基于记忆的协同过滤算法（memory-based）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1、基于用户的协同过滤算法"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">1.2.1、基于用户的协同过滤算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2、基于物品的协同过滤算法"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">1.2.2、基于物品的协同过滤算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3、基于模型的协同过滤算法（model-based）"><span class="nav-number">2.1.3.</span> <span class="nav-text">1.3、基于模型的协同过滤算法（model-based）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1、基于隐因子模型的推荐算法"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">1.3.1、基于隐因子模型的推荐算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-2、LFM和基于邻域的方法的比较"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">1.3.2、LFM和基于邻域的方法的比较</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4、基于内容-CB-的推荐算法（content-based）"><span class="nav-number">2.1.4.</span> <span class="nav-text">1.4、基于内容(CB)的推荐算法（content-based）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-1、基础CB推荐算法"><span class="nav-number">2.1.4.1.</span> <span class="nav-text">1.4.1、基础CB推荐算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-2、基于TF-IDF的CB推荐算法"><span class="nav-number">2.1.4.2.</span> <span class="nav-text">1.4.2、基于TF-IDF的CB推荐算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-3、基于KNN的CB推荐算法"><span class="nav-number">2.1.4.3.</span> <span class="nav-text">1.4.3、基于KNN的CB推荐算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-4、基于Rocchio的CB推荐算法"><span class="nav-number">2.1.4.4.</span> <span class="nav-text">1.4.4、基于Rocchio的CB推荐算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-5、基于决策树的CB推荐算法"><span class="nav-number">2.1.4.5.</span> <span class="nav-text">1.4.5、基于决策树的CB推荐算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-6、基于线性分类的CB推荐算法"><span class="nav-number">2.1.4.6.</span> <span class="nav-text">1.4.6、基于线性分类的CB推荐算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-7、基于朴素贝叶斯的CB推荐算法"><span class="nav-number">2.1.4.7.</span> <span class="nav-text">1.4.7、基于朴素贝叶斯的CB推荐算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5、基于知识的推荐算法（knowledge-based）"><span class="nav-number">2.1.5.</span> <span class="nav-text">1.5、基于知识的推荐算法（knowledge-based）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-1、概述"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">1.5.1、概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-2、约束知识与约束推荐算法-相当于线性规划"><span class="nav-number">2.1.5.2.</span> <span class="nav-text">1.5.2、约束知识与约束推荐算法(相当于线性规划)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-3、关联知识与关联推荐算法"><span class="nav-number">2.1.5.3.</span> <span class="nav-text">1.5.3、关联知识与关联推荐算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6、混合推荐算法-Hybrid-Recommendation"><span class="nav-number">2.1.6.</span> <span class="nav-text">1.6、混合推荐算法 (Hybrid Recommendation)</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

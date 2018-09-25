@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="word2vec,Deep Learning," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="从one-hot encoding 到 word2vec 的理解">
+<meta name="keywords" content="word2vec,Deep Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Word Embedding">
+<meta property="og:url" content="http://yoursite.com/2018/03/14/Word Embedding/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="从one-hot encoding 到 word2vec 的理解">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/word2vec/one-hot.png">
+<meta property="og:image" content="http://yoursite.com/images/word2vec/dense-word-representation.png">
+<meta property="og:image" content="http://yoursite.com/images/word2vec/visual-word-embedding.png">
+<meta property="og:image" content="http://yoursite.com/images/word2vec/embedding_matrix.png">
+<meta property="og:image" content="http://yoursite.com/images/word2vec/neural_language_model.png">
+<meta property="og:image" content="http://yoursite.com/images/word2vec/skip-gram.jpg">
+<meta property="og:image" content="http://yoursite.com/images/word2vec/skip-gram-model.jpg">
+<meta property="og:updated_time" content="2018-04-10T12:20:36.249Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Word Embedding">
+<meta name="twitter:description" content="从one-hot encoding 到 word2vec 的理解">
+<meta name="twitter:image" content="http://yoursite.com/images/word2vec/one-hot.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/14/Word Embedding/"/>
+
+
+
+
+
+  <title>Word Embedding | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/14/Word Embedding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Word Embedding</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-14T10:04:28+08:00">
+                2018-03-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/Word-Embedding/" itemprop="url" rel="index">
+                    <span itemprop="name">Word Embedding</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>从one-hot encoding 到 word2vec 的理解</p>
+<a id="more"></a>
+<h1 id="一、Word-representation"><a href="#一、Word-representation" class="headerlink" title="一、Word representation"></a>一、Word representation</h1><p>在自然语言处理中，我们研究的基础是词语。但是计算机无法直接处理这些字符，因此，我们需要某种方法可以让我们对这些词语进行表示。</p>
+<p>那在这里，我们就讨论两种情况：</p>
+<p>1、 one-hot encodings</p>
+<p>2、 dense embedding vectors </p>
+<h2 id="1-1-one-hot-encodings"><a href="#1-1-one-hot-encodings" class="headerlink" title="1.1 one-hot encodings"></a>1.1 one-hot encodings</h2><p><img src="/images/word2vec/one-hot.png" alt="one-hot-encoding"></p>
+<p>如上图所示， 当我们考虑在一个容量为 $40,000$ 的单词表中用向量表示单词，一个很直观地想法就是，构建一个 $40,000$ 维的向量，然后，不同的维度表示不同的单词。比如 第 $5391$ 维表示 <em>Man</em>， 第 $9853$ 维表示 <em>Woman</em> , 第 $4914$ 维表示 <em>King</em>, 等等。</p>
+<p>这种表示方法固然简单，但它却有一个很致命的缺陷就是：</p>
+<blockquote>
+<p>它把单词之间的关系给完全独立开来了。每个单词都是一个独立的个体，各个单词之间没有任何关联。这样的做法就让我们无法求出相似的单词。</p>
+</blockquote>
+<p>比如：</p>
+<p>I want a glass of orange ___</p>
+<p>我们的算法通过学习语料库直到了横线处应该填写 <em>juice</em>， 但是，让我们看另外一个例子</p>
+<p>I want a glass of apple ___</p>
+<p>从直觉上来说，我们在这里应该也填 <em>juice</em>， 但是如果 <em>apple juice</em> 在语料库中出现的比较少，那么我们的模型很可能无法求出这个横线应该填 <em>juice</em>。</p>
+<p>出现这种情况的原因是：<strong>one-hot encoding 会让任意两个单词的向量内积为0</strong> 所以，模型才无法学到其实 <em>apple</em> 和 <em>orange</em> 其实是蛮相近的。</p>
+<h2 id="1-2-dense-embedding-vectors"><a href="#1-2-dense-embedding-vectors" class="headerlink" title="1.2 dense embedding vectors"></a>1.2 dense embedding vectors</h2><p>刚才说了, one-hot encoding 有着这么致命的缺点，那我们是不是可以想个办法，来克服这个缺陷，让相同意思的向量单词的 $cos$ 值尽可能的大。</p>
+<p>于是，我们就有了 <em>dense embedding vectors</em> ，我们先对语料库中的单词抽取一些特征，如下图所示：</p>
+<p>我们抽取 <em>Gender</em>、<em>Royal</em>、<em>Age</em>、<em>Food</em>、<em>Size</em>、<em>Cost</em>、<em>Verb</em> … … 一共 300 个特征。然后再利用模型去学习各个单词对应特征上的值，最终使得每个单词都可以被一个维度为300的向量表示。比如 <em>Man</em> 可以表示成 $(-1, 0.01, 0.03, …, 0.09) \in \mathbb{R}^{300}$</p>
+<p>这时候，我们再碰到上面的问题，模型可以自动的选择 <em>juice</em> 填入，<strong>因为 apple 和 orange 的向量表示是相近的，这样，会让模型觉得，上一个输入的单词是带有噪音的orange</strong> 所以，模型还是会选择填上<em>juice</em>。</p>
+<p><img src="/images/word2vec/dense-word-representation.png" alt="dense embedding vectors"></p>
+<p>这时候我们通过 t-SNE 算法进行降维，画在平面上。可以很清晰的看出各个单词之间的相近程度。</p>
+<p><img src="/images/word2vec/visual-word-embedding.png" alt="dense embedding vectors in 2 dimension"></p>
+<h1 id="二、Word-Embedding"><a href="#二、Word-Embedding" class="headerlink" title="二、Word Embedding"></a>二、Word Embedding</h1><h2 id="2-1-Embedding-matrix"><a href="#2-1-Embedding-matrix" class="headerlink" title="2.1 Embedding matrix"></a>2.1 Embedding matrix</h2><p><img src="/images/word2vec/embedding_matrix.png" alt="Embedding Matrix"></p>
+<p>PS:来自NG的灵魂作画… …</p>
+<p>我们想得到 dense vectors ，有一个比较常规的做法就是， 使用 Embedding Matrix ，假设我们现在的语料库有 $10, 000$ 个单词，每个单词可以用 one-hot encoding 的形式表示为 $O_j, j=1, 2, 3, …., 10000$， 然后，我们希望把这 one-encoding vecotr 可以转变成 维度为 300 的 dense vectors, 而且，运气非常好的是，我们通过某种学习方法学到了一个 Embedding Matrix $E$ 这个矩阵的形状是 $300 \times 10000$。</p>
+<p>这时，我们想要得到一个 dense vectors 直接让 $E \cdot O_j = e_j$ 就可以获得该单词对应的 dense vector.</p>
+<h2 id="2-2-Learning-word-embeddings"><a href="#2-2-Learning-word-embeddings" class="headerlink" title="2.2 Learning word embeddings"></a>2.2 Learning word embeddings</h2><p>OK，上面已经说过了，当我们获得 Embedding Matrix 的时候，我们就可以获得单词的 dense vector了，所以，现在就让我们想想办法怎么样去求这个 Embedding Matrix $E$</p>
+<h3 id="2-2-1-Neural-Language-Model"><a href="#2-2-1-Neural-Language-Model" class="headerlink" title="2.2.1 Neural Language Model"></a>2.2.1 Neural Language Model</h3><p>首先，我们先介绍一下，什么是 Language Model.</p>
+<p>通常来说，Language Modeling 描述的是这样一类任务，在该任务中我们需要给某句话赋予概率（比如，在句子中看到 <em>the lazy dog barked loudly ?</em> 的概率是多少？）；除了上述任务，我们还可以在给定上下文(后面用 context 表示)的情况下，去预测接下来的单词是给定单词的概率是多少（<em>the lazy dog</em> 后面出现 <em>barked</em> 的概率是多少？）</p>
+<p><strong>Note:</strong></p>
+<p>接下来的公式中，为了书写方便，我们使用 $P(w_{1:n})$ 代替 $P(w_{1}, w_{2}, w_{3}, …, w_{n})$</p>
+<p>所以，Language Model 用公式来表示就是:</p>
+<p>$$P(w_{1:n}) = p(w_{1}) P(w_{2} | w_{1}) P(w_{3} | w_{1:2}) P(w_{4} | w_{1:3}) … P(w_{n} | w_{1:n-1})$$</p>
+<p>上述公式的意义就是，我们给定了 $n-1$ 个字符，那么，我们想要求出第 $n$ 个字符的概率。</p>
+<p>对于现实生活中，我们通常采用马尔科夫假设，也就是第 $n$ 个词出现的概率只跟前 $k-1$ 个词有关，而不是跟前 $n-1$ 词都有关。</p>
+<p>所以上述公式可以简化成 </p>
+<p>$$P(w_{1:n}) \approx  \prod_{i=1}^n P(w_{i} | w_{i-k:i-1})$$</p>
+<p>OK,语言模型简单的介绍完了，我们接下进入这一小节的重点， Bengio 大佬 2003 年的 Neural Language Model， 这个模型就可以用来训练我们在 2.1 节中所讲的那个 Embedding Matrix.</p>
+<p>整个模型的结构如图所示：</p>
+<p><img src="/images/word2vec/neural_language_model.png" alt="Neural Language Model"></p>
+<p>模型的输入是前 $k$ 个单词，在上图的例子中 $k=6$ ,模型的输出是下一个单词的概率分布。</p>
+<p>我们假设语料库中一共有 $10,000$ 个单词</p>
+<p>这里的每一个单词的原始形式是 $o_j$ (one-hot encoding)，经过一个 Embedding Matrix $E$ 之后，我们得到了它所对应的 dense vector $e_j \in \mathbb{R}^{300}$ (我们假设每个单词都用一个300维的向量来表示)</p>
+<p>公式化的表示就是：</p>
+<p>$$e_j = E \cdot o_j$$</p>
+<p>之后，我们把这六个单词进行拼接得到输入模型之中的 $x = [e_4343, e_9665, e_1, e_3852, e_6163, e_6257]$ ,所以 $x \in \mathbb{R}^{1800}$</p>
+<p>公式化的表示就是：</p>
+<p>$$x_k = [e_{k-6}, e_{k-5}, e_{k-4}, e_{k-3}, e_{k-2}, e_{k-1}]$$</p>
+<p>然后，这个 $x$ 被扔进一个多层感知机中，最后一层是 softmax 层，输出的是语料库中每个单词的概率。</p>
+<p>$$\hat{y} = P(next|e_{4343}, e_{9665}, e_{1}, e_{3852}, e_{6163}, e_{6257}) = softmax(h W_2 + b_2) \  h = tanh(x W_1 + b_1)$$</p>
+<p>那么，想在模型有了，剩下的就是用反向传播把这个模型优化出来就可以了。</p>
+<p>经过优化之后，我们可以得到 $W_1$ 、 $b_1$ 、 $W_2$ 、 $b_2$ 、 $E$ 其中 $E$ 就是我们需要的 Embedding Matrix</p>
+<h3 id="2-2-1-Word2vec"><a href="#2-2-1-Word2vec" class="headerlink" title="2.2.1 Word2vec"></a>2.2.1 Word2vec</h3><p>(1) Skip-gram</p>
+<blockquote>
+<p><strong>该模型的核心思想是：给定中心词预测上下文。</strong></p>
+</blockquote>
+<p><img src="/images/word2vec/skip-gram.jpg" alt="Skip-gram"></p>
+<p>取一个窗口，大小为 $m$, 并且选定一个位置 $t$ 那么我们需要求的是 $p(w_{t-1}|w_t)$、$p(w_{t-2}|w_t)$、… 、$p(w_{t-m}|w_t)$ 和 $p(w_{t+1}|w_t)$、$p(w_{t+2}|w_t)$、… 、$p(w_{t+m}|w_t)$</p>
+<p>所以，目标函数是 Negtive log likelihood</p>
+<p>模型的训练流程图如下所示：</p>
+<p><img src="/images/word2vec/skip-gram-model.jpg" alt="Skip-gram-model"></p>
+<p>我们输入的是 one-hot vector, 经过一个 Embedding Matrix $W$ 得到了 dense vector, 然后再乘以一个 $\grave{W}$ 之后经过softmax 操作，得到了我们预测的概率。<strong>我们最终的目标是希望，正确 target 的概率值越大越好。</strong> </p>
+<p>然后按照上面的模型训练一遍语料库，最后得到的 $W$ 就是我们的 Embedding Matrix.</p>
+<p>(2) Negtive Sampling</p>
+<blockquote>
+<p>虽然 skip-gram 模型很不错，但是也有很明显的缺陷，就是：在最后的softmax阶段，我们需要计算整个语料库… 开销太大了。</p>
+</blockquote>
+<p>为了能够更加快速、高效地训练出 Word Vectors 我们会采用一种新的训练方式叫 <strong>Negtive Sampling</strong></p>
+<p>跟前面一样，我们又如下一句话:</p>
+<blockquote>
+<p>I want a glass of orange juice to go along with my cereal</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">context</th>
+<th style="text-align:center">word</th>
+<th style="text-align:center">target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">orange</td>
+<td style="text-align:center">juice</td>
+<td style="text-align:center">1</td>
+</tr>
+<tr>
+<td style="text-align:center">orange</td>
+<td style="text-align:center">king</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">orange</td>
+<td style="text-align:center">book</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">orange</td>
+<td style="text-align:center">the</td>
+<td style="text-align:center">0</td>
+</tr>
+<tr>
+<td style="text-align:center">orange</td>
+<td style="text-align:center">of</td>
+<td style="text-align:center">0</td>
+</tr>
+</tbody>
+</table>
+<p>我们随机的选取一个中心词， 然后再从上下文中选择一个词作为 “正例”， 再随机地从整个词库中选择几个词作为 “负例” 然后正例会被我们贴上 $1$ ， 负例会被我们贴上 $0$ .</p>
+<blockquote>
+<p>对于小数据集来说，通常我们选择 $k=[5, 20]$ 个负例； 对于大数据集来说，通常我们选择 $k=[2, 5]$ 个负例</p>
+</blockquote>
+<p>然后，我们使用 logstic regression 去训练模型</p>
+<p>$$J_t(\theta) = \log \sigma\left(u_o^Tv_c\right)+\sum_{i=1}^k\mathbb{E}_{j \sim P(w)}\left [\log\sigma \left(-u^T_jv_c\right) \right]$$</p>
+<p>那么这个目标函数的作用就是<strong>要最大化中央词与上下文的相关概率，最小化与其他词语的概率</strong>。</p>
+<p>另外文中还有几个 trick, emmm…. 不太想讲… 自己去看把，不过友情提示， trick 对于你的模型 work 不 work 是至关重要的。</p>
+<h1 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h1><p>从 one-hot encoding 到 word2vec 再到之后的 Glove 这些方法的本质都是用向量表示单词，最简单的 one-hot encoding 仅仅是考虑的表示单词，而 word2vec 在此基础上更进步能够表示一些相似的单词，但是 word2vec 这样的模型就没有缺陷了么？ 我感觉 word2vec 学习 word 之间相似程度的时候依靠的更多的是上下文环境，这样很容易导致单词应该有的“一词多义” 被忽视掉了。而且在不同的数据集上表现也不尽相同，当然，总体来说是一种利好的方法，看那篇论文的引用率也能看出来。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/word2vec/" rel="tag"># word2vec</a>
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/12/《解析卷积神经网络—深度学习实践手册》阅读笔记/" rel="next" title="《解析卷积神经网络—深度学习实践手册》阅读笔记">
+                <i class="fa fa-chevron-left"></i> 《解析卷积神经网络—深度学习实践手册》阅读笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/19/理解BigTable/" rel="prev" title="理解BigTable">
+                理解BigTable <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、Word-representation"><span class="nav-number">1.</span> <span class="nav-text">一、Word representation</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-one-hot-encodings"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 one-hot encodings</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-dense-embedding-vectors"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 dense embedding vectors</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、Word-Embedding"><span class="nav-number">2.</span> <span class="nav-text">二、Word Embedding</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Embedding-matrix"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Embedding matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Learning-word-embeddings"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Learning word embeddings</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-Neural-Language-Model"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 Neural Language Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-Word2vec"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.1 Word2vec</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、总结"><span class="nav-number">3.</span> <span class="nav-text">三、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

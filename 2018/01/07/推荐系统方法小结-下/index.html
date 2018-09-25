@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="推荐系统," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="对传统推荐方法的一个小结，文章长度较长，分为两部分，这是第二部分。">
+<meta name="keywords" content="推荐系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="推荐系统方法小结(下)">
+<meta property="og:url" content="http://yoursite.com/2018/01/07/推荐系统方法小结-下/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="对传统推荐方法的一个小结，文章长度较长，分为两部分，这是第二部分。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-07-15T10:24:32.391Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="推荐系统方法小结(下)">
+<meta name="twitter:description" content="对传统推荐方法的一个小结，文章长度较长，分为两部分，这是第二部分。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/07/推荐系统方法小结-下/"/>
+
+
+
+
+
+  <title>推荐系统方法小结(下) | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/07/推荐系统方法小结-下/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">推荐系统方法小结(下)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-07T20:05:39+08:00">
+                2018-01-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器学习/推荐系统/" itemprop="url" rel="index">
+                    <span itemprop="name">推荐系统</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>对传统推荐方法的一个小结，文章长度较长，分为两部分，这是第二部分。</p>
+<a id="more"></a>
+<h1 id="推荐系统的评估"><a href="#推荐系统的评估" class="headerlink" title="推荐系统的评估"></a>推荐系统的评估</h1><p>如何判断推荐系统的优劣？这是推荐系统评测需要解决的首要问题。一个完整的推荐系统一般存在3个参与方：</p>
+<ul>
+<li>提供推荐的网站</li>
+<li>用户</li>
+<li>物品提供者</li>
+</ul>
+<p>好的推荐系统设计，能够让推荐系统本身收集到高质量的用户反馈，不断完善推荐的质量，增加用户和网站的交互，提高网站的收入。因此在评测一个推荐算法时，需要同时考虑三方的利益，一个好的推荐系统是能够令三方共赢的系统。</p>
+<h2 id="1、推荐系统实验方法"><a href="#1、推荐系统实验方法" class="headerlink" title="1、推荐系统实验方法"></a>1、推荐系统实验方法</h2><p>一般来说，一个新的推荐算法最终上线，需要完成上面所说的3个实验：离线实验、用户调查和在线实验。</p>
+<h3 id="1-1、离线实验"><a href="#1-1、离线实验" class="headerlink" title="1.1、离线实验"></a>1.1、离线实验</h3><p>离线实验的方法一般由如下几个步骤构成：</p>
+<ul>
+<li>通过日志系统获得用户行为数据，并按照一定格式生成一个标准的数据集；</li>
+<li>将数据集按照一定的规则分成训练集和测试集；</li>
+<li>在训练集上训练用户兴趣模型，在测试集上进行预测；</li>
+<li>通过事先定义的离线指标评测算法在测试集上的预测结果。</li>
+</ul>
+<p>从上面的步骤可以看到，推荐系统的离线实验都是在数据集上完成的，也就是说它不需要一个实际的系统来供它实验，而只要有一个从实际系统日志中提取的数据集即可，因此<strong>离线实验速度快，可以测试大量算法，这是离线实验的显著优点</strong>。而它的主要<strong>缺点是无法获得很多商业上关注的指标，如点击率、转化率等</strong>，而找到和商业指标非常相关的离线指标也是很困难的事情。</p>
+<h3 id="1-2、用户调查"><a href="#1-2、用户调查" class="headerlink" title="1.2、用户调查"></a>1.2、用户调查</h3><p>离线实验的指标和实际的商业指标存在差距，比如预测准确率和用户满意度之间就存在很大差别，<strong>高预测准确率不等于高用户满意度</strong>。因此，如果要准确评测一个算法，需要相对比较真实的环境。<strong>最好的方法就是将算法直接上线测试</strong>，但在对算法会不会降低用户满意度不太有把握的情况下，<strong>上线测试具有较高的风险，所以在上线测试前一般需要做一次称为用户调查的测试</strong>。</p>
+<p><strong>测试用户的选择必须尽量保证测试用户的分布和真实用户的分布相同</strong>，比如男女各半，以及年龄、活跃度的分布都和真实用户分布尽量相同。此外，用户调查要<strong>尽量保证是双盲实验</strong>，不要让实验人员和用户事先知道测试的目标，以免用户的回答和实验人员的测试受主观成分的影响。</p>
+<p>用户调查的优缺点也很明显。它的<strong>优点是可以获得很多体现用户主观感受的指标</strong>，相对在线实验风险很低，出现错误后很容易弥补。<strong>缺点是招募测试用户代价较大，很难组织大规模的测试用户</strong>，因此会使测试结果的统计意义不足。此外，在很多时候设计双盲实验非常困难，而且用户在测试环境下的行为和真实环境下的行为可能有所不同，因而在测试环境下收集的测试指标可能在真实环境下无法重现。</p>
+<h3 id="1-3、在线实验"><a href="#1-3、在线实验" class="headerlink" title="1.3、在线实验"></a>1.3、在线实验</h3><p>在完成离线实验和必要的用户调查后，可以将推荐系统上线做<strong>AB测试</strong>，将它和旧的算法进行比较。<strong>AB测试是一种很常用的在线评测算法的实验方法</strong>。</p>
+<blockquote>
+<p>它通过一定的规则将用户随机分成几组，并对不同组的用户采用不同的算法，然后通过统计不同组用户的各种不同的评测指标比较不同算法，比如可以统计不同组用户的点击率，通过点击率比较不同算法的性能。</p>
+</blockquote>
+<p>对AB测试感兴趣的读者可以浏览一下网站 <a href="http://www.abtests.com/，该网站给出了很多通过实际AB测试提高网站用户满意度的例子，从中我们可以学习到如何进行合理的AB测试。" target="_blank" rel="noopener">http://www.abtests.com/，该网站给出了很多通过实际AB测试提高网站用户满意度的例子，从中我们可以学习到如何进行合理的AB测试。</a></p>
+<p>AB测试的<strong>优点是可以公平获得不同算法实际在线时的性能指标</strong>，包括商业上关注的指标。<br>AB测试的<strong>缺点主要是周期比较长，必须进行长期的实验才能得到可靠的结果</strong>。因此一般不会用AB测试测试所有的算法，而只是用它测试那些在离线实验和用户调查中表现很好的算法。其次，一个大型网站的AB测试系统的设计也是一项复杂的工程。一个大型网站的架构分前端和后端，从前端展示给用户的界面到最后端的算法，中间往往经过了很多层，这些层往往由不同的团队控制，而且都有可能做AB测试。</p>
+<p>如果为不同的层分别设计AB测试系统，那么不同的AB测试之间往往会互相干扰。比如，当我们进行一个后台推荐算法的AB测试，同时网页团队在做推荐页面的界面AB测试，最终的结果就是你不知道测试结果是自己算法的改变，还是推荐界面的改变造成的。因此，<strong>切分流量是AB测试中的关键，不同的层以及控制这些层的团队需要从一个统一的地方获得自己AB测试的流量，而不同层之间的流量应该是正交的</strong>。</p>
+<h2 id="2、推荐系统评测指标"><a href="#2、推荐系统评测指标" class="headerlink" title="2、推荐系统评测指标"></a>2、推荐系统评测指标</h2><h3 id="2-1、用户满意度"><a href="#2-1、用户满意度" class="headerlink" title="2.1、用户满意度"></a>2.1、用户满意度</h3><p>用户作为推荐系统的重要参与者，<strong>其满意度是评测推荐系统的最重要指标</strong>。但是，用户满意度没有办法离线计算，只能通过用户调查或者在线实验获得。</p>
+<blockquote>
+<p>这里涉及到了一个哲学性的问题，什么是满意度？ 也许直接使用 用户点击率/用户购买率 这样的比值来的更加直接？？如果每个用户都是一个固定的值显然是不合适的，因为受到假期、促销等行为的影响，这个比值波动较大。或者实时调整当前用户的这个比值会比较有用？？</p>
+</blockquote>
+<p>在线系统中，用户满意度主要通过一些对用户行为的统计得到。比如在电子商务网站中，用户如果购买了推荐的商品，就表示他们在一定程度上满意。因此，我们可以利用购买率度量用户的满意度。</p>
+<p>此外，有些网站会通过设计一些用户反馈界面收集用户满意度。比如在豆瓣网络电台中，都有对推荐结果满意或者不满意的反馈按钮（通过红心和垃圾箱的反馈来度量用户满意度），通过统计两种按钮的单击情况就可以度量系统的用户满意度。</p>
+<p><strong>更一般的情况下，我们可以用点击率、用户停留时间和转化率等指标度量用户的满意度。</strong></p>
+<h3 id="2-2、预测准确度"><a href="#2-2、预测准确度" class="headerlink" title="2.2、预测准确度"></a>2.2、预测准确度</h3><p><strong>预测准确度衡量一个推荐系统或者推荐算法预测用户行为的能力，是最重要的推荐系统离线评测指标</strong>。从推荐系统诞生的那一天起，几乎99%与推荐相关的论文都在讨论这个指标。这主要是因为该指标可以通过离线实验计算，方便了很多学术界的研究人员研究推荐算法。</p>
+<p>在计算该指标时需要有一个离线的数据集，该数据集包含用户的历史行为记录。然后，将该数据集通过时间分成训练集和测试集。最后，通过在训练集上建立用户的行为和兴趣模型预测用户在测试集上的行为，并计算预测行为和测试集上实际行为的重合度作为预测准确度。预测准确度的指标包括以下几类：</p>
+<ul>
+<li>评分预测 </li>
+</ul>
+<p>很多提供推荐服务的网站都有一个让用户给物品打分的功能。如果知道了用户对物品的历史评分，就可以从中习得用户的兴趣模型，并预测该用户在将来看到一个他没有评过分的物品时，会给这个物品评多少分。</p>
+<ul>
+<li>TopN推荐 </li>
+</ul>
+<p>网站在提供推荐服务时，一般是给用户一个个性化的推荐列表，这种推荐叫做TopN推荐。TopN推荐的预测准确率一般通过准确率（precision）/召回率（recall）度量。令 $R(u)$ 是根据用户在训练集上的行为给用户作出的推荐列表，而 $T(u)$ 是用户在测试集上的行为列表。</p>
+<p>那么，推荐结果的召回率定义为： </p>
+<p>$$Recall = \frac{\sum_{u \in U} |R(u) \cap T(u)|}{\sum_{u \in U} |T(u)|}$$</p>
+<p>推荐结果的精准率定义为：</p>
+<p>$$Precision = \frac{\sum_{u \in U} |R(u) \cap T(u)|}{\sum_{u \in U} |R(u)|}$$</p>
+<ul>
+<li>覆盖率</li>
+</ul>
+<p><strong>覆盖率（coverage）描述一个推荐系统对物品长尾的发掘能力</strong>。覆盖率有不同的定义方法，最简单的定义为推荐系统能够推荐出来的物品占总物品集合的比例。假设系统的用户集合为 $U$，推荐系统给每个用户推荐一个长度为 $N$ 的物品列表 $R(u)$ 。</p>
+<p>那么推荐系统的覆盖率可以通过下面的公式计算：</p>
+<p>$$Coverage = \frac{|U_{u \in U} R(u)|}{|I|}$$</p>
+<p><strong>覆盖率是一个内容提供商会关心的指标</strong>。以图书推荐为例，出版社可能会很关心他们的书有没有被推荐给用户。覆盖率为100%的推荐系统可以将每个物品都推荐给至少一个用户。此外，从上面的定义也可以看到，热门排行榜的推荐覆盖率是很低的，它只会推荐那些热门的物品，这些物品在总物品中占的比例很小。一个好的推荐系统不仅需要有比较高的用户满意度，也要有较高的覆盖率。</p>
+<blockquote>
+<p>覆盖率对应的就是一个物品的冷启动问题，如何将这些以前没有人消费过的商品推荐给用户呢？？</p>
+</blockquote>
+<ul>
+<li>多样性 </li>
+</ul>
+<p>为了满足用户广泛的兴趣，推荐列表需要能够覆盖用户不同的兴趣领域，即推荐结果需要具有多样性。尽管用户的兴趣在较长的时间跨度中是一样的，但具体到用户访问推荐系统的某一刻，其兴趣往往是单一的，那么如果推荐列表只能覆盖用户的一个兴趣点，而这个兴趣点不是用户这个时刻的兴趣点，推荐列表就不会让用户满意。反之，如果推荐列表比较多样，覆盖了用户绝大多数的兴趣点，那么就会增加用户找到感兴趣物品的概率。因此给用户的推荐列表也需要满足用户广泛的兴趣，即具有多样性。 </p>
+<p><strong>多样性描述了推荐列表中物品两两之间的不相似性</strong>。因此，多样性和相似性是对应的。假设 $s(i,j) \in [0,1]$ 定义了物品 $i$ 和 $j$ 之间的相似度，那么用户 $u$ 的推荐列表 $R(u)$ 的多样性定义如下： </p>
+<p>$$Diversity = 1 - \frac{\sum_{i,j \in R(u), i \neq j} s(i,j)}{\frac{1}{2} |R(u)| (|R(u)| - 1)}$$</p>
+<p>而推荐系统的整体多样性可以定义为所有用户推荐列表多样性的平均值： </p>
+<p>$|R(u)|$ 表示用户 $u$ 的推荐列表中 item 的个数。</p>
+<p>$$Diversity = \frac{1}{|U|} \sum_{u \in U} Diversity(R(u))$$</p>
+<ul>
+<li>新颖性</li>
+</ul>
+<p>新颖的推荐是指给用户推荐那些他们以前没有听说过的物品。在一个网站中实现新颖性的最简单办法是，把那些用户之前在网站中对其有过行为的物品从推荐列表中过滤掉。比如在一个视频网站中，新颖的推荐不应该给用户推荐那些他们已经看过、打过分或者浏览过的视频。但是，有些视频可能是用户在别的网站看过，或者是在电视上看过，因此仅仅过滤掉本网站中用户有过行为的物品还不能完全实现新颖性。</p>
+<p>但是，用推荐结果的平均流行度度量新颖性比较粗略，因为不同用户不知道的东西是不同的。因此，要准确地统计新颖性需要做用户调查。</p>
+<ul>
+<li>惊喜度 </li>
+</ul>
+<p><strong>让用户惊喜的推荐结果是和用户历史上喜欢的物品不相似</strong>，但用户却觉得满意的推荐。那么，<em>定义惊喜度需要首先定义推荐结果和用户历史上喜欢的物品的相似度，其次需要定义用户对推荐结果的满意度</em>。</p>
+<p>用户满意度只能通过问卷调查或者在线实验获得，而推荐结果和用户历史上喜欢的物品相似度一般可以用内容相似度定义。也就是说，如果获得了一个用户观看电影的历史，得到这些电影的演员和导演集合A，然后给用户推荐一个不属于集合A的导演和演员创作的电影，而用户表示非常满意，这样就实现了一个惊喜度很高的推荐。<strong>因此提高推荐惊喜度需要提高推荐结果的用户满意度，同时降低推荐结果和用户历史兴趣的相似度。</strong></p>
+<ul>
+<li>信任度</li>
+</ul>
+<p>度量推荐系统的信任度只能通过问卷调查的方式，询问用户是否信任推荐系统的推荐结果。提高推荐系统的信任度主要有两种方法：</p>
+<blockquote>
+<ol>
+<li>需要<strong>增加推荐系统的透明度（transparency）</strong>，而增加推荐系统透明度的主要办法是提供推荐解释。只有让用户了解推荐系统的运行机制，让用户认同推荐系统的运行机制，才会提高用户对推荐系统的信任度。</li>
+<li>考虑用户的社交网络信息，<strong>利用用户的好友信息给用户做推荐，并且用好友进行推荐解释</strong>。这是因为用户对他们的好友一般都比较信任，因此如果推荐的商品是好友购买过的，那么他们对推荐结果就会相对比较信任。</li>
+</ol>
+</blockquote>
+<ul>
+<li>实时性 </li>
+</ul>
+<p>在很多网站中，因为物品（新闻、微博等）具有很强的时效性，所以需要在物品还具有时效性时就将它们推荐给用户。比如，给用户推荐昨天的新闻显然不如给用户推荐今天的新闻。因此，在这些网站中，推荐系统的实时性就显得至关重要。</p>
+<p>推荐系统的实时性包括两个方面：</p>
+<blockquote>
+<ol>
+<li><strong>推荐系统需要实时地更新推荐列表来满足用户新的行为变化</strong>。比如，当一个用户购买了iPhone，如果推荐系统能够立即给他推荐相关配件，那么肯定比第二天再给用户推荐相关配件更有价值。很多推荐系统都会在离线状态每天计算一次用户推荐列表，然后于在线期间将推荐列表展示给用户。这种设计显然是无法满足实时性的。与用户行为相应的实时性，可以通过推荐列表的变化速率来评测。如果推荐列表在用户有行为后变化不大，或者没有变化，说明推荐系统的实时性不高。</li>
+<li><strong>推荐系统需要能够将新加入系统的物品推荐给用户</strong>。 这主要考验了推荐系统处理物品冷启动的能力。对于新物品推荐能力，我们可以利用用户推荐列表中有多大比例的物品是当天新加的来评测。</li>
+</ol>
+</blockquote>
+<ul>
+<li>商业目标 </li>
+</ul>
+<p>很多时候，<strong>网站评测推荐系统更加注重网站的商业目标是否达成，而商业目标和网站的盈利模式是息息相关的</strong>。</p>
+<blockquote>
+<p>一般来说，最本质的商业目标就是平均一个用户给公司带来的盈利。不过这种指标不是很难计算，只是计算一次需要比较大的代价。因此，很多公司会根据自己的盈利模式设计不同的商业目标。</p>
+</blockquote>
+<p><strong>不同的网站具有不同的商业目标</strong>。比如电子商务网站的目标可能是销售额，基于展示广告盈利的网站其商业目标可能是广告展示总数，基于点击广告盈利的网站其商业目标可能是广告点击总数。因此，<strong>设计推荐系统时需要考虑最终的商业目标，而网站使用推荐系统的目的除了满足用户发现内容的需求，也需要利用推荐系统加快实现商业上的指标</strong>。</p>
+<h1 id="冷启动问题"><a href="#冷启动问题" class="headerlink" title="冷启动问题"></a>冷启动问题</h1><h2 id="1、冷启动问题定义"><a href="#1、冷启动问题定义" class="headerlink" title="1、冷启动问题定义"></a>1、冷启动问题定义</h2><p>推荐系统需要根据用户的历史行为和兴趣预测用户未来的行为和兴趣，对于BAT这类大公司来说，它们已经积累了大量的用户数据，不发愁。但是对于很多做纯粹推荐系统的网站或者很多在开始阶段就希望有个性化推荐应用的网站来说，如何在对用户一无所知（即没有用户行为数据）的情况下进行最有效的推荐呢？这就衍生了冷启动问题。</p>
+<h2 id="2、冷启动的分类"><a href="#2、冷启动的分类" class="headerlink" title="2、冷启动的分类"></a>2、冷启动的分类</h2><p>冷启动问题主要分为3类：</p>
+<ul>
+<li>用户冷启动，即如何给新用户做个性化推荐</li>
+<li>物品冷启动，即如何将新的物品推荐给可能对它感兴趣的用户</li>
+<li>系统冷启动，即如何在一个新开发的网站（没有用户，没有用户行为，只有部分物品信息）上设计个性化推荐系统，从而在网站刚发布时就让用户体会到个性化推荐</li>
+</ul>
+<blockquote>
+<p>还有可能遇到用户组冷启动、商品列表冷启动</p>
+</blockquote>
+<h2 id="3、冷启动问题的解决方案"><a href="#3、冷启动问题的解决方案" class="headerlink" title="3、冷启动问题的解决方案"></a>3、冷启动问题的解决方案</h2><h3 id="3-1-提供非个性化的推荐"><a href="#3-1-提供非个性化的推荐" class="headerlink" title="3.1 提供非个性化的推荐"></a>3.1 提供非个性化的推荐</h3><p>最简单的例子就是提供热门排行榜，可以给用户推荐热门排行榜，等到用户数据收集到一定的时候，再切换为个性化推荐。Netflix的研究也表明新用户在冷启动阶段确实是更倾向于热门排行榜的，老用户会更加需要长尾推荐。</p>
+<h3 id="3-2-利用用户注册信息"><a href="#3-2-利用用户注册信息" class="headerlink" title="3.2 利用用户注册信息"></a>3.2 利用用户注册信息</h3><p>用户的注册信息主要分为3种：</p>
+<ul>
+<li>人口统计学信息，包括年龄、性别、职业、民族、学历和居住地</li>
+<li>用户兴趣的描述，部分网站会让用户用文字来描述兴趣</li>
+<li>从其他网站导入的用户站外行为，比如用户利用社交网站账号登录，就可以在获得用户授权的情况下导入用户在该社交网站的部分行为数据和社交网络数据。</li>
+</ul>
+<blockquote>
+<p>第三种也称为， cross domain 信息，通过这类信息解决冷启动问题，效果也会是非常显著的。</p>
+</blockquote>
+<p>这种个性化的粒度很粗，假设性别作为一个粒度来推荐，那么所有刚注册的女性看到的都是同样的结果，但是相对于男女不区分的方式，这种推荐精度已经大大提高了。</p>
+<h3 id="3-3-选择合适的物品启动用户的兴趣"><a href="#3-3-选择合适的物品启动用户的兴趣" class="headerlink" title="3.3 选择合适的物品启动用户的兴趣"></a>3.3 选择合适的物品启动用户的兴趣</h3><p>用户在登录时对一些物品进行反馈，收集用户对这些物品的兴趣信息，然后给用户推荐那些和这些物品相似的物品。一般来说，能够用来启动用户兴趣的物品需要具有以下特点：</p>
+<ul>
+<li>比较热门，如果要让用户对物品进行反馈，前提是用户得知道这是什么东西；</li>
+<li>具有代表性和区分性，启动用户兴趣的物品不能是大众化或老少咸宜的，因为这样的物品对用户的兴趣没有区分性；</li>
+<li>启动物品集合需要有多样性，在冷启动时，我们不知道用户的兴趣，而用户兴趣的可能性非常多，为了匹配多样的兴趣，我们需要提供具有很高覆盖率的启动物品集合，这些物品能覆盖几乎所有主流的用户兴趣。</li>
+</ul>
+<h3 id="3-4-利用物品的内容信息"><a href="#3-4-利用物品的内容信息" class="headerlink" title="3.4 利用物品的内容信息"></a>3.4 利用物品的内容信息</h3><p>物品冷启动问题在新闻网站等时效性很强的网站中非常重要，因为这些网站时时刻刻都有新物品加入，而且每个物品必须能够再第一时间展现给用户，否则经过一段时间后，物品的价值就大大降低了。</p>
+<p><strong>对UserCF算法来说</strong>，针对推荐列表并不是给用户展示内容的唯一列表（大多网站都是这样的）的网站。当新物品加入时，总会有用户通过某些途径看到，那么当一个用户对其产生反馈后，和他历史兴趣相似的用户的推荐列表中就有可能出现该物品，从而更多的人对该物品做出反馈，导致更多的人的推荐列表中出现该物品。</p>
+<p>因此，该物品就能不断扩散开来，从而逐步展示到对它感兴趣用户的推荐列表中针对推荐列表是用户获取信息的主要途径（例如豆瓣网络电台）的网站UserCF算法就需要解决第一推动力的问题，即第一个用户从哪儿发现新物品。最简单的方法是将新的物品随机战士给用户，但是太不个性化。因此可以考虑利用物品的内容信息，将新物品先投放给曾经喜欢过和它内容相似的其他物品的用户。</p>
+<p><strong>对ItemCF算法来说</strong>，物品冷启动就是很严重的问题了。因为该算法的基础是通过用户对物品产生的行为来计算物品之间的相似度，当新物品还未展示给用户时，用户就无法产生行为。为此，只能利用物品的内容信息计算物品的相关程度。基本思路就是将物品转换成关键词向量，通过计算向量之间的相似度（例如计算余弦相似度），得到物品的相关程度。</p>
+<h3 id="3-5-采用专家标注"><a href="#3-5-采用专家标注" class="headerlink" title="3.5 采用专家标注"></a>3.5 采用专家标注</h3><p>很多系统在建立的时候，既没有用户的行为数据，也没有充足的物品内容信息来计算物品相似度。这种情况下，很多系统都利用专家进行标注。</p>
+<p>代表系统：个性化网络电台Pandora、电影推荐网站Jinni。</p>
+<p>以Pandora电台为例，Pandora雇用了一批音乐人对几万名歌手的歌曲进行各个维度的标注，最终选定了400多个特征。每首歌都可以标识为一个400维的向量，然后通过常见的向量相似度算法计算出歌曲的相似度。</p>
+<h1 id="可用资源"><a href="#可用资源" class="headerlink" title="可用资源"></a>可用资源</h1><ul>
+<li>MovieLen(<a href="https://grouplens.org/datasets/movielens/" target="_blank" rel="noopener">https://grouplens.org/datasets/movielens/</a>)<br>MovieLens数据集中，用户对自己看过的电影进行评分，分值为1~5。MovieLens包括两个不同大小的库，适用于不同规模的算法。小规模的库是943个独立用户对1 682部电影作的10 000次评分的数据；大规模的库是6 040个独立用户对3 900部电影作的大约100万次评分。</li>
+</ul>
+<ul>
+<li>BookCrossing(<a href="http://www2.informatik.uni-freiburg.de/~cziegler/BX/" target="_blank" rel="noopener">http://www2.informatik.uni-freiburg.de/~cziegler/BX/</a>)<br>这个数据集是网上的Book-Crossing图书社区的278858个用户对271379本书进行的评分，包括显式和隐式的评分。这些用户的年龄等人口统计学属性(demographic feature)都以匿名的形式保存并供分析。这个数据集是由Cai-Nicolas Ziegler使用爬虫程序在2004年从Book-Crossing图书社区上采集的。</li>
+</ul>
+<ul>
+<li>Jester Joke(<a href="http://eigentaste.berkeley.edu/dataset/" target="_blank" rel="noopener">http://eigentaste.berkeley.edu/dataset/</a>)<br>Jester Joke是一个网上推荐和分享笑话的网站。这个数据集有73496个用户对100个笑话作的410万次评分。评分范围是−10~10的连续实数。这些数据是由加州大学伯克利分校的Ken Goldberg公布的。</li>
+</ul>
+<ul>
+<li><p>Netflix(<a href="http://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a" target="_blank" rel="noopener">http://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a</a>)<br>这个数据集来自于电影租赁网址Netflix的数据库。Netflix于2005年底公布此数据集并设立百万美元的奖金(netflix prize)，征集能够使其推荐系统性能上升10%的推荐算法和架构。这个数据集包含了480 189个匿名用户对大约17 770部电影作的大约10亿次评分。</p>
+</li>
+<li><p>Usenet Newsgroups(<a href="http://qwone.com/~jason/20Newsgroups/" target="_blank" rel="noopener">http://qwone.com/~jason/20Newsgroups/</a>)<br>这个数据集包括20个新闻组的用户浏览数据。最新的应用是在KDD 2007上的论文。新闻组的内容和讨论的话题包括计算机技术、摩托车、篮球、政治等。用户们对这些话题进行评价和反馈。</p>
+</li>
+</ul>
+<ul>
+<li>UCI库(<a href="https://archive.ics.uci.edu/ml/datasets.html" target="_blank" rel="noopener">https://archive.ics.uci.edu/ml/datasets.html</a>)<br>UCI库是Blake等人在1998年开放的一个用于机器学习和评测的数据库，其中存储大量用于模型训练的标注样本，可用于推荐系统的性能测试数据。</li>
+</ul>
+<ul>
+<li>LibRec（<a href="http://www.librec.net）" target="_blank" rel="noopener">http://www.librec.net）</a><br>LibRec是一个覆盖了70余个各类型推荐算法的推荐系统开源算法库，有效地解决了评分预测和物品推荐两大关键的推荐问题。该项目结构清晰、代码风格良好、测试充分、注释与手册完善，基于GPL3.0协议代码开源。GitHub链接为 ：<a href="https://github.com/guoguibing/librec" target="_blank" rel="noopener">https://github.com/guoguibing/librec</a></li>
+</ul>
+<ul>
+<li>Crab（<a href="http://muricoca.github.io/crab/tutorial.html）" target="_blank" rel="noopener">http://muricoca.github.io/crab/tutorial.html）</a><br>Crab是基于Python开发的开源推荐软件，其中实现有item和user的协同过滤。据说更多算法还在开发中，Crab的python代码看上去很清晰明了，适合一读。<br>系统的Tutorial可以看这里： <a href="http://muricoca.github.io/crab/" target="_blank" rel="noopener">http://muricoca.github.io/crab/</a></li>
+</ul>
+<ul>
+<li><p>SVDFeature(<a href="http://svdfeature.apexlab.org/wiki/Main_Page" target="_blank" rel="noopener">http://svdfeature.apexlab.org/wiki/Main_Page</a>)<br>一个feature-based协同过滤和排序工具，由上海交大Apex实验室开发，代码质量较高。在KDD Cup 2012中获得第一名，KDD Cup 2011中获得第三名，相关论文 发表在2012的JMLR中。SVDFeature包含一个很灵活的Matrix Factorization推荐框架，能方便的实现SVD、SVD++等方法, 是单模型推荐算法中精度最高的一种。SVDFeature代码精炼，可以用 相对较少的内存实现较大规模的单机版矩阵分解运算。另外含有Logistic regression的model，可以很方便的用来进行ensemble。</p>
+</li>
+<li><p>LibMF(<a href="http://www.csie.ntu.edu.tw/~cjlin/libmf/" target="_blank" rel="noopener">http://www.csie.ntu.edu.tw/~cjlin/libmf/</a>)<br>作者Chih-Jen Lin来自大名鼎鼎的台湾国立大学，他们在机器学习领域享有盛名，近年连续多届KDD-Cup竞赛上均获得优异成绩，并曾连续多年获得冠军。台湾大学的风格非常务实，业界常用的LibSVM，Liblinear等都是他们开发的，开源代码的效率和质量都非常高。</p>
+</li>
+</ul>
+<p>LibMF在矩阵分解的并行化方面作出了很好的贡献，针对SGD（随即梯度下降）优化方法在并行计算中存在的 locking problem 和 memory discontinuity问题，提出了一种 矩阵分解的高效算法FPSGD（Fast Parallel SGD），根据计算节点的个数来划分评分矩阵block，并分配计算节点。</p>
+<ul>
+<li>LibFM(<a href="http://www.libfm.org/" target="_blank" rel="noopener">http://www.libfm.org/</a> )<br>作者是德国Konstanz大学的Steffen Rendle，他用LibFM同时玩转KDD Cup 2012 Track1和Track2两个子竞赛单元，都取得了很好的成绩，说明LibFM是非常管用的利器。</li>
+</ul>
+<p>LibFM是专门用于矩阵分解的利器，尤其是其中实现了MCMC（Markov Chain Monte Carlo）优化算法，比常见的SGD优化方法精度要高，但运算速度要慢一些。当然LibFM中还 实现了SGD、SGDA（Adaptive SGD）、ALS（Alternating Least Squares）等算法。</p>
+<ul>
+<li>Lenskit(<a href="http://lenskit.org/" target="_blank" rel="noopener">http://lenskit.org/</a>)<br>这个Java开发的开源推荐系统，来自美国的明尼苏达大学的GroupLens团队，也是推荐领域知名的测试数据集Movielens的作者。</li>
+</ul>
+<p>该源码托管在GitHub上（<a href="https://github.com/grouplens/lenskit）。" target="_blank" rel="noopener">https://github.com/grouplens/lenskit）。</a> 主要包含lenskit-api,lenskit-core, lenskit-knn,lenskit-svd,lenskit-slopone,lenskit-parent,lenskit-data- structures,lenskit-eval,lenskit-test等模块，主要实现了k-NN，SVD，Slope-One等 典型的推荐系统算法。</p>
+<ul>
+<li>EasyRec(<a href="http://easyrec.org/" target="_blank" rel="noopener">http://easyrec.org/</a> )<br>EasyRec是一个易集成、易扩展、功能强大且具有可视化管理的推荐系统，更像一个完整的推荐产品，包括了数据录入模块、管理模块、推荐挖掘、离线分析等。它可以同时给多个不同的网站提供推荐服务，通过tenant来区分不同的网站。架设EasyRec服务器，为网站申请tenant，通过tenant就可以很方便的集成到网站中。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/推荐系统/" rel="tag"># 推荐系统</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/06/推荐系统方法小结-上/" rel="next" title="推荐系统方法小结(上)">
+                <i class="fa fa-chevron-left"></i> 推荐系统方法小结(上)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/09/详细剖析RNN理论、变种和应用/" rel="prev" title="详细剖析RNN理论、变种和应用">
+                详细剖析RNN理论、变种和应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#推荐系统的评估"><span class="nav-number">1.</span> <span class="nav-text">推荐系统的评估</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、推荐系统实验方法"><span class="nav-number">1.1.</span> <span class="nav-text">1、推荐系统实验方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、离线实验"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1、离线实验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、用户调查"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2、用户调查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3、在线实验"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3、在线实验</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、推荐系统评测指标"><span class="nav-number">1.2.</span> <span class="nav-text">2、推荐系统评测指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、用户满意度"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1、用户满意度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、预测准确度"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2、预测准确度</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#冷启动问题"><span class="nav-number">2.</span> <span class="nav-text">冷启动问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、冷启动问题定义"><span class="nav-number">2.1.</span> <span class="nav-text">1、冷启动问题定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、冷启动的分类"><span class="nav-number">2.2.</span> <span class="nav-text">2、冷启动的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、冷启动问题的解决方案"><span class="nav-number">2.3.</span> <span class="nav-text">3、冷启动问题的解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-提供非个性化的推荐"><span class="nav-number">2.3.1.</span> <span class="nav-text">3.1 提供非个性化的推荐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-利用用户注册信息"><span class="nav-number">2.3.2.</span> <span class="nav-text">3.2 利用用户注册信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-选择合适的物品启动用户的兴趣"><span class="nav-number">2.3.3.</span> <span class="nav-text">3.3 选择合适的物品启动用户的兴趣</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-利用物品的内容信息"><span class="nav-number">2.3.4.</span> <span class="nav-text">3.4 利用物品的内容信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-采用专家标注"><span class="nav-number">2.3.5.</span> <span class="nav-text">3.5 采用专家标注</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#可用资源"><span class="nav-number">3.</span> <span class="nav-text">可用资源</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

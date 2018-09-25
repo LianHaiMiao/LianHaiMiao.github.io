@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Big Table," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="理解 BigTableBigTable 其实就是 Google 设计的分布式结构化数据表. Bigtable 的设计动机:  需要存储的数据种类繁多,包括URL、网页内容、用户的个性化设置在内的数据都是Google需要经常处理的  需要存储的数据种类繁多海量的服务请求,Google运行着目前世界上最繁忙的系统,它每时每刻处理的客户服务请求数量是普通的系统根本无法承受的.  商用数据库无法满足需求,">
+<meta name="keywords" content="Big Table">
+<meta property="og:type" content="article">
+<meta property="og:title" content="理解BigTable">
+<meta property="og:url" content="http://yoursite.com/2018/03/19/理解BigTable/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="理解 BigTableBigTable 其实就是 Google 设计的分布式结构化数据表. Bigtable 的设计动机:  需要存储的数据种类繁多,包括URL、网页内容、用户的个性化设置在内的数据都是Google需要经常处理的  需要存储的数据种类繁多海量的服务请求,Google运行着目前世界上最繁忙的系统,它每时每刻处理的客户服务请求数量是普通的系统根本无法承受的.  商用数据库无法满足需求,">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/Bigtable/bigtable.png">
+<meta property="og:image" content="http://yoursite.com/images/Bigtable/framework.png">
+<meta property="og:image" content="http://yoursite.com/images/Bigtable/chubby.png">
+<meta property="og:image" content="http://yoursite.com/images/Bigtable/tablesplit1.png">
+<meta property="og:image" content="http://yoursite.com/images/Bigtable/tablesplit2.png">
+<meta property="og:image" content="http://yoursite.com/images/Bigtable/sstable.png">
+<meta property="og:image" content="http://yoursite.com/images/Bigtable/sontable.png">
+<meta property="og:image" content="http://yoursite.com/images/Bigtable/address.png">
+<meta property="og:image" content="http://yoursite.com/images/Bigtable/read_write.png">
+<meta property="og:updated_time" content="2018-04-10T12:21:12.549Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="理解BigTable">
+<meta name="twitter:description" content="理解 BigTableBigTable 其实就是 Google 设计的分布式结构化数据表. Bigtable 的设计动机:  需要存储的数据种类繁多,包括URL、网页内容、用户的个性化设置在内的数据都是Google需要经常处理的  需要存储的数据种类繁多海量的服务请求,Google运行着目前世界上最繁忙的系统,它每时每刻处理的客户服务请求数量是普通的系统根本无法承受的.  商用数据库无法满足需求,">
+<meta name="twitter:image" content="http://yoursite.com/images/Bigtable/bigtable.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/03/19/理解BigTable/"/>
+
+
+
+
+
+  <title>理解BigTable | Hexo</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/19/理解BigTable/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Lianhai Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">理解BigTable</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-19T10:33:06+08:00">
+                2018-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/" itemprop="url" rel="index">
+                    <span itemprop="name">学习</span>
+                  </a>
+                </span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习/云计算/" itemprop="url" rel="index">
+                    <span itemprop="name">云计算</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="理解-BigTable"><a href="#理解-BigTable" class="headerlink" title="理解 BigTable"></a>理解 BigTable</h1><p>BigTable 其实就是 Google 设计的分布式结构化数据表.</p>
+<p>Bigtable 的设计动机:</p>
+<ol>
+<li><p><strong>需要存储的数据种类繁多</strong>,包括URL、网页内容、用户的个性化设置在内的数据都是Google需要经常处理的</p>
+</li>
+<li><p><strong>需要存储的数据种类繁多海量的服务请求</strong>,Google运行着目前世界上最繁忙的系统,它每时每刻处理的客户服务请求数量是普通的系统根本无法承受的.</p>
+</li>
+<li><p><strong>商用数据库无法满足需求</strong>,一方面现有商用数据库的设计着眼点在于其通用性。另一方面对于底层系统的完全掌控会给后期的系统维护、升级带来极大的便利</p>
+</li>
+</ol>
+<p>为了解决上述的问题, Google 才提出了 BigTable 的概念.</p>
+<a id="more"></a>
+<h2 id="Bigtable-应达到的基本目标"><a href="#Bigtable-应达到的基本目标" class="headerlink" title="Bigtable 应达到的基本目标"></a>Bigtable 应达到的基本目标</h2><ol>
+<li><p><strong>广泛的适用性</strong>, Bigtable是为了满足一系列 Google 产品而并非特定产品的存储要求。</p>
+</li>
+<li><p><strong>很强的可扩展性</strong>, 根据需要随时可以加入或撤销服务器.</p>
+</li>
+<li><p><strong>高可用性</strong>, 确保几乎所有的情况下系统都可用.</p>
+</li>
+<li><p><strong>简单性</strong>, 底层系统的简单性既可以减少系统出错的概率，也为上层应用的开发带来便利</p>
+</li>
+</ol>
+<h2 id="Bigtable-数据的存储格式"><a href="#Bigtable-数据的存储格式" class="headerlink" title="Bigtable 数据的存储格式"></a>Bigtable 数据的存储格式</h2><blockquote>
+<p>Bigtable is a sparse, distributed, persistent multidimensional sorted map.</p>
+</blockquote>
+<p>Bigtable 是一个<strong>分布式</strong>, <strong>多维</strong>, <strong>映射</strong>表. 表中的数据通过一个行关键字（Row Key）、一个列关键字（Column Key）以及一个时间戳（Time Stamp）进行索引. 在Bigtable中一共有三级索引. 行关键字为第一级索引，列关键字为第二级索引，时间戳为第三级索引。</p>
+<p>Bigtable的存储逻辑可以表示为：</p>
+<blockquote>
+<p>(row:string, column:string, time:int64)→string</p>
+</blockquote>
+<h3 id="row-的特点"><a href="#row-的特点" class="headerlink" title="row 的特点"></a>row 的特点</h3><ul>
+<li>Bigtable 的行关键字可以是任意的字符串，但是大小不能够超过 64KB</li>
+<li>表中数据都是根据行关键字进行排序的，排序使用的是词典序</li>
+<li>同一地址域的网页会被存储在表中的连续位置</li>
+<li>倒排便于数据压缩，可以大幅提高压缩率</li>
+</ul>
+<p>需要特别注意的是对于一个网站 <a href="http://www.cnn.com" target="_blank" rel="noopener">www.cnn.com</a> 存储在 Bigtable 中的格式是 com.cnn.www</p>
+<p>这样倒排的好处是,对于同一域名下的内容,我们可以进行更加快速的索引.</p>
+<h3 id="column-的特点"><a href="#column-的特点" class="headerlink" title="column 的特点"></a>column 的特点</h3><ul>
+<li>将其组织成列族（Column Family）</li>
+<li>族名必须有意义，限定词则可以任意选定, 比如 “contents”, “title” 等等.</li>
+<li>组织的数据结构清晰明了，含义也很清楚</li>
+<li>族同时也是 Bigtable 中访问控制（Access Control）的基本单元</li>
+</ul>
+<p>我们从 Bigtable 中读取数据先找到哪一行 然后再去选择读取那个一个 column.</p>
+<h3 id="time-的特点"><a href="#time-的特点" class="headerlink" title="time 的特点"></a>time 的特点</h3><ul>
+<li>Google的很多服务比如网页检索和用户的个性化设置等都需要保存不同时间的数据，这些不同的数据版本必须通过时间戳来区分。</li>
+<li>Bigtable中的时间戳是64位整型数，具体的赋值方式可以用户自行定义</li>
+</ul>
+<p>选定了 row 和 column 之后,我们就会选择读取哪一个版本的,不同的时间戳代表着不同的数据版本.</p>
+<h3 id="典型的-bigtable-存储结构"><a href="#典型的-bigtable-存储结构" class="headerlink" title="典型的 bigtable 存储结构"></a>典型的 bigtable 存储结构</h3><p><img src="/images/Bigtable/bigtable.png" alt="Bigtable"></p>
+<p>上图是 Bigtable 论文里给出的例子，Webtable 表存储了大量的网页和相关信息。<br>在 Webtable 中<strong>每一行存储一个网页</strong>，其反转的 url 作为<em>行键</em>，比如 maps.google.com/index.html 的数据存储在键为com.google.maps/index.html 的行里，<strong>反转的原因是为了让同一个域名下的子域名网页能聚集在一起。</strong></p>
+<p>上图中的列族 “anchor” 保存了该网页的引用站点（比如引用了CNN主页的站点），qualifier 是引用站点的名称，而数据是链接文本；</p>
+<p>列族”contents”保存的是网页的内容，这个列族只有一个空列”contents:”。</p>
+<p>“contents”列下保存了网页的三个版本，我们可以用 (“com.cnn.www”, “contents:”, t5) 来找到CNN主页在t5时刻的内容。</p>
+<p>以下一个比较典型的 bigtable 存储结构,有点 json 格式的感觉.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">table&#123;  </span><br><span class="line">  // ...  </span><br><span class="line">  &quot;aaaaa&quot; : &#123; //一行  </span><br><span class="line">    &quot;A:foo&quot; : &#123; //一列  </span><br><span class="line">        15 : &quot;y&quot;, //一个版本  </span><br><span class="line">        4 : &quot;m&quot;  </span><br><span class="line">      &#125;,  </span><br><span class="line">    &quot;A:bar&quot; : &#123; //一列  </span><br><span class="line">        15 : &quot;d&quot;,  </span><br><span class="line">      &#125;,  </span><br><span class="line">    &quot;B:&quot; : &#123; //一列  </span><br><span class="line">        6 : &quot;w&quot;  </span><br><span class="line">        3 : &quot;o&quot;  </span><br><span class="line">        1 : &quot;w&quot;  </span><br><span class="line">      &#125;  </span><br><span class="line">  &#125;,  </span><br><span class="line">  // ...  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Bigtable-基本架构"><a href="#Bigtable-基本架构" class="headerlink" title="Bigtable 基本架构"></a>Bigtable 基本架构</h3><p><img src="/images/Bigtable/framework.png" alt="Bigtable"></p>
+<p>整个 Bigtable 的工作流程,我们会放到后面再介绍,现在先让我们看一下这个基本架构,然后了解 Chubby 的作用.</p>
+<ol>
+<li><p>选取并保证同一时间内只有一个主服务器（ Master Server ）</p>
+</li>
+<li><p>获取子表的位置信息。</p>
+</li>
+<li><p>保存 Bigtable的模式信息及访问控制列表。</p>
+</li>
+</ol>
+<p><img src="/images/Bigtable/chubby.png" alt="chubby工作流程"></p>
+<h4 id="主服务器有什么作用呢"><a href="#主服务器有什么作用呢" class="headerlink" title="主服务器有什么作用呢?"></a>主服务器有什么作用呢?</h4><ol>
+<li><p><strong>新子表分配</strong>, 当一个新的子表产生时，主服务器通过一个加载命令将其分配给一个空间足够的子表服务器。同时,创建新表、表合并以及较大子表的分裂都会产生一个或多个新子表。</p>
+</li>
+<li><p><strong>子表服务器状态监控</strong>, 主服务器必须对子表服务器的状态进行监控，以便及时检测到服务器的加入或撤销</p>
+</li>
+<li><p><strong>子服务器之间的负载均衡</strong>, 分割由子服务器发起，完成之后子服务器需要向主服务发出一个通知。</p>
+</li>
+</ol>
+<hr>
+<p>这里可能点绕,为了避免”晕车”, 我们再次梳理一下关系.</p>
+<p>我们有 Chubby, 主服务器, 子服务器, 子表.</p>
+<p>Chubby 负责元数据的存储和选择主服务器.</p>
+<p>主服务器复杂子服务器的负载均衡 </p>
+<p>子服务器负责子表的管理,一个子服务器可以有很多很多张子表,处理对其子表的读写请求，以及子表的分裂或合并。</p>
+<p>每个子表的大小在100-200MB范围，一旦超出范围就将分裂成更小的子表，或者合并成更大的子表, </p>
+<p>同时,子服务器可以根据负载随时添加和删除。这里子服务器并不真实存储数据，而相当于一个连接 Bigtable 和 GFS 的代理，客户端的一些数据操作都通过子服务器代理间接访问 GFS。</p>
+<hr>
+<h4 id="子服务器如何切割子表"><a href="#子服务器如何切割子表" class="headerlink" title="子服务器如何切割子表?"></a>子服务器如何切割子表?</h4><p><img src="/images/Bigtable/tablesplit1.png" alt="子表切割之前"></p>
+<p><img src="/images/Bigtable/tablesplit2.png" alt="子表切割之后"></p>
+<h3 id="SSTable-格式的基本示意"><a href="#SSTable-格式的基本示意" class="headerlink" title="SSTable 格式的基本示意"></a>SSTable 格式的基本示意</h3><p>SSTable 是Google为Bigtable设计的内部数据存储格式。所有的SSTable文件都存储在GFS上，用户可以通过键来查询相应的值。</p>
+<p><img src="/images/Bigtable/sstable.png" alt="SSTable"></p>
+<h4 id="子表实际组成"><a href="#子表实际组成" class="headerlink" title="子表实际组成"></a>子表实际组成</h4><p>不同子表的SSTable可以共享</p>
+<p>每个子表服务器上仅保存一个日志文件</p>
+<p>Bigtable规定将日志的内容按照键值进行排序</p>
+<p>每个子表服务器上保存的子表数量可以从几十到上千不等，通常情况下是100个左右</p>
+<p><img src="/images/Bigtable/sontable.png" alt="子表"></p>
+<h4 id="子表地址组成"><a href="#子表地址组成" class="headerlink" title="子表地址组成"></a>子表地址组成</h4><p>Bigtable系统的内部采用的是一种类似B+树的三层查询体系</p>
+<p>首先是第一层，Chubby file。这一层是一个Chubby文件，它保存着root tablet的位置。这个Chubby文件属于Chubby服务的一部分，一旦Chubby不可用，就意味着丢失了root tablet的位置，整个Bigtable也就不可用了。</p>
+<p>第二层是root tablet。root tablet其实是元数据表（METADATA table）的第一个分片，它保存着元数据表其它子表的位置。root tablet很特别，为了保证树的深度不变，root tablet从不分裂。</p>
+<p>第三层是其它的元数据子表，它们和root tablet一起组成完整的元数据表。每个元数据片都包含了许多用户子表的位置信息。</p>
+<p>可以看出整个定位系统其实只是两部分，一个Chubby文件，一个元数据表。注意元数据表虽然特殊，但也仍然服从前文的数据模型，每个子表也都是由专门的子服务器负责，这就是不需要主服务器提供位置信息的原因。客户端会缓存子表的位置信息，如果在缓存里找不到一个子表的位置信息，就需要查找这个三层结构了，包括访问一次Chubby服务，访问两次子服务器。</p>
+<p><img src="/images/Bigtable/address.png" alt="子表地址组成"></p>
+<h3 id="Bigtable-数据存储及读-写操作"><a href="#Bigtable-数据存储及读-写操作" class="headerlink" title="Bigtable 数据存储及读/写操作"></a>Bigtable 数据存储及读/写操作</h3><p>子表的数据最终还是写到GFS里的，子表在GFS里的物理形态就是若干个SSTable文件。下图展示了读写操作基本情况。</p>
+<p><img src="/images/Bigtable/read_write.png" alt="子表地址组成"></p>
+<p>当子服务器收到一个写请求，子服务器首先检查请求是否合法。如果合法，先将写请求提交到日志去，然后将数据写入内存中的 memtable。memtable相当于SSTable的缓存，当memtable成长到一定规模会被冻结，Bigtable随之创建一个新的memtable，并且将冻结的memtable转换为SSTable格式写入GFS，这个操作称为minor compaction。</p>
+<h3 id="BigTable和GFS的关系"><a href="#BigTable和GFS的关系" class="headerlink" title="BigTable和GFS的关系"></a>BigTable和GFS的关系</h3><p>集群包括主服务器和子服务器，主服务器负责将片分配给子服务器，而具体的数据服务则全权由子服务器负责。</p>
+<p>但是不要误以为子服务器真的存储了数据（除了内存中memtable的数据），数据的真实位置只有GFS才知道，<strong>主服务器将子表分配给子服务器的意思应该是，子服务器获取了子表的所有SSTable文件名，子服务器通过一些索引机制可以知道所需要的数据在哪个SSTable文件，然后从GFS中读取SSTable文件的数据</strong>，这个SSTable文件可能分布在好几台chunkserver上。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Big-Table/" rel="tag"># Big Table</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/14/Word Embedding/" rel="next" title="Word Embedding">
+                <i class="fa fa-chevron-left"></i> Word Embedding
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/05/《统计学习方法》第六章——逻辑回归和最大熵模型/" rel="prev" title="《统计学习方法》第六章——逻辑回归和最大熵模型.md">
+                《统计学习方法》第六章——逻辑回归和最大熵模型.md <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Lianhai Miao</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#理解-BigTable"><span class="nav-number">1.</span> <span class="nav-text">理解 BigTable</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bigtable-应达到的基本目标"><span class="nav-number">1.1.</span> <span class="nav-text">Bigtable 应达到的基本目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bigtable-数据的存储格式"><span class="nav-number">1.2.</span> <span class="nav-text">Bigtable 数据的存储格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#row-的特点"><span class="nav-number">1.2.1.</span> <span class="nav-text">row 的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#column-的特点"><span class="nav-number">1.2.2.</span> <span class="nav-text">column 的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#time-的特点"><span class="nav-number">1.2.3.</span> <span class="nav-text">time 的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#典型的-bigtable-存储结构"><span class="nav-number">1.2.4.</span> <span class="nav-text">典型的 bigtable 存储结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bigtable-基本架构"><span class="nav-number">1.2.5.</span> <span class="nav-text">Bigtable 基本架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#主服务器有什么作用呢"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">主服务器有什么作用呢?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#子服务器如何切割子表"><span class="nav-number">1.2.5.2.</span> <span class="nav-text">子服务器如何切割子表?</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSTable-格式的基本示意"><span class="nav-number">1.2.6.</span> <span class="nav-text">SSTable 格式的基本示意</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#子表实际组成"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">子表实际组成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#子表地址组成"><span class="nav-number">1.2.6.2.</span> <span class="nav-text">子表地址组成</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bigtable-数据存储及读-写操作"><span class="nav-number">1.2.7.</span> <span class="nav-text">Bigtable 数据存储及读/写操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BigTable和GFS的关系"><span class="nav-number">1.2.8.</span> <span class="nav-text">BigTable和GFS的关系</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lianhai Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
